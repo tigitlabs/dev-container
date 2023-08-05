@@ -1,13 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
+// Base Image README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
 {
+	// "build": {
+	// 	"dockerfile": "./Dockerfile",
+	// 	"context": "."
+	// },
 	"name": "Dev Container",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	// "image": "mcr.microsoft.com/devcontainers/base:bullseye",
-	"build": {
-		"dockerfile": "./Dockerfile",
-		"context": "."
-	},
+	"dockerComposeFile": "./docker-compose.yml",
+	"service": "devcontainer",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
 
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {

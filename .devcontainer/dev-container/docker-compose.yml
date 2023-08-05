@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+    # This is where VS Code should expect to find your project's source code and the value of "workspaceFolder" in .devcontainer/devcontainer.json
+    - ..:/workspace:cached
+    # The container should remain running after startup
+    command: /bin/sh -c "while sleep 1000; do :; done"

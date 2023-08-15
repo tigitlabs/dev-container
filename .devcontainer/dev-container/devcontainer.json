@@ -51,7 +51,8 @@
 				"ms-azuretools.vscode-docker",
 				"github.copilot",
 				"github.copilot-labs",
-				"github.copilot-chat"
+				"github.copilot-chat",
+				"mutantdino.resourcemonitor"
 			]
 		}
 	},

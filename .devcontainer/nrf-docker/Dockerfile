@@ -59,8 +59,8 @@ RUN NCLT_BASE=https://nsscprodmedia.blob.core.windows.net/prod/software-and-othe
             NCLT_URL="${NCLT_BASE}/${NORDIC_COMMAND_LINE_TOOLS_VERSION}_linux-arm64.tar.gz" ;; \
     esac ; \
     echo "NCLT_URL=${NCLT_URL}" ; \
-    if [[ ! -z "$NCLT_URL" ]] ; \
-    then \
+    if [ ! -z "$NCLT_URL" ] ; then \
+        echo "Installing nRF Command Line Tools" ; \
         mkdir tmp && cd tmp ; \
         wget -qO - "${NCLT_URL}" | tar --no-same-owner -xz ; \
         # Install included JLink
@@ -75,6 +75,7 @@ RUN NCLT_BASE=https://nsscprodmedia.blob.core.windows.net/prod/software-and-othe
         nrfutil help ; \
     else \
         echo "Skipping nRF Command Line Tools (not available for $arch)" ; \
+        exit 1 ; \
     fi
 
 # Prepare image with a ready to use build environment

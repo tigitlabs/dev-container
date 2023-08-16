@@ -32,9 +32,11 @@ jobs:
         run: |
           docker run --rm tigitlabs/nrf-docker:latest clang-format --version
 
-      # - name: Ensure nrfjprog works
-      #   run: |
-      #     docker run --rm nrf-docker:latest nrfjprog -v
+      - name: Ensure nrfutil installation works
+        run: docker run --rm tigitlabs/nrf-docker:latest nrfutil toolchain-manager list
+
+      - name: Ensure nrfjprog works
+        run: docker run --rm tigitlabs/nrf-docker:latest nrfjprog -v
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2

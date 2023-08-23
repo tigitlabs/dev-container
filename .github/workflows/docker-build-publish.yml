@@ -71,9 +71,9 @@ jobs:
       - name: Create build directory
         run: |
           # Create the user
-          useradd --create-home --uid $NRF_USER_UID --gid $NRF_USER_GID $NRF_USER
+          sudo useradd --create-home --uid $NRF_USER_UID --gid $NRF_USER_GID $NRF_USER
           mkdir -p $TEMP_DIR
-          chown -R $NRF_USER_UID:$NRF_USER_GID $TEMP_DIR
+          sudo chown -R $NRF_USER_UID:$NRF_USER_GID $TEMP_DIR
 
       # - name: Check if the build directory can be accessed
       #   run: | 

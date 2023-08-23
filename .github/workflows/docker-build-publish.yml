@@ -5,7 +5,10 @@ name: "Docker CI"
 on:
   pull_request:
     branches: [ dev ]
-
+env:
+  UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
+  NON_ROOT_USER: $(id -u):$(id -g)
+  LOCAL_USER: vscode
 jobs:
   docker-build:
     runs-on: ubuntu-latest
@@ -15,7 +18,7 @@ jobs:
       - name: Build the Ubuntu base image
         run: |
           docker build \
-          -t tigitlabs/ubuntu-base:latest \
+          -t $UBUNTU_BASE_IMAGE \
           -f .devcontainer/ubuntu-base/Dockerfile .devcontainer/ubuntu-base/
 
       - name: Build the Docker image
@@ -28,7 +31,7 @@ jobs:
         run: |
           docker run \
           --rm \
-          --user vscode \
+          --user $LOCAL_USER \
           tigitlabs/nrf-docker:latest \
           nrfjprog -v
 
@@ -36,7 +39,7 @@ jobs:
         run: |
           docker run \
           --rm \
-          --user vscode \
+          --user $LOCAL_USER \
           tigitlabs/nrf-docker:latest \
           clang-format --version
 
@@ -44,7 +47,7 @@ jobs:
         run: |
           docker run \
           --rm \
-          --user vscode \
+          --user $LOCAL_USER \
           tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
 
@@ -52,9 +55,10 @@ jobs:
         run: | 
           docker run \
           --rm \
-          --user runner \
+          --user root \
           --volume ${PWD}:/workdir/project \
-          --workdir /workdir/nrf/applications/asset_tracker_v2 tigitlabs/nrf-docker \
+          --workdir /workdir/nrf/applications/asset_tracker_v2 \
+          tigitlabs/nrf-docker \
           west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
 
       - name: Login to Docker Hub

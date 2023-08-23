@@ -70,7 +70,7 @@ jobs:
       # Create build directory and set permissions
       - name: Create build directory
         run: |
-          mkdir -p $PWD/temp
+          mkdir -p "$PWD/temp"
           sudo chown -R $NRF_USER_UID:$NRF_USER_GID $TEMP_DIR
 
       - name: Build asset_tracker_v2 application

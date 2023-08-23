@@ -52,6 +52,7 @@
 				"github.copilot",
 				"github.copilot-labs",
 				"github.copilot-chat",
+				"github.vscode-pull-request-github",
 				"mutantdino.resourcemonitor"
 			]
 		}

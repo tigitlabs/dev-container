@@ -11,28 +11,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Build the Ubuntu base image
-        run: docker build -t tigitlabs/ubuntu-base:latest -f .devcontainer/ubuntu-base/Dockerfile .devcontainer/ubuntu-base/
-      - name: Build the Docker image
-        run: docker build -t tigitlabs/nrf-docker:latest -f .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker/
-      - name: Build asset_tracker_v2 application
         run: |
-          docker run --rm \
-            -v ${PWD}:/workdir/project \
-            -w /workdir/nrf/applications/asset_tracker_v2 \
-            tigitlabs/nrf-docker:latest \
-            --user vscode \
-              west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
+          docker build \
+          -t tigitlabs/ubuntu-base:latest \
+          -f .devcontainer/ubuntu-base/Dockerfile .devcontainer/ubuntu-base/
+
+      - name: Build the Docker image
+        run: |
+          docker build \
+          -t tigitlabs/nrf-docker:latest \
+          -f .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker/
+
+      - name: Ensure nrfjprog works
+        run: |
+          docker run \
+          --rm \
+          --user vscode \
+          tigitlabs/nrf-docker:latest \
+          nrfjprog -v
 
       - name: Ensure clang-format works
         run: |
-          docker run --rm tigitlabs/nrf-docker:latest clang-format --version
+          docker run \
+          --rm \
+          --user vscode \
+          tigitlabs/nrf-docker:latest \
+          clang-format --version
 
       - name: Ensure nrfutil installation works
-        run: docker run --rm tigitlabs/nrf-docker:latest nrfutil toolchain-manager list
+        run: |
+          docker run \
+          --rm \
+          --user vscode \
+          tigitlabs/nrf-docker:latest \
+          nrfutil toolchain-manager list
 
-      - name: Ensure nrfjprog works
-        run: docker run --rm tigitlabs/nrf-docker:latest nrfjprog -v
+      - name: Build asset_tracker_v2 application
+        run: | 
+          docker run \
+          --rm \
+          --user vscode \
+          --volume ${PWD}:/workdir/project \
+          --workdir /workdir/nrf/applications/asset_tracker_v2 tigitlabs/nrf-docker \
+          west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2

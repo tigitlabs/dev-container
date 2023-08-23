@@ -50,12 +50,15 @@ jobs:
           --user $LOCAL_USER \
           tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
+      # Printing some information about the current environment
+      - name: Print environment information
+        run: |
+          whoami && id
 
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
           --rm \
-          --user root \
           --volume ${PWD}:/workdir/project \
           --workdir /workdir/nrf/applications/asset_tracker_v2 \
           tigitlabs/nrf-docker \

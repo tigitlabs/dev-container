@@ -7,10 +7,12 @@ on:
     branches: [ dev ]
 env:
   UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
-  NON_ROOT_USER: $(id -u):$(id -g)
-  LOCAL_USER: vscode
+  NRF_USER_UID: 1000
+  NRF_USER_GID: 1000
+  NRF_USER: vscode
+  TEMP_DIR: "$PWD/temp"
 jobs:
-  docker-build:
+  docker-build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,46 +33,89 @@ jobs:
         run: |
           docker run \
           --rm \
-          --user $LOCAL_USER \
+          --user $NRF_USER \
           tigitlabs/nrf-docker:latest \
           nrfjprog -v
-
-      - name: Ensure clang-format works
-        run: |
-          docker run \
-          --rm \
-          --user $LOCAL_USER \
-          tigitlabs/nrf-docker:latest \
-          clang-format --version
 
       - name: Ensure nrfutil installation works
         run: |
           docker run \
           --rm \
-          --user $LOCAL_USER \
+          --user $NRF_USER \
           tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
+
+      - name: Ensure clang-format works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          tigitlabs/nrf-docker:latest \
+          clang-format --version
+
+      - name: Ensure west works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          tigitlabs/nrf-docker:latest \
+          west --version
       # Printing some information about the current environment
       - name: Print environment information
         run: |
-          whoami && id
+          whoami && id \
+          && echo "ACTIONS_USER_UID: $ACTIONS_USER_UID" \
+          && echo "ACTIONS_USER_GID: $ACTIONS_USER_GID"
+
+      # Create build directory and set permissions
+      - name: Create build directory
+        run: |
+          # Create the user group
+          groupadd --gid $NRF_USER_GID $NRF_USER
+          # Create the user
+          useradd --create-home --uid $NRF_USER_UID --gid $NRF_USER_GID $NRF_USER
+          mkdir -p $TEMP_DIR
+          chown -R $NRF_USER_UID:$NRF_USER_GID $TEMP_DIR
+
+      # - name: Check if the build directory can be accessed
+      #   run: | 
+      #     docker run \
+      #     --rm \
+      #     --user $NRF_USER \
+      #     --volume ${PWD}/temp:/workdir/project \
+      #     --workdir /workdir/nrf/applications/asset_tracker_v2 \
+      #     tigitlabs/nrf-docker \
+      #     ls /workdir/project
 
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
           --rm \
-          --volume ${PWD}:/workdir/project \
+          --user $NRF_USER \
+          --volume {$TEMP_DIR}:/workdir/project \
           --workdir /workdir/nrf/applications/asset_tracker_v2 \
           tigitlabs/nrf-docker \
-          west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
+          west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/ -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: tigitlabs
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Publish image
+  pubish-docker-image:
+    runs-on: ubuntu-latest
+    needs: docker-build-and-test
+    steps:
+      - name: Ensure the Docker image is available
         run: |
-          docker images
-          docker push tigitlabs/nrf-docker:latest
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          tigitlabs/nrf-docker:latest \
+          clang-format --version
+
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: tigitlabs
+      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # - name: Publish image
+      #   run: |
+      #     docker images
+      #     docker push tigitlabs/nrf-docker:latest

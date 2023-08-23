@@ -52,7 +52,9 @@
 				"github.copilot",
 				"github.copilot-labs",
 				"github.copilot-chat",
-				"mutantdino.resourcemonitor"
+				"github.vscode-pull-request-github",
+				"mutantdino.resourcemonitor",
+				"mhutchie.git-graph"
 			]
 		}
 	},

@@ -2,7 +2,9 @@
 # Only difference is that the image is based on devcontainers/base:bullseye for better compatibility with GitHub Codespaces
 # https://github.com/NordicPlayground/nrf-docker
 #FROM mcr.microsoft.com/devcontainers/base:bullseye
-FROM ubuntu:22.04
+
+FROM tigitlabs/ubuntu-base:latest
+
 WORKDIR /workdir
 
 ARG sdk_nrf_branch=v2.4-branch
@@ -88,8 +90,18 @@ RUN west init -m https://github.com/nrfconnect/sdk-nrf --mr ${sdk_nrf_branch} . 
     fi ; \
     west update --narrow -o=--depth=1
 
+COPY ./entry.sh /root/entry.sh
+RUN chmod +x /root/entry.sh
+
+# Adding permission to non-root user from the the base image
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+RUN chown -R $USERNAME:$USER_GID /root/ \
+    && chown -R $USERNAME:$USER_GID /workdir/ \
+    && chown -R $USERNAME:$USER_GID $NRFUTIL_HOME
+
 # Launch into build environment with the passed arguments
 # Currently this is not supported in GitHub Actions
 # See https://github.com/actions/runner/issues/1964
 ENTRYPOINT [ "nrfutil", "toolchain-manager", "launch", "/bin/bash", "--", "/root/entry.sh" ]
-COPY ./entry.sh /root/entry.sh

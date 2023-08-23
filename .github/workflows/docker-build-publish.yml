@@ -71,7 +71,7 @@ jobs:
       - name: Create build directory
         run: |
           mkdir -p "$PWD/temp"
-          sudo chown -R $NRF_USER_UID:$NRF_USER_GID $TEMP_DIR
+          sudo chown -R $NRF_USER_UID:$NRF_USER_GID "$PWD/temp"
 
       - name: Build asset_tracker_v2 application
         run: | 
@@ -101,7 +101,7 @@ jobs:
           username: tigitlabs
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # - name: Publish image
-      #   run: |
-      #     docker images
-      #     docker push tigitlabs/nrf-docker:latest
+      - name: Publish image
+        run: |
+          docker images
+          docker push tigitlabs/nrf-docker:latest

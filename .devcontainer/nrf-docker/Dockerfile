@@ -2,7 +2,9 @@
 # Only difference is that the image is based on devcontainers/base:bullseye for better compatibility with GitHub Codespaces
 # https://github.com/NordicPlayground/nrf-docker
 #FROM mcr.microsoft.com/devcontainers/base:bullseye
+
 FROM tigitlabs/ubuntu-base:latest
+
 WORKDIR /workdir
 
 ARG sdk_nrf_branch=v2.4-branch

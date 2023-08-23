@@ -7,10 +7,10 @@ on:
     branches: [ dev ]
 env:
   UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
-docker   NRF_USER_UID: 1000
+  NRF_USER_UID: 1000
   NRF_USER_GID: 1000
   NRF_USER: vscode
-  TEMP_DIR: "$PWD/temp"
+
 jobs:
   docker-build-and-test:
     runs-on: ubuntu-latest
@@ -70,25 +70,15 @@ jobs:
       # Create build directory and set permissions
       - name: Create build directory
         run: |
-          mkdir -p $TEMP_DIR
+          mkdir -p $PWD/temp
           sudo chown -R $NRF_USER_UID:$NRF_USER_GID $TEMP_DIR
-
-      # - name: Check if the build directory can be accessed
-      #   run: | 
-      #     docker run \
-      #     --rm \
-      #     --user $NRF_USER \
-      #     --volume ${PWD}/temp:/workdir/project \
-      #     --workdir /workdir/nrf/applications/asset_tracker_v2 \
-      #     tigitlabs/nrf-docker \
-      #     ls /workdir/project
 
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
           --rm \
           --user $NRF_USER \
-          --volume {"$PWD"/temp}:/workdir/project \
+          --volume {$PWD/temp}:/workdir/project \
           --workdir /workdir/nrf/applications/asset_tracker_v2 \
           tigitlabs/nrf-docker \
           west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/ -- -DEXTRA_CFLAGS="-Werror -Wno-dev"

@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Build the Ubuntu base image
+        run: docker build -t tigitlabs/ubuntu-base:latest -f .devcontainer/ubuntu-base/Dockerfile .devcontainer/ubuntu-base/
       - name: Build the Docker image
         run: docker build -t tigitlabs/nrf-docker:latest -f .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker/
       - name: Build asset_tracker_v2 application
@@ -19,14 +21,8 @@ jobs:
             -v ${PWD}:/workdir/project \
             -w /workdir/nrf/applications/asset_tracker_v2 \
             tigitlabs/nrf-docker:latest \
+            --user vscode \
               west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     if-no-files-found: error
-      #     name: asset_tracker_v2
-      #     path: |
-      #       /workdir/project/build/zephyr/merged.hex
-      #       /workdir/project/build/zephyr/app_update.bin
 
       - name: Ensure clang-format works
         run: |

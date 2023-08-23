@@ -70,8 +70,6 @@ jobs:
       # Create build directory and set permissions
       - name: Create build directory
         run: |
-          # Create the user
-          sudo useradd --create-home --uid $NRF_USER_UID --gid $NRF_USER_GID $NRF_USER
           mkdir -p $TEMP_DIR
           sudo chown -R $NRF_USER_UID:$NRF_USER_GID $TEMP_DIR
 

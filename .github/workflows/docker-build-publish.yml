@@ -7,7 +7,7 @@ on:
     branches: [ dev ]
 env:
   UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
-  NRF_USER_UID: 1000
+docker   NRF_USER_UID: 1000
   NRF_USER_GID: 1000
   NRF_USER: vscode
   TEMP_DIR: "$PWD/temp"
@@ -88,7 +88,7 @@ jobs:
           docker run \
           --rm \
           --user $NRF_USER \
-          --volume {$PWD}/temp:/workdir/project \
+          --volume {"$PWD"/temp}:/workdir/project \
           --workdir /workdir/nrf/applications/asset_tracker_v2 \
           tigitlabs/nrf-docker \
           west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/ -- -DEXTRA_CFLAGS="-Werror -Wno-dev"

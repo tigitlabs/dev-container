@@ -54,7 +54,8 @@
 				"github.copilot-chat",
 				"github.vscode-pull-request-github",
 				"mutantdino.resourcemonitor",
-				"mhutchie.git-graph"
+				"mhutchie.git-graph",
+				"DavidAnson.vscode-markdownlint"
 			]
 		}
 	},

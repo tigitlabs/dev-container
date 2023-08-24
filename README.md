@@ -2,16 +2,6 @@
 
 Repo to maintain base Github dev containers and codespaces
 
-## File structure
-
-* ./devcontainer.json
-  * This is the main container config file for developing the specific dev container images. This environment supports Docker in Docker (DinD).
-
-│   ├── base
-│   │   ├── Dockerfile
-│   │   └── devcontainer.json
-│   └── devcontainer.json
-
 ## Tools
 
 ### ACT

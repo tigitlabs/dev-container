@@ -21,7 +21,8 @@ RUN apt-get -y update && export DEBIAN_FRONTEND=noninteractive ; \
     python3-wheel \
     python3-dev \
     python3-venv \
-    clang-format
+    clang-format \
+    cmake
 
 USER vscode
 WORKDIR /workspace

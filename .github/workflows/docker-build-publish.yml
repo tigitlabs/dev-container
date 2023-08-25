@@ -25,6 +25,7 @@ jobs:
     - uses: dorny/paths-filter@v2
       id: filter
       with:
+        base: HEAD
         filters: |
           ubuntu-base:
             - '.devcontainer/ubuntu-base/**'
@@ -64,7 +65,7 @@ jobs:
 
   build-and-push-nrf-docker-image:
     needs: changes
-    if: ${{ needs.changes.outputs.nrf-docker-image == 'true' }}
+    if: ${{ needs.changes.outputs.nrf-docker-image == 'true' }} || ${{ needs.changes.outputs.ubuntu-base == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

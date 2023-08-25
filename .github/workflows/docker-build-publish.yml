@@ -43,6 +43,7 @@ jobs:
           docker push ghcr.io/tigitlabs/ubuntu-base
 
   build-and-push-nrf-docker-image:
+    needs: build-and-push-ubuntu-base
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -70,6 +71,7 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-docker
 
   build-and-push-nrf-codespace-image:
+    needs: build-and-push-nrf-docker-image
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -94,10 +94,9 @@ jobs:
           docker run \
           --rm \
           --user $NRF_USER \
-          --volume ${PWD}:/workspace/project \
           --workdir /workspace/nrf/applications/asset_tracker_v2 \
           ghcr.io/tigitlabs/nrf-docker \
-          west build -b nrf9160dk_nrf9160ns --build-dir /workspace/project/ -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
+          west build -b nrf9160dk_nrf9160ns --build-dir /workspace/nrf/applications/asset_tracker_v2/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
 
       - name: Login to GitHub Container Registry
         if: ${{ !env.ACT }}

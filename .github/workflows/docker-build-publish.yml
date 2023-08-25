@@ -19,21 +19,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 'Login to GitHub Container Registry'
+      - name: Build the Ubuntu base image
+        run: |
+          docker build \
+          --file .devcontainer/ubuntu-base/Dockerfile \
+          .devcontainer/ubuntu-base/
+
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Build the Ubuntu base image
-        uses: docker/build-push-action@v2
-        with:
-          context: .devcontainer/ubuntu-base
-          file: .devcontainer/ubuntu-base/Dockerfile
-          push: true
-          # tags: ${{ env.UBUNTU_BASE_IMAGE }}
-          tags: tigitlabs/devcon-ubuntu-base:latest
 
   # docker-build-and-test:
   #   runs-on: ubuntu-latest

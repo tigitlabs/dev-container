@@ -81,6 +81,14 @@ jobs:
           ghcr.io/tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
 
+      - name: Ensure nrfjprog works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          nrfjprog -v
+
       - name: Login to GitHub Container Registry
         if: ${{ !env.ACT }}
         uses: docker/login-action@v1
@@ -124,13 +132,7 @@ jobs:
 
 
 
-  #     - name: Ensure nrfjprog works
-  #       run: |
-  #         docker run \
-  #         --rm \
-  #         --user $NRF_USER \
-  #         tigitlabs/nrf-docker:latest \
-  #         nrfjprog -v
+
 
   #     # Create build directory and set permissions
   #     - name: Create build directory

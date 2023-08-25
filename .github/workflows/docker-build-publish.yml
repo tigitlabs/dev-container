@@ -14,7 +14,7 @@ env:
   NRF_USER: vscode
 
 jobs:
-  paths-filter:
+  changes:
     runs-on: ubuntu-latest
     outputs:
       ubuntu-base: ${{ steps.filter.outputs.ubuntu-base }}

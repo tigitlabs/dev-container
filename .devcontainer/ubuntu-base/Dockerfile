@@ -1,5 +1,6 @@
 # Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
 # ubuntu-base
+# published at ghcr.io/tigitlabs/ubuntu-base
 # [Choice] Ubuntu version (use jammy or bionic on local arm64/Apple Silicon): jammy, focal, bionic
 ARG VARIANT="jammy"
 FROM buildpack-deps:${VARIANT}-curl

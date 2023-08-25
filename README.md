@@ -10,6 +10,8 @@ You have to run the act commands in the vscode terminal. When you run the act co
 
 ## ubuntu-base
 
+## nrf-docker
+
 Based on this [repo from Nordic](https://github.com/NordicPlayground/nrf-docker)
 
 ## Resources

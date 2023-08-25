@@ -62,7 +62,7 @@ jobs:
           docker run \
           --rm \
           --user $NRF_USER \
-          tigitlabs/nrf-docker:latest \
+          ghcr.io/tigitlabs/nrf-docker:latest \
           clang-format --version
 
       - name: Ensure west works
@@ -70,8 +70,16 @@ jobs:
           docker run \
           --rm \
           --user $NRF_USER \
-          tigitlabs/nrf-docker:latest \
+          ghcr.io/tigitlabs/nrf-docker:latest \
           west --version
+
+      - name: Ensure nrfutil installation works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          nrfutil toolchain-manager list
 
       - name: Login to GitHub Container Registry
         if: ${{ !env.ACT }}

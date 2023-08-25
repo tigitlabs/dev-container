@@ -14,7 +14,23 @@ env:
   NRF_USER: vscode
 
 jobs:
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      ubuntu-base: ${{ steps.filter.outputs.ubuntu-base }}
+      nrf-docker-image: ${{ steps.filter.outputs.nrf-docker-image }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          ubuntu-base:
+            - '.devcontainer/ubuntu-base/**'
+          nrf-docker-image:
+            - '.devcontainer/nrf-docker/**'
   build-and-push-ubuntu-base:
+    needs: changes
+    if: ${{ needs.changes.outputs.ubuntu-base == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -43,7 +59,8 @@ jobs:
           docker push ghcr.io/tigitlabs/ubuntu-base
 
   build-and-push-nrf-docker-image:
-    needs: build-and-push-ubuntu-base
+    needs: changes
+    if: ${{ needs.changes.outputs.nrf-docker-image == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -112,7 +129,6 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-docker
 
   build-and-push-nrf-codespace-image:
-    needs: build-and-push-nrf-docker-image
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -34,7 +34,7 @@ jobs:
 
       - name: Publish image
         run: |
-          docker push tigitlabs/ubuntu-base
+          docker push ghcr.io/tigitlabs/ubuntu-base
 
   # docker-build-and-test:
   #   runs-on: ubuntu-latest

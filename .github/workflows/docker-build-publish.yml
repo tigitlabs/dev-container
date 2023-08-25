@@ -19,7 +19,9 @@ jobs:
     outputs:
       ubuntu-base: ${{ steps.filter.outputs.ubuntu-base }}
       nrf-docker-image: ${{ steps.filter.outputs.nrf-docker-image }}
+      nrf-codespace: ${{ steps.filter.outputs.nrf-codespace }}
     steps:
+    - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
       id: filter
       with:
@@ -28,6 +30,8 @@ jobs:
             - '.devcontainer/ubuntu-base/**'
           nrf-docker-image:
             - '.devcontainer/nrf-docker/**'
+          nrf-codespace:
+            - '.devcontainer/nrf-codespace/**'
   build-and-push-ubuntu-base:
     needs: changes
     if: ${{ needs.changes.outputs.ubuntu-base == 'true' }}
@@ -129,6 +133,8 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-docker
 
   build-and-push-nrf-codespace-image:
+    needs: changes
+    if: ${{ needs.changes.outputs.nrf-codespace == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

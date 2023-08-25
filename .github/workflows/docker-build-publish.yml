@@ -39,13 +39,6 @@ jobs:
       - name: Publish image
         run: |
           docker push ghcr.io/tigitlabs/ubuntu-base
-          build-and-push-ubuntu-base:
-            runs-on: ubuntu-latest
-            permissions:
-              contents: read
-              packages: write
-            steps:
-              - uses: actions/checkout@v2
 
   build-and-push-nrf-docker-image:
     runs-on: ubuntu-latest

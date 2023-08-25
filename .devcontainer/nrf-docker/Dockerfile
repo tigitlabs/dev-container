@@ -24,7 +24,12 @@ RUN apt-get -y update && export DEBIAN_FRONTEND=noninteractive ; \
     clang-format \
     cmake
 
+COPY ./entry.sh /root/entry.sh
+
 USER vscode
+RUN sudo chmod +x /root/entry.sh && \
+    sudo chown -R vscode:vscode /root
+
 WORKDIR /workspace
 # ClangFormat
 RUN wget -qO- https://raw.githubusercontent.com/nrfconnect/sdk-nrf/${sdk_nrf_branch}/.clang-format > /workspace/.clang-format
@@ -41,7 +46,7 @@ RUN sudo pip install --upgrade pip && \
 RUN wget -q https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfutil ; \
     sudo mv nrfutil /usr/local/bin ; \
     sudo chmod +x /usr/local/bin/nrfutil ; \
-    nrfutil install toolchain-manager ; \
+    sudo nrfutil install toolchain-manager ; \
     nrfutil install toolchain-manager search ; \
     nrfutil toolchain-manager install --ncs-version ${toolchain_version} ; \
     nrfutil toolchain-manager list
@@ -63,3 +68,15 @@ RUN <<EOT
     sudo mv /opt/SEGGER/JLink* /opt/SEGGER/JLink
     cd .. && rm -rf tmp ;
 EOT
+
+# Prepare image with a ready to use build environment
+SHELL ["nrfutil","toolchain-manager","launch","/bin/bash","--","-c"]
+RUN <<EOT
+    west init -m https://github.com/nrfconnect/sdk-nrf --mr ${sdk_nrf_branch} /workspace
+    if [[ $sdk_nrf_commit =~ "^[a-fA-F0-9]{32}$" ]]; then
+        git checkout ${sdk_nrf_commit};
+    fi
+    west update --narrow -o=--depth=1
+EOT
+
+ENTRYPOINT [ "nrfutil", "toolchain-manager", "launch", "/bin/bash", "--", "/root/entry.sh" ]

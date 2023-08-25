@@ -23,6 +23,7 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/ubuntu-base/Dockerfile \
+          --tag ghcr.io/tigitlabs/ubuntu-base \
           .devcontainer/ubuntu-base/
 
       - name: Login to GitHub Container Registry

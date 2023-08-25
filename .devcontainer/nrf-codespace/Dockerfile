@@ -1,5 +1,6 @@
 # Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
 # nrf-codespace
+# published at ghcr.io/tigitlabs/nrf-codespace
 ARG VARIANT=ubuntu-22.04
 # FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 FROM ghcr.io/tigitlabs/nrf-docker

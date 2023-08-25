@@ -10,12 +10,12 @@ ARG sdk_nrf_commit
 ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-23-0/nrf-command-line-tools-10.23.0"
 ARG arch=amd64
 
+# Exit immediately if any command fails
+RUN set -e
+
 RUN apt-get -y update && export DEBIAN_FRONTEND=noninteractive ; \
     apt-get -y upgrade && \
     apt-get -y install --no-install-recommends \
-    wget \
-    unzip \
-    git \
     python3-pip \
     python3-setuptools \
     python3-wheel \
@@ -29,9 +29,9 @@ WORKDIR /workspace
 RUN wget -qO- https://raw.githubusercontent.com/nrfconnect/sdk-nrf/${sdk_nrf_branch}/.clang-format > /workspace/.clang-format
 
 # pip dependecies
-RUN pip install --upgrade pip && \
-    pip install --upgrade setuptools && \
-    pip install west
+RUN sudo pip install --upgrade pip && \
+    sudo pip install --upgrade setuptools && \
+    sudo pip install west
 
 # Install toolchain
 # Make nrfutil install in a shared location, because when used with GitHub

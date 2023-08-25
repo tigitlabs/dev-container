@@ -123,22 +123,6 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-codespace
 
 
-  # docker-build-and-test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Build the Ubuntu base image
-  #       run: |
-  #         docker build \
-  #         -t $UBUNTU_BASE_IMAGE \
-  #         -f .devcontainer/ubuntu-base/Dockerfile .devcontainer/ubuntu-base/
-
-  #     - name: Build the Docker image
-  #       run: |
-  #         docker build \
-  #         -t tigitlabs/nrf-docker:latest \
-  #         -f .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker/
 
   #     - name: Ensure nrfjprog works
   #       run: |
@@ -147,36 +131,6 @@ jobs:
   #         --user $NRF_USER \
   #         tigitlabs/nrf-docker:latest \
   #         nrfjprog -v
-
-  #     - name: Ensure nrfutil installation works
-  #       run: |
-  #         docker run \
-  #         --rm \
-  #         --user $NRF_USER \
-  #         tigitlabs/nrf-docker:latest \
-  #         nrfutil toolchain-manager list
-
-  #     - name: Ensure clang-format works
-  #       run: |
-  #         docker run \
-  #         --rm \
-  #         --user $NRF_USER \
-  #         tigitlabs/nrf-docker:latest \
-  #         clang-format --version
-
-  #     - name: Ensure west works
-  #       run: |
-  #         docker run \
-  #         --rm \
-  #         --user $NRF_USER \
-  #         tigitlabs/nrf-docker:latest \
-  #         west --version
-  #     # Printing some information about the current environment
-  #     - name: Print environment information
-  #       run: |
-  #         whoami && id \
-  #         && echo "ACTIONS_USER_UID: $ACTIONS_USER_UID" \
-  #         && echo "ACTIONS_USER_GID: $ACTIONS_USER_GID"
 
   #     # Create build directory and set permissions
   #     - name: Create build directory
@@ -193,14 +147,3 @@ jobs:
   #         --workdir /workdir/nrf/applications/asset_tracker_v2 \
   #         tigitlabs/nrf-docker \
   #         west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/ -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
-
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v2
-  #       with:
-  #         username: tigitlabs
-  #         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-  #     - name: Publish image
-  #       run: |
-  #         docker images
-  #         docker push tigitlabs/nrf-docker:latest

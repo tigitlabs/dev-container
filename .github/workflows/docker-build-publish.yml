@@ -30,6 +30,7 @@ jobs:
           .devcontainer/ubuntu-base/
 
       - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -37,6 +38,7 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish image
+        if: ${{ !env.ACT }}
         run: |
           docker push ghcr.io/tigitlabs/ubuntu-base
 
@@ -55,6 +57,7 @@ jobs:
           .devcontainer/nrf-docker/
 
       - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -62,6 +65,7 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish image
+        if: ${{ !env.ACT }}
         run: |
           docker push ghcr.io/tigitlabs/nrf-docker
 
@@ -80,6 +84,7 @@ jobs:
           .devcontainer/nrf-codespace/
 
       - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -87,6 +92,7 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish image
+        if: ${{ !env.ACT }}
         run: |
           docker push ghcr.io/tigitlabs/nrf-codespace
 

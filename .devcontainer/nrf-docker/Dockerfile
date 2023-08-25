@@ -26,3 +26,8 @@ RUN apt-get -y update && export DEBIAN_FRONTEND=noninteractive ; \
 WORKDIR /workspace
 # ClangFormat
 RUN wget -qO- https://raw.githubusercontent.com/nrfconnect/sdk-nrf/${sdk_nrf_branch}/.clang-format > /workspace/.clang-format
+
+# pip dependecies
+RUN pip install --upgrade pip && \
+    pip install --upgrade setuptools && \
+    pip install west

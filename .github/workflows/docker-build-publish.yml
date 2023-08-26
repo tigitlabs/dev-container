@@ -145,34 +145,6 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-docker
 
   build-and-push-nrf-codespace-image:
-    needs: changes
-    if: ${{ (needs.changes.outputs.nrf-codespace == 'true') || (needs.changes.outputs.nrf-docker-image == 'true') || (needs.changes.outputs.ubuntu-base == 'true') }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build the nrf-codespace image
-        run: |
-          docker build \
-          --file .devcontainer/nrf-codespace/Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-codespace \
-          .devcontainer/nrf-codespace/
-      - name: Login to GitHub Container Registry
-        if: ${{ !env.ACT }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Publish image
-        if: ${{ !env.ACT }}
-        run: |
-          docker push ghcr.io/tigitlabs/nrf-docker
-
-  build-and-push-nrf-codespace-image:
     needs: [ changes, build-and-push-nrf-docker-image ]
     if: ${{ (needs.changes.outputs.nrf-codespace == 'true') || (needs.changes.outputs.nrf-docker-image == 'true') || (needs.changes.outputs.ubuntu-base == 'true') }}
     runs-on: ubuntu-latest

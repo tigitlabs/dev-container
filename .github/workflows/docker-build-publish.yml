@@ -83,8 +83,7 @@ jobs:
           docker push ghcr.io/tigitlabs/ubuntu-base
 
   build-and-push-nrf-docker-image:
-    needs: [ changes, build-and-push-ubuntu-base ]
-    if: ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.ubuntu-base == 'true') }} || ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.nrf-codespace == 'true') }}
+    needs: [ build-and-push-ubuntu-base ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -145,8 +144,7 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-docker
 
   build-and-push-nrf-codespace-image:
-    needs: [ changes, build-and-push-nrf-docker-image ]
-    if: ${{ (needs.changes.outputs.nrf-codespace == 'true') || (needs.changes.outputs.nrf-docker-image == 'true') || (needs.changes.outputs.ubuntu-base == 'true') }}
+    needs: [ build-and-push-nrf-docker-image ]
     runs-on: ubuntu-latest
     permissions:
       contents: read

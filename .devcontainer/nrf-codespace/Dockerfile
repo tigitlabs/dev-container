@@ -26,3 +26,4 @@ RUN <<EOT
     sudo mv /opt/SEGGER/JLink* /opt/SEGGER/JLink
     cd .. && rm -rf tmp ;
 EOT
+

@@ -1,13 +1,12 @@
 # Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
 # nrf-docker
 ARG VARIANT=ubuntu-22.04
-# FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
-FROM ghcr.io/tigitlabs/ubuntu-base
-
 ARG sdk_nrf_branch=v2.4-branch
 ARG toolchain_version=v2.4.1
 ARG sdk_nrf_commit
 ARG arch=amd64
+# FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
+FROM ghcr.io/tigitlabs/ubuntu-base
 
 # Exit immediately if any command fails
 RUN set -e

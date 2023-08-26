@@ -17,7 +17,8 @@ RUN apt-get -y update && export DEBIAN_FRONTEND=noninteractive ; \
     apt-get -y upgrade && \
     apt-get -y install --no-install-recommends \
     python3-pip \
-    python3-setuptools
+    python3-setuptools \
+    clang-format
 
 COPY ./entry.sh /root/entry.sh
 

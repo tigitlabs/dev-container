@@ -54,7 +54,7 @@ jobs:
 
   build-and-push-ubuntu-base:
     needs: [ changes, manual-trigger ]
-    if: ${{ (needs.changes.outputs.ubuntu-base == 'true') || (needs.manual-trigger.outputs.force-rebuild == 'true') }}
+    if: ${{ (needs.changes.outputs.ubuntu-base == 'true') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -165,7 +165,7 @@ jobs:
           docker run \
           --rm \
           --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:latest \
+          ghcr.io/tigitlabs/nrf-codespace:latest \
           nrfjprog -v
 
       - name: Login to GitHub Container Registry

@@ -122,14 +122,6 @@ jobs:
           ghcr.io/tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
 
-      - name: Ensure nrfjprog works
-        run: |
-          docker run \
-          --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:latest \
-          nrfjprog -v
-
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
@@ -167,6 +159,14 @@ jobs:
           --file .devcontainer/nrf-codespace/Dockerfile \
           --tag ghcr.io/tigitlabs/nrf-codespace \
           .devcontainer/nrf-codespace/
+
+      - name: Ensure nrfjprog works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          nrfjprog -v
 
       - name: Login to GitHub Container Registry
         if: ${{ !env.ACT }}

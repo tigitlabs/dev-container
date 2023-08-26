@@ -34,6 +34,15 @@ jobs:
           nrf-codespace:
             - '.devcontainer/nrf-codespace/**'
 
+  print-outputs:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "ubuntu-base changed: ${{ needs.changes.outputs.ubuntu-base }}"
+          echo "nrf-docker-image changed: ${{ needs.changes.outputs.nrf-docker-image }}"
+          echo "nrf-codespace changed: ${{ needs.changes.outputs.nrf-codespace }}"
+
   build-and-push-ubuntu-base:
     needs: changes
     if: ${{ needs.changes.outputs.ubuntu-base == 'true' }}

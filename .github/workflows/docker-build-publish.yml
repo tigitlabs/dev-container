@@ -74,7 +74,7 @@ jobs:
 
   build-and-push-nrf-docker-image:
     needs: changes
-    if: ${{ needs.changes.outputs.nrf-docker-image == 'true' }} || ${{ needs.changes.outputs.ubuntu-base == 'true' }}
+    if: ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.ubuntu-base == 'true') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -144,7 +144,7 @@ jobs:
 
   build-and-push-nrf-codespace-image:
     needs: changes
-    if: ${{ needs.changes.outputs.nrf-codespace == 'true' }} || ${{ needs.changes.outputs.nrf-docker-image == 'true' }} || ${{ needs.changes.outputs.ubuntu-base == 'true' }}
+    if: ${{ (needs.changes.outputs.nrf-codespace == 'true') || (needs.changes.outputs.nrf-docker-image == 'true') || (needs.changes.outputs.ubuntu-base == 'true') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -2,10 +2,9 @@
 # nrf-codespace
 # published at ghcr.io/tigitlabs/nrf-codespace
 ARG VARIANT=ubuntu-22.04
-ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-23-0/nrf-command-line-tools-10.23.0"
 # FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 FROM ghcr.io/tigitlabs/nrf-docker
-
+ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-23-0/nrf-command-line-tools-10.23.0"
 # Exit immediately if any command fails
 RUN set -e
 

@@ -84,7 +84,7 @@ jobs:
 
   build-and-push-nrf-docker-image:
     needs: [ changes, build-and-push-ubuntu-base ]
-    if: ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.ubuntu-base == 'true') }}
+    if: ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.ubuntu-base == 'true') }} || ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.nrf-codespace == 'true') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

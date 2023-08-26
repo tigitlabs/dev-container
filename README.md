@@ -8,7 +8,11 @@ Repo to maintain base Github dev containers and codespaces
 
 You have to run the act commands in the vscode terminal. When you run the act command in the bash shell it will not work.
 
-## nRF Connect SDK - Zephyr Build image
+## ubuntu-base
+
+## nrf-docker
+
+## nrf-codespace
 
 Based on this [repo from Nordic](https://github.com/NordicPlayground/nrf-docker)
 

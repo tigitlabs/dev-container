@@ -1,14 +1,22 @@
-FROM ubuntu:22.04
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
-# Add non-root user
+# Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
+# ubuntu-base
+# published at ghcr.io/tigitlabs/ubuntu-base
+
+ARG VARIANT="jammy"
+FROM buildpack-deps:${VARIANT}-curl
+
+# Options for setup script
+ARG INSTALL_ZSH="false"
+ARG UPGRADE_PACKAGES="true"
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-RUN groupadd --gid $USER_GID $USERNAME \
-  && useradd \
-  --uid $USER_UID \
-  --gid $USER_GID \
-  --create-home \
-  --shell /bin/bash \
-  $USERNAME
+# Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
+COPY library-scripts/*.sh library-scripts/*.env /tmp/library-scripts/
+RUN yes | unminimize 2>&1 \ 
+    && bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" "true" "true" \
+    && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+
+# [Optional] Uncomment this section to install additional OS packages.
+# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+#     && apt-get -y install --no-install-recommends <your-package-list-here>

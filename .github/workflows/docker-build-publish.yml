@@ -5,6 +5,8 @@ name: "Docker CI"
 on:
   pull_request:
     branches: [ dev ]
+  push:
+    branches: [ nrf-codespace ]
 env:
   UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
   NRF_USER_UID: 1000
@@ -12,45 +14,87 @@ env:
   NRF_USER: vscode
 
 jobs:
-  docker-build-and-test:
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      ubuntu-base: ${{ steps.filter.outputs.ubuntu-base }}
+      nrf-docker-image: ${{ steps.filter.outputs.nrf-docker-image }}
+      nrf-codespace: ${{ steps.filter.outputs.nrf-codespace }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        base: nrf-codespace
+        filters: |
+          ubuntu-base:
+            - '.devcontainer/ubuntu-base/**'
+          nrf-docker-image:
+            - '.devcontainer/nrf-docker/**'
+          nrf-codespace:
+            - '.devcontainer/nrf-codespace/**'
+
+  print-outputs:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "ubuntu-base changed: ${{ needs.changes.outputs.ubuntu-base }}"
+          echo "nrf-docker-image changed: ${{ needs.changes.outputs.nrf-docker-image }}"
+          echo "nrf-codespace changed: ${{ needs.changes.outputs.nrf-codespace }}"
+
+  build-and-push-ubuntu-base:
+    needs: changes
+    if: ${{ needs.changes.outputs.ubuntu-base == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v2
 
       - name: Build the Ubuntu base image
         run: |
           docker build \
-          -t $UBUNTU_BASE_IMAGE \
-          -f .devcontainer/ubuntu-base/Dockerfile .devcontainer/ubuntu-base/
+          --file .devcontainer/ubuntu-base/Dockerfile \
+          --tag ghcr.io/tigitlabs/ubuntu-base \
+          .devcontainer/ubuntu-base/
 
-      - name: Build the Docker image
+      - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/ubuntu-base
+
+  build-and-push-nrf-docker-image:
+    needs: changes
+    if: ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.ubuntu-base == 'true') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the nrf-docker image
         run: |
           docker build \
-          -t tigitlabs/nrf-docker:latest \
-          -f .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker/
-
-      - name: Ensure nrfjprog works
-        run: |
-          docker run \
-          --rm \
-          --user $NRF_USER \
-          tigitlabs/nrf-docker:latest \
-          nrfjprog -v
-
-      - name: Ensure nrfutil installation works
-        run: |
-          docker run \
-          --rm \
-          --user $NRF_USER \
-          tigitlabs/nrf-docker:latest \
-          nrfutil toolchain-manager list
+          --file .devcontainer/nrf-docker/Dockerfile \
+          --tag ghcr.io/tigitlabs/nrf-docker \
+          .devcontainer/nrf-docker/
 
       - name: Ensure clang-format works
         run: |
           docker run \
           --rm \
           --user $NRF_USER \
-          tigitlabs/nrf-docker:latest \
+          ghcr.io/tigitlabs/nrf-docker:latest \
           clang-format --version
 
       - name: Ensure west works
@@ -58,38 +102,82 @@ jobs:
           docker run \
           --rm \
           --user $NRF_USER \
-          tigitlabs/nrf-docker:latest \
+          ghcr.io/tigitlabs/nrf-docker:latest \
           west --version
-      # Printing some information about the current environment
-      - name: Print environment information
-        run: |
-          whoami && id \
-          && echo "ACTIONS_USER_UID: $ACTIONS_USER_UID" \
-          && echo "ACTIONS_USER_GID: $ACTIONS_USER_GID"
 
-      # Create build directory and set permissions
-      - name: Create build directory
+      - name: Ensure nrfutil installation works
         run: |
-          mkdir -p "$PWD/temp"
-          sudo chown -R $NRF_USER_UID:$NRF_USER_GID "$PWD/temp"
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          nrfutil toolchain-manager list
+
+      - name: Ensure nrfjprog works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          nrfjprog -v
 
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
           --rm \
           --user $NRF_USER \
-          --volume ${PWD}/temp:/workdir/project \
-          --workdir /workdir/nrf/applications/asset_tracker_v2 \
-          tigitlabs/nrf-docker \
-          west build -b nrf9160dk_nrf9160ns --build-dir /workdir/project/ -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
+          --workdir /workspace/nrf/applications/asset_tracker_v2 \
+          ghcr.io/tigitlabs/nrf-docker \
+          west build -b nrf9160dk_nrf9160ns --build-dir /workspace/nrf/applications/asset_tracker_v2/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
+      - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
+        uses: docker/login-action@v1
         with:
-          username: tigitlabs
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish image
+        if: ${{ !env.ACT }}
         run: |
-          docker images
-          docker push tigitlabs/nrf-docker:latest
+          docker push ghcr.io/tigitlabs/nrf-docker
+
+  build-and-push-nrf-codespace-image:
+    needs: changes
+    if: ${{ (needs.changes.outputs.nrf-codespace == 'true') || (needs.changes.outputs.nrf-docker-image == 'true') || (needs.changes.outputs.ubuntu-base == 'true') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the nrf-codespace image
+        run: |
+          docker build \
+          --file .devcontainer/nrf-codespace/Dockerfile \
+          --tag ghcr.io/tigitlabs/nrf-codespace \
+          .devcontainer/nrf-codespace/
+
+      - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/nrf-codespace
+
+
+
+
+
+  #     # Create build directory and set permissions
+  #     - name: Create build directory
+  #       run: |
+  #         mkdir -p "$PWD/temp"
+  #         sudo chown -R $NRF_USER_UID:$NRF_USER_GID "$PWD/temp"

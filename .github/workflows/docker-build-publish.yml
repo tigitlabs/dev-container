@@ -35,6 +35,14 @@ jobs:
           nrf-codespace:
             - '.devcontainer/nrf-codespace/**'
 
+  manual-trigger:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    outputs:
+      force-rebuild: true
+    steps:
+      - run: echo "Triggering Force Rebuild"
+
   print-outputs:
     needs: changes
     runs-on: ubuntu-latest

@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ dev ]
   push:
-    branches: [ nrf-codespace ]
+
 env:
   UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
   NRF_USER_UID: 1000
@@ -74,7 +74,7 @@ jobs:
           docker push ghcr.io/tigitlabs/ubuntu-base
 
   build-and-push-nrf-docker-image:
-    needs: changes
+    needs: [ changes, build-and-push-ubuntu-base ]
     if: ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.ubuntu-base == 'true') }}
     runs-on: ubuntu-latest
     permissions:
@@ -144,7 +144,7 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-docker
 
   build-and-push-nrf-codespace-image:
-    needs: changes
+    needs: [ changes, build-and-push-nrf-docker-image ]
     if: ${{ (needs.changes.outputs.nrf-codespace == 'true') || (needs.changes.outputs.nrf-docker-image == 'true') || (needs.changes.outputs.ubuntu-base == 'true') }}
     runs-on: ubuntu-latest
     permissions:

@@ -53,8 +53,8 @@ jobs:
           echo "nrf-codespace changed: ${{ needs.changes.outputs.nrf-codespace }}"
 
   build-and-push-ubuntu-base:
-    needs: changes
-    if: ${{ needs.changes.outputs.ubuntu-base == 'true' }}
+    needs: [ changes, manual-trigger ]
+    if: ${{ (needs.changes.outputs.ubuntu-base == 'true') || (needs.manual-trigger.outputs.force-rebuild == 'true') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

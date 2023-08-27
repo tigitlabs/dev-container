@@ -38,6 +38,10 @@ jobs:
       - name: check artifact size
         run: |
           du -sh $ARTIFACTS_DIR/nrf-docker.tar
+          echo "ls -la"
+          ls -la $ARTIFACTS_DIR/
+          echo "ls /home/runner/artifacts/nrf-docker/"
+          ls -la /home/runner/artifacts/nrf-docker/
 
       - name: Save artifact
         uses: actions/upload-artifact@v3

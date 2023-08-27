@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-     - .devcontainer/nrf-docker/**
-     - .github/workflows/build-nrf-docker-image.yml
+     - '.devcontainer/nrf-docker/**'
+     - '.github/workflows/build-nrf-docker-image.yml'
 
 env:
   ARTIFACTS_DIR: ~/artifacts/nrf-docker

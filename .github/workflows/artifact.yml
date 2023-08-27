@@ -16,6 +16,7 @@ jobs:
       - run: mkdir -p path/to/artifact
 
       - run: echo hello > path/to/artifact/world.txt
+      - run: ls -la path/to/artifact
 
       - uses: actions/upload-artifact@v3
         with:

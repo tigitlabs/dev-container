@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-     - ".devcontainer/nrf-docker/**"
+     - '.devcontainer/nrf-docker/**'
 env:
   ARTIFACTS_DIR: /artifacts/nrf-docker
 

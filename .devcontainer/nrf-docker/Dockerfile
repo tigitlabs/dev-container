@@ -1,15 +1,11 @@
 # Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
 # nrf-docker
-ARG VARIANT=ubuntu-22.04
-# FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
-FROM ghcr.io/tigitlabs/ubuntu-base
 
+FROM ghcr.io/tigitlabs/ubuntu-base
 ARG sdk_nrf_branch=v2.4-branch
 ARG toolchain_version=v2.4.1
 ARG sdk_nrf_commit
-ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-23-0/nrf-command-line-tools-10.23.0"
 ARG arch=amd64
-
 # Exit immediately if any command fails
 RUN set -e
 
@@ -17,7 +13,8 @@ RUN apt-get -y update && export DEBIAN_FRONTEND=noninteractive ; \
     apt-get -y upgrade && \
     apt-get -y install --no-install-recommends \
     python3-pip \
-    python3-setuptools
+    python3-setuptools \
+    clang-format
 
 COPY ./entry.sh /root/entry.sh
 

@@ -35,6 +35,14 @@ jobs:
           nrf-codespace:
             - '.devcontainer/nrf-codespace/**'
 
+  manual-trigger:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    outputs:
+      force-rebuild: true
+    steps:
+      - run: echo "Triggering Force Rebuild"
+
   print-outputs:
     needs: changes
     runs-on: ubuntu-latest
@@ -45,8 +53,6 @@ jobs:
           echo "nrf-codespace changed: ${{ needs.changes.outputs.nrf-codespace }}"
 
   build-and-push-ubuntu-base:
-    needs: changes
-    if: ${{ needs.changes.outputs.ubuntu-base == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -75,8 +81,7 @@ jobs:
           docker push ghcr.io/tigitlabs/ubuntu-base
 
   build-and-push-nrf-docker-image:
-    needs: [ changes, build-and-push-ubuntu-base ]
-    if: ${{ (needs.changes.outputs.nrf-docker-image == 'true')  || (needs.changes.outputs.ubuntu-base == 'true') }}
+    needs: [ build-and-push-ubuntu-base ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -114,14 +119,6 @@ jobs:
           ghcr.io/tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
 
-      - name: Ensure nrfjprog works
-        run: |
-          docker run \
-          --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:latest \
-          nrfjprog -v
-
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
@@ -145,8 +142,7 @@ jobs:
           docker push ghcr.io/tigitlabs/nrf-docker
 
   build-and-push-nrf-codespace-image:
-    needs: [ changes, build-and-push-nrf-docker-image ]
-    if: ${{ (needs.changes.outputs.nrf-codespace == 'true') || (needs.changes.outputs.nrf-docker-image == 'true') || (needs.changes.outputs.ubuntu-base == 'true') }}
+    needs: [ build-and-push-nrf-docker-image ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -159,6 +155,14 @@ jobs:
           --file .devcontainer/nrf-codespace/Dockerfile \
           --tag ghcr.io/tigitlabs/nrf-codespace \
           .devcontainer/nrf-codespace/
+
+      - name: Ensure nrfjprog works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-codespace:latest \
+          nrfjprog -v
 
       - name: Login to GitHub Container Registry
         if: ${{ !env.ACT }}

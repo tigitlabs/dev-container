@@ -8,7 +8,7 @@ on:
     paths:
      - ".devcontainer/nrf-docker/**"
 env:
-  ARTIFACTS_DIR: ~/artifacts/nrf-docker
+  ARTIFACTS_DIR: /artifacts/nrf-docker
 
 jobs:
 
@@ -18,20 +18,30 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Create artifact directory
-        run: mkdir -p $ARTIFACTS_DIR
+        run: |
+          mkdir -p $ARTIFACTS_DIR
+          # create file with timestamp as the name
+          touch $ARTIFACTS_DIR/$(date +%s).txt
+
+
       - name: Build the nrf-docker image and save it as a tarball
         run: |
+          # echo "woefneofne" > "${ARTIFACTS_DIR}/nrf-docker.tar"
           docker build \
           --file .devcontainer/nrf-docker/Dockerfile \
           --tag ghcr.io/tigitlabs/nrf-docker \
           --output type=tar,dest=${ARTIFACTS_DIR}/nrf-docker.tar \
           .devcontainer/nrf-docker/
 
+      - name: check artifact size
+        run: |
+          du -sh $ARTIFACTS_DIR/nrf-docker.tar
+
       - name: Save artifact
         uses: actions/upload-artifact@v3
         with:
           name: nrf-docker
-          path: $ARTIFACTS_DIR/nrf-docker.tar
+          path: ${{ env.ARTIFACTS_DIR }}/nrf-docker.tar
 
   run-container-tests:
     runs-on: ubuntu-latest
@@ -43,8 +53,17 @@ jobs:
         with:
           name: nrf-docker
 
+      - name: check artifact size
+        run: |
+          echo "ls -la"
+          ls -la
+          echo "pwd"
+          echo "cat the tar"
+          cat nrf-docker.tar
+          pwd
+
       - name: Load the nrf-docker image
-        run: docker load --input ${ARTIFACTS_DIR}/nrf-docker.tar
+        run: docker load --input nrf-docker.tar
 
       - name: Run the nrf-docker container
         run: docker run --rm nrf-docker west --version

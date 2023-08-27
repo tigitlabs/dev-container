@@ -26,7 +26,6 @@ jobs:
           touch $ARTIFACTS_DIR/$(date +%s).txt
           ls -la $ARTIFACTS_DIR
 
-
       - name: Build the nrf-docker image and save it as a tarball
         run: |
           echo "woefneofne" > "${ARTIFACTS_DIR}/nrf-docker.tar"
@@ -35,6 +34,13 @@ jobs:
           # --tag ghcr.io/tigitlabs/nrf-docker \
           # --output type=tar,dest=${ARTIFACTS_DIR}/nrf-docker.tar \
           # .devcontainer/nrf-docker/
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nrf-docker
+          path: ${{ env.ARTIFACTS_DIR }}/nrf-docker.tar
+          if-no-files-found: error
 
       - name: check artifact size
         run: |
@@ -45,13 +51,6 @@ jobs:
           cd $ARTIFACTS_DIR/
           pwd
           ls -la /home/runner/artifacts/nrf-docker/
-
-      - name: Save artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: nrf-docker
-          path: ${{ env.ARTIFACTS_DIR }}/nrf-docker.tar
-          if-no-files-found: error
 
   run-container-tests:
     runs-on: ubuntu-latest

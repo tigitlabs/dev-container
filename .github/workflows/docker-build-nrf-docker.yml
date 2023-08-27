@@ -23,11 +23,14 @@ jobs:
         run: |
           mkdir nrf-docker-artifacts
 
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
       - name: Build the nrf-docker image and save it as a tarball
         run: |
           docker build \
           --file .devcontainer/nrf-docker/Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-docker \
+          --tag tigitlabs/nrf-docker:$(date +%s) \
           --output type=tar,dest=nrf-docker-artifacts/nrf-docker.tar \
           .devcontainer/nrf-docker/
 

@@ -3,7 +3,7 @@
 name: "Build nrf-docker image"
 
 on:
-  workflow_dispatch:
+  # workflow_dispatch:
   push:
     paths:
      - '.devcontainer/nrf-docker/**'

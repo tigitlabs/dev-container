@@ -5,8 +5,8 @@ name: "Build nrf-docker image"
 on:
   workflow_dispatch:
   push:
-    #paths:
-     # - ".devcontainer/nrf-docker/**"
+    paths:
+     - ".devcontainer/nrf-docker/**"
 env:
   ARTIFACTS_DIR: ~/artifacts/nrf-docker
 

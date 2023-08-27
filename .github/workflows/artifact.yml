@@ -13,10 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: mkdir -p path/to/artifact
+      - name: Create Artifact Directory
+        run: mkdir -p path/to/artifact
 
-      - run: echo hello > path/to/artifact/world.txt
-      - run: ls -la path/to/artifact
+      - name: Create Artifact File
+        run: echo hello > path/to/artifact/world.txt
+
+      - name: List Artifact Directory
+        run: ls -la path/to/artifact
 
       - uses: actions/upload-artifact@v3
         with:
@@ -31,4 +35,4 @@ jobs:
 
       - uses: actions/download-artifact@v2
 
-      - run: ls -la
+      - run: ls -la ./my-artifact

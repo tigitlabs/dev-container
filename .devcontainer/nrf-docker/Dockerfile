@@ -1,7 +1,9 @@
 # Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
 # nrf-docker
+
 ARG BASE_IMAGE=ghcr.io/tigitlabs/ubuntu-base:latest
 FROM ${BASE_IMAGE}
+
 ARG sdk_nrf_branch=v2.4-branch
 ARG toolchain_version=v2.4.1
 ARG sdk_nrf_commit

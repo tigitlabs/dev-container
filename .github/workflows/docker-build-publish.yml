@@ -118,7 +118,6 @@ jobs:
           ghcr.io/tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
 
-
   build-and-push-nrf-docker-ci-image:
     needs: [ build-and-push-nrf-docker-image ]
     runs-on: ubuntu-latest

@@ -22,18 +22,14 @@ jobs:
       - name: Create artifact directory
         run: |
           mkdir nrf-docker-artifacts
-          # create file with timestamp as the name
-          touch nrf-docker-artifacts/$(date +%s).txt
-          ls -la nrf-docker-artifacts
 
       - name: Build the nrf-docker image and save it as a tarball
         run: |
-          echo "woefneofne" > "nrf-docker-artifacts/nrf-docker.tar"
-          # docker build \
-          # --file .devcontainer/nrf-docker/Dockerfile \
-          # --tag ghcr.io/tigitlabs/nrf-docker \
-          # --output type=tar,dest=nrf-docker-artifacts/nrf-docker.tar \
-          # .devcontainer/nrf-docker/
+          docker build \
+          --file .devcontainer/nrf-docker/Dockerfile \
+          --tag ghcr.io/tigitlabs/nrf-docker \
+          --output type=tar,dest=nrf-docker-artifacts/nrf-docker.tar \
+          .devcontainer/nrf-docker/
 
       - name: Save artifact
         uses: actions/upload-artifact@v3
@@ -45,12 +41,7 @@ jobs:
       - name: check artifact size
         run: |
           du -sh nrf-docker-artifacts/nrf-docker.tar
-          echo "ls -la"
-          ls -la nrf-docker-artifacts
-          echo "ls /home/runner/artifacts/nrf-docker/"
-          cd nrf-docker-artifacts
-          pwd
-          ls -la /home/runner/artifacts/nrf-docker/
+
 
   run-container-tests:
     runs-on: ubuntu-latest

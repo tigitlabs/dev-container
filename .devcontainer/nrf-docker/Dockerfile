@@ -57,30 +57,5 @@ RUN <<EOT
     west zephyr-export
 EOT
 
-# ENV ZEPHYR_BASE=/workspace/zephyr \
-#     ZEPHYR_TOOLCHAIN_VARIANT=zephyr \
-#     ZEPHYR_SDK_INSTALL_DIR=/home/vscode/ncs/toolchains/1f9b40e71a/opt/zephyr-sdk \
-#     GIT_EXEC_PATH=/home/vscode/ncs/toolchains/1f9b40e71a/usr/local/libexec/git-core \
-#     GIT_TEMPLATE_DIR=/home/vscode/ncs/toolchains/1f9b40e71a/usr/local/share/git-core/templates \
-#     NRFUTIL_LAUNCHER_VERSION=1.0.0 \
-#     NRFUTIL_TOOLCHAIN_MANAGER_CURRENT_TOOLCHAIN=${toolchain_version} \
-#     NRFUTIL_EXEC_PATH=/home/vscode/.nrfutil/bin/nrfutil \
-#     PYTHONPATH=/home/vscode/ncs/toolchains/1f9b40e71a/usr/local/lib/python3.8/site-packages \
-#     PYTHONHOME=/home/vscode/ncs/toolchains/1f9b40e71a/usr/local
-
-# ENV LD_LIBRARY_PATH="/home/vscode/ncs/toolchains/1f9b40e71a/usr/lib:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/usr/lib/x86_64-linux-gnu:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/usr/local/lib:\
-# /home/vscode/.nrfutil/lib/nrfutil-toolchain-manager:${LD_LIBRARY_PATH}}"
-
-# ENV PATH="/home/vscode/ncs/toolchains/1f9b40e71a/usr/bin:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/usr/bin:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/usr/local/bin:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/opt/bin:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/opt/nanopb/generator-bin:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/opt/zephyr-sdk/aarch64-zephyr-elf/bin:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/opt/zephyr-sdk/x86_64-zephyr-elf/bin:\
-# /home/vscode/ncs/toolchains/1f9b40e71a/opt/zephyr-sdk/arm-zephyr-eabi/bin:\
-# /workspace/zephyr/scripts:${PATH}"
-
-#ENTRYPOINT [ "source ./workspace/zephyr/zephyr" ]
+# This line is only needed for the CI image
+# ENTRYPOINT [ nrfutil, toolchain-manager, launch, /bin/bash, --, -c ]

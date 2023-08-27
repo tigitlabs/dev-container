@@ -81,5 +81,5 @@ test-nrf-docker-ci:		## ✅Test nrf-docker-ci
 	echo "🧪 Check if west is installed"
 	docker run --rm tigitlabs-nrf-docker-ci:local west --version
 	echo "🧪 Testing the firmware build"
-	docker run -it --rm --name nrf-docker-ci-dev --workdir /workspace/nrf/applications/asset_tracker_v2  tigitlabs-nrf-docker-ci:local \
+	docker run --rm --name nrf-docker-ci-dev --workdir /workspace/nrf/applications/asset_tracker_v2  tigitlabs-nrf-docker-ci:local \
 	west build -b nrf9160dk_nrf9160ns --build-dir /workspace/nrf/applications/asset_tracker_v2/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"

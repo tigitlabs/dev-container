@@ -42,6 +42,8 @@ jobs:
           echo "ls -la"
           ls -la $ARTIFACTS_DIR/
           echo "ls /home/runner/artifacts/nrf-docker/"
+          cd $ARTIFACTS_DIR/
+          pwd
           ls -la /home/runner/artifacts/nrf-docker/
 
       - name: Save artifact

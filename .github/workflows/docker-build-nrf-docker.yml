@@ -24,6 +24,7 @@ jobs:
           mkdir -p $ARTIFACTS_DIR
           # create file with timestamp as the name
           touch $ARTIFACTS_DIR/$(date +%s).txt
+          ls -la $ARTIFACTS_DIR
 
 
       - name: Build the nrf-docker image and save it as a tarball

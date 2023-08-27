@@ -1,7 +1,7 @@
 # Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
 # nrf-docker
-
-FROM ghcr.io/tigitlabs/ubuntu-base
+ARG BASE_IMAGE=ghcr.io/tigitlabs/ubuntu-base:latest
+FROM ${BASE_IMAGE}
 ARG sdk_nrf_branch=v2.4-branch
 ARG toolchain_version=v2.4.1
 ARG sdk_nrf_commit
@@ -56,6 +56,3 @@ RUN <<EOT
     west update --narrow -o=--depth=1
     west zephyr-export
 EOT
-
-# This line is only needed for the CI image
-# ENTRYPOINT [ nrfutil, toolchain-manager, launch, /bin/bash, --, -c ]

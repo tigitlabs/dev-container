@@ -21,6 +21,7 @@ jobs:
         with:
           name: my-artifact
           path: path/to/artifact/world.txt
+          retention-days: 2
 
   Download_Artifact:
     runs-on: ubuntu-latest
@@ -28,8 +29,5 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: actions/download-artifact@v2
-        with:
-          name: my-artifact
-          path: path/to/artifact
 
-      - run: cat path/to/artifact/world.txt
+      - run: ls -la

@@ -8,7 +8,7 @@ on:
     paths:
      - '.devcontainer/nrf-docker/**'
 env:
-  ARTIFACTS_DIR: /artifacts/nrf-docker
+  ARTIFACTS_DIR: ~/artifacts/nrf-docker
 
 jobs:
 

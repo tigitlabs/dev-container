@@ -21,34 +21,34 @@ jobs:
 
       - name: Create artifact directory
         run: |
-          mkdir -p $ARTIFACTS_DIR
+          mkdir nrf-docker-artifacts
           # create file with timestamp as the name
-          touch $ARTIFACTS_DIR/$(date +%s).txt
-          ls -la $ARTIFACTS_DIR
+          touch nrf-docker-artifacts/$(date +%s).txt
+          ls -la nrf-docker-artifacts
 
       - name: Build the nrf-docker image and save it as a tarball
         run: |
-          echo "woefneofne" > "${ARTIFACTS_DIR}/nrf-docker.tar"
+          echo "woefneofne" > "nrf-docker-artifacts/nrf-docker.tar"
           # docker build \
           # --file .devcontainer/nrf-docker/Dockerfile \
           # --tag ghcr.io/tigitlabs/nrf-docker \
-          # --output type=tar,dest=${ARTIFACTS_DIR}/nrf-docker.tar \
+          # --output type=tar,dest=nrf-docker-artifacts/nrf-docker.tar \
           # .devcontainer/nrf-docker/
 
       - name: Save artifact
         uses: actions/upload-artifact@v3
         with:
           name: nrf-docker
-          path: ${{ env.ARTIFACTS_DIR }}/nrf-docker.tar
+          path: nrf-docker-artifacts/nrf-docker.tar
           if-no-files-found: error
 
       - name: check artifact size
         run: |
-          du -sh $ARTIFACTS_DIR/nrf-docker.tar
+          du -sh nrf-docker-artifacts/nrf-docker.tar
           echo "ls -la"
-          ls -la $ARTIFACTS_DIR/
+          ls -la nrf-docker-artifacts
           echo "ls /home/runner/artifacts/nrf-docker/"
-          cd $ARTIFACTS_DIR/
+          cd nrf-docker-artifacts
           pwd
           ls -la /home/runner/artifacts/nrf-docker/
 

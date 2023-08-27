@@ -16,57 +16,29 @@ jobs:
 
   build-nrf-docker-image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v3
 
-      - name: Create artifact directory
-        run: |
-          mkdir nrf-docker-artifacts
-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-
-      - name: Build the nrf-docker image and save it as a tarball
-        run: |
-          docker build \
-          --file .devcontainer/nrf-docker/Dockerfile \
-          --tag tigitlabs/nrf-docker:$(date +%s) \
-          --output type=tar,dest=nrf-docker-artifacts/nrf-docker.tar \
-          .devcontainer/nrf-docker/
-
-      - name: Save artifact
-        uses: actions/upload-artifact@v3
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          name: nrf-docker
-          path: nrf-docker-artifacts/nrf-docker.tar
-          if-no-files-found: error
+          # list of Docker images to use as base name for tags
+          images: |
+            ghcr.io/tigitlabs/nrf-docker
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
 
-      - name: check artifact size
+      - name: Print Docker tags
         run: |
-          du -sh nrf-docker-artifacts/nrf-docker.tar
-
-
-  run-container-tests:
-    runs-on: ubuntu-latest
-    needs: build-nrf-docker-image
-    steps:
-      - uses: actions/checkout@v3
-      - name: Load the nrf-docker artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: nrf-docker
-
-      - name: check artifact size
-        run: |
-          echo "ls -la"
-          ls -la
-          echo "pwd"
-          echo "cat the tar"
-          cat nrf-docker.tar
-          pwd
-
-      - name: Load the nrf-docker image
-        run: docker load --input nrf-docker.tar
-
-      - name: Run the nrf-docker container
-        run: docker run --rm nrf-docker west --version
+          echo "Docker tags: ${{ steps.meta.outputs.tags }}"

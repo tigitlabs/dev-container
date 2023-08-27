@@ -1,0 +1,43 @@
+---
+
+name: "Makefile CI"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+
+  build-and-test-all-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Make sure the Makefile can be used
+        run: make
+
+      - name: Build the ubuntu-base image
+        run: make docker-build-ubuntu-base
+
+      - name: Build the nrf-docker image
+        run: make docker-build-nrf-docker
+
+      - name: Build the nrf-docker-ci image
+        run: make docker-build-nrf-docker-ci
+
+      - name: Build the nrf-codespace image
+        run: make docker-build-nrf-codespace
+
+      # All images should be cached now, this should be fast
+      - name: Build all the images
+        run: make docker-build-all
+
+      - name: Test nrf-docker image
+        run: make test-nrf-docker
+
+      - name: Test nrf-docker-ci image
+        run: make test-nrf-docker-ci

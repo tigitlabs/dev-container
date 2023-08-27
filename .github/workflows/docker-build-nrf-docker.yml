@@ -1,0 +1,44 @@
+---
+
+name: "Build nrf-docker image"
+
+on:
+  # workflow_dispatch:
+  push:
+    paths:
+     - '.devcontainer/nrf-docker/**'
+     - '.github/workflows/docker-build-nrf-docker.yml'
+ 
+env:
+  ARTIFACTS_DIR: ~/artifacts/nrf-docker
+
+jobs:
+
+  build-nrf-docker-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ghcr.io/tigitlabs/nrf-docker
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
+      - name: Print Docker tags
+        run: |
+          echo "Docker tags: ${{ steps.meta.outputs.tags }}"

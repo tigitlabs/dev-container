@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [ dev ]
-  push:
 
 env:
   UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
@@ -119,6 +118,45 @@ jobs:
           ghcr.io/tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
 
+  build-and-push-nrf-docker-ci-image:
+    needs: [ build-and-push-nrf-docker-image ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the nrf-docker image
+        run: |
+          docker build \
+          --file .devcontainer/nrf-docker/ci.Dockerfile \
+          --tag ghcr.io/tigitlabs/nrf-docker-ci \
+          .devcontainer/nrf-docker/
+
+      - name: Ensure clang-format works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          clang-format --version
+
+      - name: Ensure west works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          west --version
+
+      - name: Ensure nrfutil installation works
+        run: |
+          docker run \
+          --rm \
+          --user $NRF_USER \
+          ghcr.io/tigitlabs/nrf-docker:latest \
+          nrfutil toolchain-manager list
+
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
@@ -139,7 +177,7 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/nrf-docker
+          docker push ghcr.io/tigitlabs/nrf-docker-ci
 
   build-and-push-nrf-codespace-image:
     needs: [ build-and-push-nrf-docker-image ]

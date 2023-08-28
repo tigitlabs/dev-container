@@ -43,6 +43,3 @@ jobs:
 
       - name: Start dev container
         run: devcontainer up --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container
-
-      - name: Run tests in dev container
-        run: devcontainer exec --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container west --version

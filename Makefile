@@ -25,8 +25,8 @@ github-action-list:	## ✅List Workflows
 github-action-run:	## ✅Run Workflows
 	gh act --job build-and-test-all-images --secret-file ~/.ssh/act-secrets
 
-.PHONY: github-action-nrf-devcontainer
-github-action-nrf-devcontainer:	## ✅Run Workflows for nrf-devcontainer
+.PHONY: github-action-workflow-devcontainer-ci
+github-action-workflow-devcontainer-ci:	## ✅Run Workflows for devcontainers
 	gh act  --workflows .github/workflows/nrf-devcontainer.yml --secret-file ~/.ssh/act-secrets
 
 ##@ 🐋 Docker Build

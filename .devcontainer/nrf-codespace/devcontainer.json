@@ -2,7 +2,9 @@
 	"name": "nrf vscode",
 	
 	"image": "ghcr.io/tigitlabs/nrf-docker:latest",
-
+	"features": {
+		"ghcr.io/devcontainers/features/sshd:1": {}
+	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 

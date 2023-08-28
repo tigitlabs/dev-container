@@ -18,6 +18,11 @@ jobs:
       - name: Install devcontainer CLI
         run: npm install -g @devcontainers/cli
 
+      - name: ls home directory
+        run: |
+          cd ~
+          pwd
+          ls -la
       - name: Start dev container
         run: devcontainer up --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace
 

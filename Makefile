@@ -100,7 +100,7 @@ test-nrf-codespace:		## ✅Test-nrf-codespace
 	echo "🧪 Checking if nrfutil is installed and working"
 	docker run --rm tigitlabs-nrf-docker:local nrfutil --version
 	echo "🧪 Checking if nrfjprog is installed and working"
-	docker run --rm tigitlabs-nrf-docker:local nrfjprog --version
+	docker run --rm tigitlabs-nrf-codespace:local nrfjprog --version
 
 .PHONY: test-all
 test-all:		## ✅Test all

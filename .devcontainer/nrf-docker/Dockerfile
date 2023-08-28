@@ -17,7 +17,8 @@ RUN apt-get -y update && export DEBIAN_FRONTEND=noninteractive ; \
     python3-pip \
     python3-setuptools \
     clang-format \
-    cmake
+    cmake \
+    make
 
 COPY ./entry.sh /root/entry.sh
 

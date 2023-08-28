@@ -1,0 +1,41 @@
+---
+
+name: "devcontainer CI"
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  nrf-devcontainer-ci:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
+      - name: Install devcontainer CLI
+        run: npm install -g @devcontainers/cli
+
+      - name: Make sure .ssh dir exists for mount
+        run: mkdir -p ~/.ssh
+
+      - name: Start dev container
+        run: devcontainer up --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace
+
+      - name: Run tests in dev container
+        run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace west --version
+
+  main-devcontainer-ci:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
+      - name: Install devcontainer CLI
+        run: npm install -g @devcontainers/cli
+
+      - name: Start dev container
+        run: devcontainer up --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container

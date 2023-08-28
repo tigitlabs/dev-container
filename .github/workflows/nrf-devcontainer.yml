@@ -3,9 +3,13 @@
 name: "devcontainer CI"
 
 on:
+  workflow_run:
+    workflows: ["Docker CI"]
+    types:
+      - completed
   workflow_dispatch:
   pull_request:
-  push:
+    branches: [ dev ]
 
 jobs:
   nrf-devcontainer-ci:
@@ -39,3 +43,6 @@ jobs:
 
       - name: Start dev container
         run: devcontainer up --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container
+
+      - name: Run tests in dev container
+        run: devcontainer exec --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container west --version

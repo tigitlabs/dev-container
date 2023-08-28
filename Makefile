@@ -44,6 +44,7 @@ docker-build-nrf-docker:	## 🏗️Build nrf-docker image
 	docker buildx build \
 	--tag tigitlabs-nrf-docker:local \
 	--build-arg BASE_IMAGE="tigtilabs-ubuntu-base:local" \
+	--progress plain \
 	--file .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker
 
 .PHONY: docker-build-nrf-docker-ci
@@ -52,6 +53,7 @@ docker-build-nrf-docker-ci:	## 🏗️Build nrf-docker-ci image
 	docker buildx build \
 	--tag tigitlabs-nrf-docker-ci:local \
 	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
+	--progress plain \
 	--file .devcontainer/nrf-docker/ci.Dockerfile .devcontainer/nrf-docker
 
 .PHONY: docker-build-nrf-codespace
@@ -60,6 +62,7 @@ docker-build-nrf-codespace:	## 🏗️Build nrf-codespace image
 	docker buildx build \
 	--tag tigitlabs-nrf-codespace:local \
 	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
+	--progress plain \
 	--file .devcontainer/nrf-codespace/Dockerfile .devcontainer/nrf-codespace
 
 .PHONY: docker-build-all

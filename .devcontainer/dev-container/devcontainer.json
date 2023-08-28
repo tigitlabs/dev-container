@@ -6,7 +6,6 @@
     "context": "."
   },
   "name": "Dev Container",
-  "workspaceFolder": "/workspace",
 
   "features": {
     "ghcr.io/devcontainers/features/sshd:1": {

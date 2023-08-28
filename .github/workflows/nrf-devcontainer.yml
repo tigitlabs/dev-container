@@ -8,8 +8,6 @@ on:
     types:
       - completed
   workflow_dispatch:
-  pull_request:
-    branches: [ dev ]
 
 jobs:
   nrf-devcontainer-ci:

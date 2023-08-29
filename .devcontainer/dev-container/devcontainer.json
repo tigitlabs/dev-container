@@ -53,9 +53,9 @@
         "mhutchie.git-graph",
         "DavidAnson.vscode-markdownlint",
         "ms-vscode-remote.remote-containers"
-  ]
+        ]
     }
   },
-  "remoteUser": "vscode",
-  "onCreateCommand": "npm install -g @devcontainers/cli"
+  "onCreateCommand": "npm install -g @devcontainers/cli",
+  "remoteUser": "vscode"
 }

@@ -171,14 +171,14 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/nrf-codespace/Dockerfile \
-          --tag /tigitlabs/nrf-codespace \
+          --tag tigitlabs/nrf-codespace \
           .devcontainer/nrf-codespace/
 
       - name: Ensure nrfjprog works
         run: |
           docker run \
           --rm \
-          /tigitlabs/nrf-codespace \
+          tigitlabs/nrf-codespace \
           nrfjprog -v
 
       - name: Login to GitHub Container Registry

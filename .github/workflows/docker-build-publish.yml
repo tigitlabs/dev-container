@@ -25,7 +25,8 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/ubuntu-base/Dockerfile \
-          --tag ghcr.io/tigitlabs/ubuntu-base \
+          --tag ghcr.io/tigitlabs/ubuntu-base:latest \
+          --tag ghcr.io/tigitlabs/ubuntu-base:dev \
           .devcontainer/ubuntu-base/
 
       - name: Login to GitHub Container Registry
@@ -39,7 +40,7 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/ubuntu-base
+          docker push ghcr.io/tigitlabs/ubuntu-base --all-tags
 
   build-and-push-nrf-docker-image:
     needs: [ build-and-push-ubuntu-base ]
@@ -53,7 +54,8 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/nrf-docker/Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-docker \
+          --tag ghcr.io/tigitlabs/nrf-docker:latest \
+          --tag ghcr.io/tigitlabs/nrf-docker:dev \
           .devcontainer/nrf-docker/
 
       - name: Ensure clang-format works
@@ -80,6 +82,19 @@ jobs:
           ghcr.io/tigitlabs/nrf-docker:latest \
           nrfutil toolchain-manager list
 
+      - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/nrf-docker  --all-tags
+
   build-and-push-nrf-docker-ci-image:
     needs: [ build-and-push-nrf-docker-image ]
     runs-on: ubuntu-latest
@@ -92,7 +107,8 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/nrf-docker/ci.Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-docker-ci \
+          --tag ghcr.io/tigitlabs/nrf-docker-ci:latest \
+          --tag ghcr.io/tigitlabs/nrf-docker-ci:dev \
           .devcontainer/nrf-docker/
 
       - name: Ensure clang-format works
@@ -139,7 +155,20 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/nrf-docker-ci
+          docker push ghcr.io/tigitlabs/nrf-docker-ci --all-tags
+
+      - name: Login to GitHub Container Registry
+        if: ${{ !env.ACT }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/nrf-docker-ci --all-tags
 
   build-and-push-nrf-codespace-image:
     needs: [ build-and-push-nrf-docker-image ]
@@ -153,7 +182,8 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/nrf-codespace/Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-codespace \
+          --tag ghcr.io/tigitlabs/nrf-codespace:latest \
+          --tag ghcr.io/tigitlabs/nrf-codespace:dev \
           .devcontainer/nrf-codespace/
 
       - name: Ensure nrfjprog works
@@ -175,4 +205,4 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/nrf-codespace
+          docker push ghcr.io/tigitlabs/nrf-codespace --all-tags

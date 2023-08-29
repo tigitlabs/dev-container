@@ -8,6 +8,7 @@ jobs:
       - checkout
       - setup_remote_docker
       # Install make
+      - run: apk add --no-cache bash
       - run: apk add --no-cache make
       - run: make test-all-ci
 

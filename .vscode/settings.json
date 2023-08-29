@@ -1,7 +1,7 @@
 {
   "workbench.colorCustomizations": {
     "activityBar.background": "#372257",
-    "titleBar.activeBackground": "#9234eb",
+    "titleBar.activeBackground": "#5634eb",
     "titleBar.activeForeground": "#FBF9FD"
   },
   "nrf-connect.topdir": "${nrf-connect.sdk:2.4.1}",

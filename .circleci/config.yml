@@ -6,7 +6,7 @@ jobs:
       image: ubuntu-2204:2023.07.2
     steps:
       - checkout
-      - - run: sudo apt-get update && sudo apt-get install -y make
+      - run: sudo apt-get update && sudo apt-get install -y make
       - run: make test-all-ci
 
 # Orchestrate our job run sequence

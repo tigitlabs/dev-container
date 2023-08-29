@@ -6,12 +6,7 @@ jobs:
       image: ubuntu-2204:current
     steps:
       - checkout
-      - run: |
-          docker buildx build \
-          --file .devcontainer/ubuntu-base/Dockerfile \
-          --tag ghcr.io/tigitlabs/ubuntu-base:latest \
-          --tag ghcr.io/tigitlabs/ubuntu-base:dev \
-          .devcontainer/ubuntu-base/
+      - run: make docker-build-all
 # Orchestrate our job run sequence
 workflows:
   build_and_test:

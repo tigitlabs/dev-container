@@ -40,8 +40,9 @@ jobs:
         run: |
           docker tag tigitlabs-ubuntu-base ghcr.io/tigitlabs/ubuntu-base:dev
           docker tag tigitlabs-ubuntu-base ghcr.io/tigitlabs/ubuntu-base:latest
-          docker rmi tigitlabs/ubuntu-base
-          docker push tigitlabs/ubuntu-base --all-tags
+          docker tag tigitlabs-ubuntu-base ghcr.io/tigitlabs/ubuntu-base
+          docker rm tigitlabs-ubuntu-base
+          docker push ghcr.io/tigitlabs/ubuntu-base --all-tags
 
   build-and-push-nrf-docker-image:
     needs: [ build-and-push-ubuntu-base ]
@@ -55,31 +56,28 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/nrf-docker/Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-docker:ci \
+          --tag tigitlabs/nrf-docker \
           .devcontainer/nrf-docker/
 
       - name: Ensure clang-format works
         run: |
           docker run \
           --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:ci \
+          tigitlabs/nrf-docker \
           clang-format --version
 
       - name: Ensure west works
         run: |
           docker run \
           --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:ci \
+          tigitlabs/nrf-docker \
           west --version
 
       - name: Ensure nrfutil installation works
         run: |
           docker run \
           --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:ci \
+          tigitlabs/nrf-docker \
           nrfutil toolchain-manager list
 
       - name: Login to GitHub Container Registry
@@ -93,9 +91,11 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/nrf-docker:ci \
-          --tag ghcr.io/tigitlabs/nrf-docker:latest \
-          --tag ghcr.io/tigitlabs/nrf-docker:dev
+          docker tag tigitlabs/nrf-docker ghcr.io/tigitlabs/nrf-docker:dev
+          docker tag tigitlabs/nrf-docker ghcr.io/tigitlabs/nrf-docker:latest
+          docker tag tigitlabs/nrf-docker ghcr.io/tigitlabs/nrf-docker
+          docker rmi tigitlabs/nrf-docker
+          docker push ghcr.io/tigitlabs/nrf-docker --all-tags
 
   build-and-push-nrf-docker-ci-image:
     needs: [ build-and-push-nrf-docker-image ]
@@ -109,40 +109,36 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/nrf-docker/ci.Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-docker-ci:ci \
+          --tag tigitlabs/nrf-docker-ci \
           .devcontainer/nrf-docker/
 
       - name: Ensure clang-format works
         run: |
           docker run \
           --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:ci \
+          tigitlabs/nrf-docker \
           clang-format --version
 
       - name: Ensure west works
         run: |
           docker run \
           --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:ci \
+          tigitlabs/nrf-docker \
           west --version
 
       - name: Ensure nrfutil installation works
         run: |
           docker run \
           --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-docker:ci \
+          tigitlabs/nrf-docker \
           nrfutil toolchain-manager list
 
       - name: Build asset_tracker_v2 application
         run: | 
           docker run \
           --rm \
-          --user $NRF_USER \
           --workdir /workspace/nrf/applications/asset_tracker_v2 \
-          ghcr.io/tigitlabs/nrf-docker-ci:ci \
+          tigitlabs/nrf-docker-ci \
           west build -b nrf9160dk_nrf9160ns --build-dir /workspace/nrf/applications/asset_tracker_v2/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
 
       - name: Login to GitHub Container Registry
@@ -156,24 +152,12 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/nrf-docker-ci:ci \
-          --tag ghcr.io/tigitlabs/nrf-docker-ci:latest \
-          --tag ghcr.io/tigitlabs/nrf-docker-ci:dev
+          docker tag tigitlabs/nrf-docker-ci ghcr.io/tigitlabs/nrf-docker-ci:dev
+          docker tag tigitlabs/nrf-docker-ci ghcr.io/tigitlabs/nrf-docker-ci:latest
+          docker tag tigitlabs/nrf-docker-ci ghcr.io/tigitlabs/nrf-docker-ci
+          docker rmi tigitlabs/nrf-docker-ci
+          docker push ghcr.io/tigitlabs/nrf-docker-ci --all-tags
 
-      - name: Login to GitHub Container Registry
-        if: ${{ !env.ACT }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Publish image
-        if: ${{ !env.ACT }}
-        run: |
-          docker push ghcr.io/tigitlabs/nrf-docker-ci \
-          --tag ghcr.io/tigitlabs/nrf-docker-ci:latest \
-          --tag ghcr.io/tigitlabs/nrf-docker-ci:dev
 
   build-and-push-nrf-codespace-image:
     needs: [ build-and-push-nrf-docker-image ]
@@ -187,15 +171,14 @@ jobs:
         run: |
           docker build \
           --file .devcontainer/nrf-codespace/Dockerfile \
-          --tag ghcr.io/tigitlabs/nrf-codespace:ci \
+          --tag /tigitlabs/nrf-codespace \
           .devcontainer/nrf-codespace/
 
       - name: Ensure nrfjprog works
         run: |
           docker run \
           --rm \
-          --user $NRF_USER \
-          ghcr.io/tigitlabs/nrf-codespace:ci \
+          /tigitlabs/nrf-codespace \
           nrfjprog -v
 
       - name: Login to GitHub Container Registry
@@ -209,6 +192,8 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/nrf-codespace:ci \
-          --tag ghcr.io/tigitlabs/nrf-codespace:latest \
-          --tag ghcr.io/tigitlabs/nrf-codespace:dev
+          docker tag tigitlabs/nrf-codespace ghcr.io/tigitlabs/nrf-codespace:dev
+          docker tag tigitlabs/nrf-codespace ghcr.io/tigitlabs/nrf-codespace:latest
+          docker tag tigitlabs/nrf-codespace ghcr.io/tigitlabs/nrf-codespace
+          docker rmi tigitlabs/nrf-codespace
+          docker push ghcr.io/tigitlabs/nrf-codespace --all-tags

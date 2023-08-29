@@ -116,21 +116,21 @@ jobs:
         run: |
           docker run \
           --rm \
-          tigitlabs/nrf-docker \
+          tigitlabs/nrf-docker-ci \
           clang-format --version
 
       - name: Ensure west works
         run: |
           docker run \
           --rm \
-          tigitlabs/nrf-docker \
+          tigitlabs/nrf-docker-ci \
           west --version
 
       - name: Ensure nrfutil installation works
         run: |
           docker run \
           --rm \
-          tigitlabs/nrf-docker \
+          tigitlabs/nrf-docker-ci \
           nrfutil toolchain-manager list
 
       - name: Build asset_tracker_v2 application

@@ -1,7 +1,7 @@
 {
   "name": "nrf vscode",
   
-  "image": "ghcr.io/tigitlabs/nrf-codespace:latest",
+  "image": "ghcr.io/tigitlabs/nrf-codespace:dev",
   "features": {
     "ghcr.io/devcontainers/features/sshd:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": { "version": "latest"}

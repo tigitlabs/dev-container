@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          docker build \
+          docker buildx build \
           --file .devcontainer/ubuntu-base/Dockerfile \
           --tag ghcr.io/tigitlabs/ubuntu-base:latest \
           --tag ghcr.io/tigitlabs/ubuntu-base:dev \

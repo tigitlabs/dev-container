@@ -1,10 +1,10 @@
 ---
 
-name: "devcontainer CI"
+name: "Devcontainer-CI"
 
 on:
   workflow_run:
-    workflows: ["Docker CI"]
+    workflows: ["Docker-Build-Publish"]
     types:
       - completed
   workflow_dispatch:

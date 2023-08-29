@@ -1,56 +1,17 @@
 ---
 
-name: "Docker CI"
+name: "Docker-Build-Publish"
 
 on:
   workflow_run:
-    workflows: ["Makefile CI"]
+    workflows: ["Makefile-CI"]
     types: [ completed ]
   workflow_dispatch:
 
 env:
-  UBUNTU_BASE_IMAGE: tigitlabs/ubuntu-base:latest
-  NRF_USER_UID: 1000
-  NRF_USER_GID: 1000
   NRF_USER: vscode
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      ubuntu-base: ${{ steps.filter.outputs.ubuntu-base }}
-      nrf-docker-image: ${{ steps.filter.outputs.nrf-docker-image }}
-      nrf-codespace: ${{ steps.filter.outputs.nrf-codespace }}
-    steps:
-    - uses: actions/checkout@v2
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        base: nrf-codespace
-        filters: |
-          ubuntu-base:
-            - '.devcontainer/ubuntu-base/**'
-          nrf-docker-image:
-            - '.devcontainer/nrf-docker/**'
-          nrf-codespace:
-            - '.devcontainer/nrf-codespace/**'
-
-  manual-trigger:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    outputs:
-      force-rebuild: true
-    steps:
-      - run: echo "Triggering Force Rebuild"
-
-  print-outputs:
-    needs: changes
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "ubuntu-base changed: ${{ needs.changes.outputs.ubuntu-base }}"
-          echo "nrf-docker-image changed: ${{ needs.changes.outputs.nrf-docker-image }}"
-          echo "nrf-codespace changed: ${{ needs.changes.outputs.nrf-codespace }}"
 
   build-and-push-ubuntu-base:
     runs-on: ubuntu-latest

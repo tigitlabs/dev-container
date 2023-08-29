@@ -38,10 +38,10 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker tag tigitlabs-ubuntu-base ghcr.io/tigitlabs/ubuntu-base:dev
-          docker tag tigitlabs-ubuntu-base ghcr.io/tigitlabs/ubuntu-base:latest
-          docker tag tigitlabs-ubuntu-base ghcr.io/tigitlabs/ubuntu-base
-          docker rm tigitlabs-ubuntu-base
+          docker tag tigitlabs/ubuntu-base ghcr.io/tigitlabs/ubuntu-base:dev
+          docker tag tigitlabs/ubuntu-base ghcr.io/tigitlabs/ubuntu-base:latest
+          docker tag tigitlabs/ubuntu-base ghcr.io/tigitlabs/ubuntu-base
+          docker rmi tigitlabs/ubuntu-base
           docker push ghcr.io/tigitlabs/ubuntu-base --all-tags
 
   build-and-push-nrf-docker-image:

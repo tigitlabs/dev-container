@@ -2,19 +2,11 @@ version: 2.1
 
 jobs:
   test:
-    docker:
-      - image: docker:17.05.0-ce-git
+    machine:
+      image: ubuntu-2204:2023.07.2
     steps:
       - checkout
-      - setup_remote_docker
-      # Install make
-      - run: apk add --no-cache bash
-      - run: apk add --no-cache make
-      - run: |
-          export DOCKER_BUILDKIT=1
-          docker build --platform=local -o . git://github.com/docker/buildx
-          mkdir -p ~/.docker/cli-plugins
-          mv buildx ~/.docker/cli-plugins/docker-buildx
+      - - run: sudo apt-get update && sudo apt-get install -y make
       - run: make test-all-ci
 
 # Orchestrate our job run sequence

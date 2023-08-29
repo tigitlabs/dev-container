@@ -35,6 +35,7 @@ jobs:
       - name: Run tests in dev container - nrfjprog version
         run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace nrfjprog --version
 
+
   main-devcontainer-ci:
     runs-on: ubuntu-latest
     steps:

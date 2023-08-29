@@ -41,6 +41,7 @@
     },
     // This is needed to install the devconainer-cli
     "ghcr.io/devcontainers/features/node:1": {}
+    }
   },
   "customizations": {
     "vscode": {
@@ -58,5 +59,4 @@
   },
   "remoteUser": "vscode",
   "onCreateCommand": "npm install -g @devcontainers/cli"
-
 }

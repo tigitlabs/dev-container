@@ -12,6 +12,13 @@
 
   "mounts": [
     "type=bind,source=/home/${localEnv:USER}/.ssh,target=/home/vscode/.ssh,readonly"
-  ]
+],
+"customizations": {
+	"vscode": {
+		"extensions": [
+			"nordic-semiconductor.nrf-connect"
+		]
+	}
+}
 
 }

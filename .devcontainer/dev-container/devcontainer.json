@@ -38,12 +38,17 @@
     },
     "ghcr.io/devcontainers-contrib/features/pylint:2": {
       "version": "latest"
+    },
+    // This is needed to install the devconainer-cli
+    "ghcr.io/devcontainers/features/node:1": {}
     }
   },
   "customizations": {
     "vscode": {
       "extensions": [
 		"github.vscode-github-actions",
+    "gitHub.copilot",
+		"gitHub.copilot-chat",
 		"ms-azuretools.vscode-docker",
 		"mutantdino.resourcemonitor",
 		"mhutchie.git-graph",
@@ -52,16 +57,6 @@
 	]
     }
   },
-  "remoteUser": "vscode"
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
-
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "docker --version",
-
-  // Configure tool-specific properties.
-  // "customizations": {},
-  // Generate .devcontainer/.env containing WORKSPACE_* envars for docker-compose.yml
-  //"initializeCommand": ".devcontainer/dev-container/gen-docker-compose-workspace-env.sh --container-workspace-folder '${containerWorkspaceFolder}' --local-workspace-folder '${localWorkspaceFolder}' --env-dir .devcontainer/dev-container ",
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  "remoteUser": "vscode",
+  "onCreateCommand": "npm install -g @devcontainers/cli"
 }

@@ -140,7 +140,7 @@ jobs:
           --rm \
           --user $NRF_USER \
           --workdir /workspace/nrf/applications/asset_tracker_v2 \
-          ghcr.io/tigitlabs/nrf-docker \
+          ghcr.io/tigitlabs/nrf-docker-ci:latest \
           west build -b nrf9160dk_nrf9160ns --build-dir /workspace/nrf/applications/asset_tracker_v2/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
 
       - name: Login to GitHub Container Registry

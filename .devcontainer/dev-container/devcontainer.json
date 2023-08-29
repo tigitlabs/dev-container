@@ -41,20 +41,19 @@
     },
     // This is needed to install the devconainer-cli
     "ghcr.io/devcontainers/features/node:1": {}
-    }
-  },
+    },
   "customizations": {
     "vscode": {
       "extensions": [
-		"github.vscode-github-actions",
-    "gitHub.copilot",
-		"gitHub.copilot-chat",
-		"ms-azuretools.vscode-docker",
-		"mutantdino.resourcemonitor",
-		"mhutchie.git-graph",
-		"DavidAnson.vscode-markdownlint",
-		"ms-vscode-remote.remote-containers"
-	]
+        "github.vscode-github-actions",
+        "gitHub.copilot",
+        "gitHub.copilot-chat",
+        "ms-azuretools.vscode-docker",
+        "mutantdino.resourcemonitor",
+        "mhutchie.git-graph",
+        "DavidAnson.vscode-markdownlint",
+        "ms-vscode-remote.remote-containers"
+  ]
     }
   },
   "remoteUser": "vscode",

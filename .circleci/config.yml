@@ -1,14 +1,15 @@
 version: 2.1
 
 jobs:
-  test:
+  build:
     machine:
       image: ubuntu-2204:current
     steps:
       - checkout
-      - run: make docker-build-all
+      - run: make docker-build-ubuntu-base
+
 # Orchestrate our job run sequence
 workflows:
   build_and_test:
     jobs:
-      - test
+      - build

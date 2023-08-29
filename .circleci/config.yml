@@ -3,12 +3,15 @@ version: 2.1
 jobs:
   test:
     machine:
-      image: ubuntu-2204:2023.07.2
+      image: ubuntu-2204:current
     steps:
       - checkout
-      - run: sudo apt-get update && sudo apt-get install -y make
-      - run: make test-all-ci
-
+      - run: |
+          docker build \
+          --file .devcontainer/ubuntu-base/Dockerfile \
+          --tag ghcr.io/tigitlabs/ubuntu-base:latest \
+          --tag ghcr.io/tigitlabs/ubuntu-base:dev \
+          .devcontainer/ubuntu-base/
 # Orchestrate our job run sequence
 workflows:
   build_and_test:

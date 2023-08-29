@@ -1,11 +1,13 @@
 ---
 
-name: "devcontainer CI"
+name: "Devcontainer-CI"
 
 on:
+  workflow_run:
+    workflows: ["Docker-Build-Publish"]
+    types:
+      - completed
   workflow_dispatch:
-  pull_request:
-  push:
 
 jobs:
   nrf-devcontainer-ci:
@@ -24,8 +26,14 @@ jobs:
       - name: Start dev container
         run: devcontainer up --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace
 
-      - name: Run tests in dev container
+      - name: Run tests in dev container - west version
         run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace west --version
+
+      - name: Run tests in dev container - nrfutil version
+        run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace nrfutil --version
+
+      - name: Run tests in dev container - nrfjprog version
+        run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace nrfjprog --version
 
   main-devcontainer-ci:
     runs-on: ubuntu-latest
@@ -39,3 +47,6 @@ jobs:
 
       - name: Start dev container
         run: devcontainer up --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container
+
+      - name: Check if devcontainer-cli is installed
+        run: devcontainer exec --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container devcontainer --version

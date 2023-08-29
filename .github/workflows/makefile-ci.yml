@@ -1,6 +1,6 @@
 ---
 
-name: "Makefile CI"
+name: "Makefile-CI"
 
 on:
   workflow_dispatch:
@@ -39,5 +39,14 @@ jobs:
       - name: Test nrf-docker image
         run: make test-nrf-docker
 
+      - name: Test nrf-codespace image
+        run: make test-nrf-codespace
+
       - name: Test nrf-docker-ci image
         run: make test-nrf-docker-ci
+
+      - name: Test all images
+        run: make test-all
+
+      - name: Test run CI
+        run: make test-all-ci

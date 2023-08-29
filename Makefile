@@ -44,6 +44,7 @@ docker-build-nrf-docker:	## 🏗️Build nrf-docker image
 	docker buildx build \
 	--tag tigitlabs-nrf-docker:local \
 	--build-arg BASE_IMAGE="tigtilabs-ubuntu-base:local" \
+	--progress plain \
 	--file .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker
 
 .PHONY: docker-build-nrf-docker-ci
@@ -52,6 +53,7 @@ docker-build-nrf-docker-ci:	## 🏗️Build nrf-docker-ci image
 	docker buildx build \
 	--tag tigitlabs-nrf-docker-ci:local \
 	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
+	--progress plain \
 	--file .devcontainer/nrf-docker/ci.Dockerfile .devcontainer/nrf-docker
 
 .PHONY: docker-build-nrf-codespace
@@ -60,6 +62,7 @@ docker-build-nrf-codespace:	## 🏗️Build nrf-codespace image
 	docker buildx build \
 	--tag tigitlabs-nrf-codespace:local \
 	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
+	--progress plain \
 	--file .devcontainer/nrf-codespace/Dockerfile .devcontainer/nrf-codespace
 
 .PHONY: docker-build-all
@@ -87,3 +90,27 @@ test-nrf-docker-ci:		## ✅Test nrf-docker-ci
 	echo "🧪 Testing the firmware build"
 	docker run --rm --name nrf-docker-ci-dev --workdir /workspace/nrf/applications/asset_tracker_v2  tigitlabs-nrf-docker-ci:local \
 	west build -b nrf9160dk_nrf9160ns --build-dir /workspace/nrf/applications/asset_tracker_v2/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
+
+.PHONY: test-nrf-codespace
+test-nrf-codespace:		## ✅Test-nrf-codespace
+	echo "🧪 Check if west is installed"
+	docker run --rm tigitlabs-nrf-docker:local west --version
+	echo "🧪 Check if clang-format is installed"
+	docker run --rm tigitlabs-nrf-docker:local clang-format --version
+	echo "🧪 Checking if nrfutil is installed and working"
+	docker run --rm tigitlabs-nrf-docker:local nrfutil --version
+	echo "🧪 Checking if nrfjprog is installed and working"
+	docker run --rm tigitlabs-nrf-codespace:local nrfjprog --version
+
+.PHONY: test-all
+test-all:		## ✅Test all
+	echo "🧪 Testing all images"
+	@make test-nrf-docker
+	@make test-nrf-docker-ci
+	@make test-nrf-codespace
+
+.PHONY: test-all-ci
+test-all-ci:		## ✅Test all images
+	echo "🧪 Build and test all images"
+	@make docker-build-all
+	@make test-all

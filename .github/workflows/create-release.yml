@@ -1,0 +1,40 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    if: contains( github.event.head_commit.message, 'release' )
+    steps:
+     - name: Checkout Code
+       uses: actions/checkout@v2
+
+     - name: Create Release Notes File
+       env: 
+        COMMITTEXT: "${{ github.event.head_commit.message }}"
+       run: |
+          php create-release-notes-file.php
+     - name: Set Tag Output
+       id: set-tag
+       run:  echo "::set-output name=tag_name::$(sh get-version.sh)"
+     - name: Create Tag
+       uses: actions/github-script@v3
+       env:
+          TAG: ${{ steps.set-tag.outputs.tag_name }}
+       with:
+          github-token: ${{ github.token }}
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+             ref: "refs/tags/${{ steps.set-tag.outputs.tag_name }}",
+              sha: context.sha
+            })
+     - name: Create release
+       uses: ncipollo/release-action@v1
+       with:
+        tag: ${{ steps.set-tag.outputs.tag_name }}
+        bodyFile: './release_notes.txt'
+        token: ${{ secrets.GITHUB_TOKEN }}

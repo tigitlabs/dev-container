@@ -34,20 +34,3 @@ jobs:
 
       - name: Run tests in dev container - nrfjprog version
         run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace nrfjprog --version
-
-
-  main-devcontainer-ci:
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checkout (GitHub)
-        uses: actions/checkout@v3
-
-      - name: Install devcontainer CLI
-        run: npm install -g @devcontainers/cli
-
-      - name: Start dev container
-        run: devcontainer up --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container
-
-      - name: Check if devcontainer-cli is installed
-        run: devcontainer exec --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container devcontainer --version

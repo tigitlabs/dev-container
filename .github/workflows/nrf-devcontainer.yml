@@ -24,16 +24,42 @@ jobs:
         run: mkdir -p ~/.ssh
 
       - name: Start dev container
-        run: devcontainer up --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace
+        run: |
+          devcontainer up \
+          --config .devcontainer/nrf-codespace/devcontainer.json \
+          --workspace-folder .devcontainer/nrf-codespace
 
       - name: Run tests in dev container - west version
-        run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace west --version
+        run: | 
+          devcontainer exec \
+          --config .devcontainer/nrf-codespace/devcontainer.json \
+          --workspace-folder .devcontainer/nrf-codespace \
+          west --version
 
       - name: Run tests in dev container - nrfutil version
-        run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace nrfutil --version
+        run: | 
+          devcontainer exec \
+          --config .devcontainer/nrf-codespace/devcontainer.json \
+          --workspace-folder .devcontainer/nrf-codespace \
+          nrfutil --version
 
       - name: Run tests in dev container - nrfjprog version
-        run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace nrfjprog --version
+        run: |
+          devcontainer exec \
+          --config .devcontainer/nrf-codespace/devcontainer.json \
+          --workspace-folder .devcontainer/nrf-codespace \
+          nrfjprog --version
 
       - name: Run nrfutil toolchain-manager
-        run: devcontainer exec --config .devcontainer/nrf-codespace/devcontainer.json --workspace-folder .devcontainer/nrf-codespace nrfutil toolchain-manager list
+        run: |
+          devcontainer exec \
+          --config .devcontainer/nrf-codespace/devcontainer.json \
+          --workspace-folder .devcontainer/nrf-codespace \
+          nrfutil toolchain-manager list
+
+      - name: Run fw build test
+        run: | 
+          devcontainer exec \
+          --config .devcontainer/nrf-codespace/devcontainer.json \
+          --workspace-folder .devcontainer/nrf-codespace \
+          bash -c "cd /workspace/nrf/applications/asset_tracker_v2 && nrfutil toolchain-manager launch /bin/bash -- -c 'west build -b nrf9160dk_nrf9160ns'"

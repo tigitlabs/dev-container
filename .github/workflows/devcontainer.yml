@@ -1,0 +1,50 @@
+---
+
+name: "Devcontainer-CI"
+
+on:
+  # workflow_run:
+  #   workflows: ["Docker-Build-Publish"]
+  #   types:
+  #     - completed
+  workflow_dispatch:
+  push:
+    branches: [ * ]
+
+jobs:
+
+  devcontainer-ci:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
+      - name: Install devcontainer CLI
+        run: npm install -g @devcontainers/cli
+
+      - name: Build dev container
+        run: |
+          devcontainer build \
+            --config .devcontainer/dev-container/devcontainer.json \
+            --workspace-folder .devcontainer/dev-container \
+            --image-name devcontainer-ci
+
+      - name: Start dev container
+        run: |
+          devcontainer up \
+          --config .devcontainer/dev-container/devcontainer.json \
+          --workspace-folder .devcontainer/dev-container \
+          --expect-existing-container
+
+      - name: Check if devcontainer-cli is installed
+        run: devcontainer exec --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container devcontainer --version
+
+
+# docker_version=$(docker --version | awk '{print $3}')
+# if [[ "$docker_version" == "20.10.7," ]]; then
+#   echo "Docker version is correct"
+# else
+#   echo "Error: Docker version is incorrect"
+#   exit 1
+# fi

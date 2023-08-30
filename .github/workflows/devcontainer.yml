@@ -35,9 +35,7 @@ jobs:
         run: |
           devcontainer up \
           --config .devcontainer/dev-container/devcontainer.json \
-          --workspace-folder .devcontainer/dev-container \
-          --expect-existing-container
-
+          --workspace-folder .devcontainer/dev-container
       - name: Check if devcontainer-cli is installed
         run: devcontainer exec --config .devcontainer/dev-container/devcontainer.json --workspace-folder .devcontainer/dev-container devcontainer --version
 

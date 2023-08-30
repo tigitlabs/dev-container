@@ -4,11 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feat_*
+      - feat-*
   pull_request:
-    types: [opened]
-    branches:
-      - dev
+    branches: [dev]
 
 jobs:
 

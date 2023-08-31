@@ -5,7 +5,7 @@ name: "Docker-Build-Publish"
 on:
   pull_request:
     branches: [ dev ]
-  workflow_dispatch:
+  # workflow_dispatch:
 
 env:
   NRF_USER: vscode

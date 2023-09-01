@@ -131,6 +131,7 @@ MD044:
   - Compose
   - macOS
   - nrf-docker
+  - nrf-docker-ci
   code_blocks: false
 
 # Images should have alternate text (alt text) <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md045>

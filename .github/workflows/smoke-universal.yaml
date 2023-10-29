@@ -24,6 +24,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       id: smoke_test
-      uses: ./.github/actions/smoke-test
+      uses: ./.github/actions/smoke-test@feat-change-devcontainer-univeral-image
       with:
         image: universal

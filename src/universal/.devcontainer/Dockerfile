@@ -48,8 +48,6 @@ RUN apt-get update \
         zlib1g \
         libuuid1 \
         libunwind8 \
-        sqlite3 \
-        libsqlite3-dev \
         software-properties-common \
         tk-dev \
         uuid-dev \
@@ -79,12 +77,6 @@ RUN apt-get update \
 # Default to bash shell (other shells available at /usr/bin/fish and /usr/bin/zsh)
 ENV SHELL=/bin/bash \
     DOCKER_BUILDKIT=1
-
-# Install and setup fish
-RUN apt-get install -yq fish \
-    && FISH_PROMPT="function fish_prompt\n    set_color green\n    echo -n (whoami)\n    set_color normal\n    echo -n \":\"\n    set_color blue\n    echo -n (pwd)\n    set_color normal\n    echo -n \"> \"\nend\n" \
-    && printf "$FISH_PROMPT" >> /etc/fish/functions/fish_prompt.fish \
-    && printf "if type code-insiders > /dev/null 2>&1; and not type code > /dev/null 2>&1\n  alias code=code-insiders\nend" >> /etc/fish/conf.d/code_alias.fish
 
 # Remove scripts now that we're done with them
 RUN apt-get clean -y && rm -rf /tmp/scripts

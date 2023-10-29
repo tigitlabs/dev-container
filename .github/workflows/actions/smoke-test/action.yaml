@@ -12,9 +12,9 @@ runs:
       id: checkout_release
       uses: actions/checkout@v3
       with:
-        repository: 'devcontainers/images'
+        repository: 'tigitlabs/dev-concontainers'
         path: '__build'
-        ref: 'main'
+        ref: 'feat-change-devcontainer-univeral-image'
 
     - name: Build image
       id: build_image

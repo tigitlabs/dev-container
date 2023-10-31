@@ -36,7 +36,6 @@ docker images
 
 # Clean up
 echo "(*) Cleaning up..."
-echo "container ls"
 container=$(docker container ls -f "label=${image_tag}" -q)
 if [ -z "$container" ]; then
     echo "No container found"

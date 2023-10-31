@@ -37,5 +37,11 @@ docker images
 # Clean up
 echo "(*) Cleaning up..."
 echo "container ls"
-docker container ls -f "label=${image_tag}" -q
-docker rm -f $(docker container ls -f "label=${image_tag}" -q)
+container=$(docker container ls -f "label=${image_tag}" -q)
+if [ -z "$container" ]; then
+    echo "No container found"
+else
+    echo "removing container"
+    docker rm -f $container
+fi
+

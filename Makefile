@@ -33,14 +33,10 @@ github-action-workflow-devcontainer-ci:	## ✅Run Workflows for devcontainers
 github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu
 	act -W .github/workflows/smoke-base-ubuntu.yaml -s GITHUB_TOKEN="${GITHUB_TOKEN}"
 
-.PHONY: github-action-smoke-universal
-github-action-smoke-universal:	## ✅Run smoke-test for universal
-	act -W .github/workflows/smoke-universal.yaml -s GITHUB_TOKEN="${GITHUB_TOKEN}"
-
 .PHONY: github-action-smoke-test
 github-action-smoke-test:	## ✅Run smoke-test for all images
 	make github-action-smoke-base-ubuntu
-	make github-action-smoke-universal
+
 
 ##@ 🐋 Docker Build
 

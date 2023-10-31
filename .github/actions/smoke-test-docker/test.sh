@@ -36,6 +36,6 @@ docker images
 
 # Clean up
 echo "(*) Cleaning up..."
-echo "Running: docker rm -f $(docker container ls -f "label=${image_tag}" -q)"
+echo "container ls"
 docker container ls -f "label=${image_tag}" -q
 docker rm -f $(docker container ls -f "label=${image_tag}" -q)

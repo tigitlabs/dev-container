@@ -3,7 +3,7 @@ inputs:
   image:
     description: 'Image to test'
     required: true
-    default: 'base-debian'
+    default: 'base-ubuntu'
 
 runs:
   using: composite
@@ -14,7 +14,7 @@ runs:
       with:
         repository: 'tigitlabs/dev-container'
         path: '__build'
-        ref: 'feat-added-smoke-test'
+        ref: 'main'
 
     - name: Build image
       id: build_image

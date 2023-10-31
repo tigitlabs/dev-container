@@ -35,4 +35,4 @@ echo "(*) Docker image details..."
 docker images
 
 # Clean up
-docker rm -f $(docker container ls -f "label=${id_label}" -q)
+docker rm -f $(docker container ls -f "label=${image_tag}" -q)

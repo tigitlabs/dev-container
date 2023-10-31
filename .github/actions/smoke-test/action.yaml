@@ -14,7 +14,7 @@ runs:
       with:
         repository: 'tigitlabs/dev-container'
         path: '__build'
-        ref: 'feat-change-devcontainer-univeral-image'
+        ref: 'feat-added-smoke-test'
 
     - name: Build image
       id: build_image

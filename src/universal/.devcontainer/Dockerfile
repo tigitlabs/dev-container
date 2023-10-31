@@ -63,7 +63,7 @@ RUN apt-get update \
     llvm \
     xtail \
     software-properties-common \
-    libsecret-1-dev \
+    # libsecret-1-dev \
     # valgrind \
     # Install tools and shells not in common script
     # && apt-get install -yq xtail software-properties-common libsecret-1-dev \

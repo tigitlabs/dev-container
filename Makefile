@@ -19,56 +19,75 @@ help:       	## Show this help.
 
 .PHONY: github-action-list
 github-action-list:	## ✅List Workflows
-	gh act --list
+	@echo "📋 List Push Workflows"
+	@act push --list
+	@echo "📋 List Pull Request Workflows"
+	@act pull_request --list
 
-.PHONY: github-action-run
-github-action-run:	## ✅Run Workflows
-	gh act --job build-and-test-all-images --secret-file ~/.ssh/act-secrets
+# .PHONY: github-action-run
+# github-action-run:	## ✅Run Workflows
+# 	gh act --job build-and-test-all-images --secret-file ~/.ssh/act-secrets
 
-.PHONY: github-action-workflow-devcontainer-ci
-github-action-workflow-devcontainer-ci:	## ✅Run Workflows for devcontainers
-	gh act  --workflows .github/workflows/nrf-devcontainer.yml --secret-file ~/.ssh/act-secrets
+# .PHONY: github-action-workflow-devcontainer-ci
+# github-action-workflow-devcontainer-ci:	## ✅Run Workflows for devcontainers
+# 	gh act  --workflows .github/workflows/nrf-devcontainer.yml --secret-file ~/.ssh/act-secrets
+
+.PHONY: github-action-smoke-base-ubuntu
+github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu
+	act -W .github/workflows/smoke-base-ubuntu.yaml \
+	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
+
+.PHONY: github-action-smoke-test
+github-action-smoke-test:	## ✅Run smoke-test for all images
+	make github-action-smoke-base-ubuntu
+
+.PHONY: github-action-docker-publish
+github-action-docker-publish:	## ✅Build and publish all images
+	act -W .github/workflows/docker-publish.yml \
+	-s GITHUB_TOKEN="${GITHUB_TOKEN}" \
+	--eventpath .github/workflows/act/event-publish-main.json
+
 
 ##@ 🐋 Docker Build
 
 .PHONY: docker-build-ubuntu-base
-docker-build-ubuntu-base:	## 🏗️Build ubuntu-base image
+docker-build-base-ubuntu:	## 🏗️Build ubuntu-base image
 	@echo "🏗️ Building ubuntu-base image"
 	docker buildx build \
 	--tag tigtilabs-ubuntu-base:local \
-	--file .devcontainer/ubuntu-base/Dockerfile .devcontainer/ubuntu-base
+	--file src/base-ubuntu/.devcontainer/Dockerfile src/base-ubuntu/.devcontainer/
 
-.PHONY: docker-build-nrf-docker
-docker-build-nrf-docker:	## 🏗️Build nrf-docker image
-	@echo "🏗️ Building nrf-docker image"
-	docker buildx build \
-	--tag tigitlabs-nrf-docker:local \
-	--build-arg BASE_IMAGE="tigtilabs-ubuntu-base:local" \
-	--progress plain \
-	--file .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker
+# .PHONY: docker-build-nrf-docker
+# docker-build-nrf-docker:	## 🏗️Build nrf-docker image
+# 	@echo "🏗️ Building nrf-docker image"
+# 	docker buildx build \
+# 	--tag tigitlabs-nrf-docker:local \
+# 	--build-arg BASE_IMAGE="tigtilabs-ubuntu-base:local" \
+# 	--progress plain \
+# 	--file .devcontainer/nrf-docker/Dockerfile .devcontainer/nrf-docker
 
-.PHONY: docker-build-nrf-docker-ci
-docker-build-nrf-docker-ci:	## 🏗️Build nrf-docker-ci image
-	@echo "🏗️ Building nrf-docker-ci image"
-	docker buildx build \
-	--tag tigitlabs-nrf-docker-ci:local \
-	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
-	--progress plain \
-	--file .devcontainer/nrf-docker/ci.Dockerfile .devcontainer/nrf-docker
+# .PHONY: docker-build-nrf-docker-ci
+# docker-build-nrf-docker-ci:	## 🏗️Build nrf-docker-ci image
+# 	@echo "🏗️ Building nrf-docker-ci image"
+# 	docker buildx build \
+# 	--tag tigitlabs-nrf-docker-ci:local \
+# 	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
+# 	--progress plain \
+# 	--file .devcontainer/nrf-docker/ci.Dockerfile .devcontainer/nrf-docker
 
-.PHONY: docker-build-nrf-codespace
-docker-build-nrf-codespace:	## 🏗️Build nrf-codespace image
-	@echo "🏗️ Building nrf-codespace image"
-	docker buildx build \
-	--tag tigitlabs-nrf-codespace:local \
-	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
-	--progress plain \
-	--file .devcontainer/nrf-codespace/Dockerfile .devcontainer/nrf-codespace
+# .PHONY: docker-build-nrf-codespace
+# docker-build-nrf-codespace:	## 🏗️Build nrf-codespace image
+# 	@echo "🏗️ Building nrf-codespace image"
+# 	docker buildx build \
+# 	--tag tigitlabs-nrf-codespace:local \
+# 	--build-arg BASE_IMAGE="tigitlabs-nrf-docker:local" \
+# 	--progress plain \
+# 	--file .devcontainer/nrf-codespace/Dockerfile .devcontainer/nrf-codespace
 
 .PHONY: docker-build-all
 docker-build-all:	## 🏗️Build all images
 	@echo "🏗️ Building all images"
-	@make docker-build-ubuntu-base
+	@make docker-build-base-ubuntu
 	@make docker-build-nrf-docker
 	@make docker-build-nrf-docker-ci
 	@make docker-build-nrf-codespace

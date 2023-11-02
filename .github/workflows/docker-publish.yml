@@ -32,8 +32,11 @@ jobs:
         run: |
           docker build \
           --file src/base-ubuntu/.devcontainer/Dockerfile \
-          --tag tigitlabs/base-ubuntu:${{ steps.get_tag_name.outputs.tag }} \
+          --tag base-ubuntu \
           src/base-ubuntu/.devcontainer/
+          docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu
+          docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu:${{ steps.get_tag_name.outputs.tag }}
+          docker rmi base-ubuntu
           docker images
 
       - name: Login to GitHub Container Registry
@@ -46,7 +49,7 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/ubuntu-base --all-tags
+          docker push ghcr.io/tigitlabs/base-ubuntu --all-tags
 
   # build-and-push-nrf-docker-image:
   #   needs: [ build-and-push-ubuntu-base ]

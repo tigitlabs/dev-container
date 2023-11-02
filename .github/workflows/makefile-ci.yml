@@ -8,13 +8,14 @@ on:
 
 jobs:
 
-  build-and-test-all-images:
+  makefile-ci:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Install devcontainer cli
         run: |

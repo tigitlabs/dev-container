@@ -16,6 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
       - name: Make sure the Makefile can be used
         run: make
 

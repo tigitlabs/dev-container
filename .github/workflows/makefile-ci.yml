@@ -36,6 +36,8 @@ jobs:
 
       - name: github-action-smoke-base-ubuntu
         run: make github-action-smoke-base-ubuntu
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: github-action-smoke-test
         run: make github-action-smoke-test

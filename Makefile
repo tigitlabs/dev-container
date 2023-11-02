@@ -34,7 +34,8 @@ github-action-list:	## ✅List Workflows
 
 .PHONY: github-action-smoke-base-ubuntu
 github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu
-	act -W .github/workflows/smoke-base-ubuntu.yaml -s GITHUB_TOKEN="${GITHUB_TOKEN}"
+	act -W .github/workflows/smoke-base-ubuntu.yaml \
+	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
 .PHONY: github-action-smoke-test
 github-action-smoke-test:	## ✅Run smoke-test for all images

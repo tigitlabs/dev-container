@@ -1,4 +1,4 @@
-name: Smoke test "base-ubuntu" build
+name: Smoke test "base-nrf" build
 
 on:
   push:

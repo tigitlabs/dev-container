@@ -1,7 +1,7 @@
 #!/bin/bash
 cd $(dirname "$0")
 
-source test-utils.sh vscode
+source ../../test/test-utils.sh  vscode
 
 #### Base Image Tests ####
 # Run common tests
@@ -20,25 +20,13 @@ check "gitconfig-file-location" sh -c "ls /etc/gitconfig"
 check "gitconfig-contains-name" sh -c "cat /etc/gitconfig | grep 'name = devcontainers'"
 
 check "usr-local-etc-config-does-not-exist" test ! -f "/usr/local/etc/gitconfig"
+checkPythonExtension
 #### Base Image Tests ####
 
-# Python Extension
-# Definition specific tests
-check "version" python  --version
-check "pip is installed" pip --version
-check "pip is installed" pip3 --version
+#### nrf tools ####
+check "cmake" cmake --version
+#### nrf tools ####
 
-# Check that tools can execute
-check "autopep8" autopep8 --version
-check "black" black --version
-check "yapf" yapf --version
-check "bandit" bandit --version
-check "flake8" flake8 --version
-check "mypy" mypy --version
-check "pycodestyle" pycodestyle --version
-check "pydocstyle" pydocstyle --version
-check "pylint" pylint --version
-check "pytest" pytest --version
 
 # Report result
 reportResults

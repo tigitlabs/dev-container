@@ -31,6 +31,9 @@ jobs:
       - name: Make sure the Makefile can be used
         run: make
 
+      - name: Run smoke test
+        run: make github-action-smoke-base-ubuntu
+
       - name: Run build based on Makefile
         run: make build-base-ubuntu
 

@@ -1,7 +1,10 @@
 {
     "build": {
         "dockerfile": "./Dockerfile",
-        "context": "."
+        "context": ".",
+        "args": {
+            "VARIANT": "${localEnv:VARIANT}"
+        }
     },
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {

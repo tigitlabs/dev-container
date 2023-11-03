@@ -35,6 +35,7 @@ jobs:
 
       - name: Build the Ubuntu base image
         run: |
+          export VARIANT=jammy
           devcontainer build \
           --workspace-folder src/base-ubuntu/ \
           --image-name base-ubuntu

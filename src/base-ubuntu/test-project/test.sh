@@ -1,7 +1,7 @@
 #!/bin/bash
 cd $(dirname "$0")
 
-source test-utils.sh vscode
+source ../../test/test-utils.sh  vscode
 
 # Run common tests
 checkCommon
@@ -19,6 +19,7 @@ check "gitconfig-file-location" sh -c "ls /etc/gitconfig"
 check "gitconfig-contains-name" sh -c "cat /etc/gitconfig | grep 'name = devcontainers'"
 
 check "usr-local-etc-config-does-not-exist" test ! -f "/usr/local/etc/gitconfig"
+checkPythonExtension
 
 # Report result
 reportResults

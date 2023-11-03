@@ -142,6 +142,25 @@ checkCommon()
     check "code" which code
 }
 
+checkPythonExtension() {
+    # Definition specific tests
+    check "version" python  --version
+    check "pip is installed" pip --version
+    check "pip is installed" pip3 --version
+
+    # Check that tools can execute
+    check "autopep8" autopep8 --version
+    check "black" black --version
+    check "yapf" yapf --version
+    check "bandit" bandit --version
+    check "flake8" flake8 --version
+    check "mypy" mypy --version
+    check "pycodestyle" pycodestyle --version
+    check "pydocstyle" pydocstyle --version
+    check "pylint" pylint --version
+    check "pytest" pytest --version
+}
+
 reportResults() {
     if [ ${#FAILED[@]} -ne 0 ]; then
         echoStderr -e "\n💥  Failed tests: ${FAILED[@]}"

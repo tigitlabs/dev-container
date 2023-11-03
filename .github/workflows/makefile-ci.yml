@@ -31,6 +31,9 @@ jobs:
       - name: Make sure the Makefile can be used
         run: make
 
+      - name: Run build based on Makefile
+        run: make build-base-ubuntu
+
       - name: Run all makefile targets
         run: make makefile-ci
         env:

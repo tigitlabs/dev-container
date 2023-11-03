@@ -44,7 +44,7 @@ github-action-docker-publish:	## ✅Build and publish all images
 .PHONY: build-base-ubuntu
 build-base-ubuntu:	## 🏗️Build ubuntu-base image
 	@echo "🏗️ Building base-ubuntu image"	
-	VARIANT="jammy" && echo $$VARIANT && \
+	VARIANT="jammy" && \
 	./.github/actions/smoke-test/build.sh base-ubuntu
 	@echo "🧪 Test ubuntu-base image"
 	@./.github/actions/smoke-test/test.sh base-ubuntu

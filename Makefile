@@ -58,5 +58,6 @@ build-all:	## 🏗️Build all images
 makefile-ci:	## 🧪 Run all makefile targets
 	@make help
 	@make github-action-list
-	@make github-action-smoke-test
 	@make build-all
+	@make github-action-smoke-test
+

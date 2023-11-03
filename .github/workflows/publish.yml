@@ -1,0 +1,267 @@
+---
+
+name: "Publish-Images"
+
+on:
+  pull_request:
+    branches: [ dev, main]
+    types: [ closed ]
+  push:
+    tags: [ v* ]
+jobs:
+
+  get-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag_name.outputs.tag }}
+    steps:
+      - name: Get tags
+        id: get_tag_name
+        run: |
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            echo "tag=$(echo "${{ github.ref }}" | grep -oP 'refs/tags/\K(.+)')" >> $GITHUB_OUTPUT
+          fi
+          if [[ "${{ github.ref }}" == "refs/heads/"* ]]; then
+            echo "tag=$(echo "${{ github.ref }}" | grep -oP 'refs/heads/\K(.+)')" >> $GITHUB_OUTPUT
+          fi
+
+  build-and-push-base-ubuntu:
+    needs: [ get-tags ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Build the Ubuntu base image
+        env:
+          TAG: ${{needs.get-tags.outputs.tag}}
+        run: |
+          export VARIANT=jammy
+          devcontainer build \
+          --workspace-folder src/base-ubuntu/ \
+          --image-name base-ubuntu
+          echo "Applying tag: ${TAG}"
+          docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu
+          docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu:${TAG}
+          docker rmi base-ubuntu
+          docker images
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/base-ubuntu --all-tags
+
+  build-and-push-base-nrf-image:
+    needs: [ build-and-push-base-ubuntu, get-tags ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Build the base-nrf image
+        env:
+          TAG: ${{needs.get-tags.outputs.tag}}
+        run: |
+          export VARIANT=dev
+          devcontainer build \
+          --workspace-folder src/base-nrf/ \
+          --image-name base-nrf
+          docker tag base-nrf ghcr.io/tigitlabs/base-nrf
+          echo "Applying tag: ${TAG}"
+          docker tag base-nrf ghcr.io/tigitlabs/base-nrf:${TAG}
+          docker rmi base-nrf
+          docker images
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/base-nrf --all-tags
+
+  # build-and-push-nrf-docker-ci-image:
+  #   needs: [ build-and-push-nrf-docker-image ]
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Build the nrf-docker image
+  #       run: |
+  #         docker build \
+  #         --file .devcontainer/nrf-docker/ci.Dockerfile \
+  #         --tag tigitlabs/nrf-docker-ci \
+  #         .devcontainer/nrf-docker/
+
+  #     - name: Ensure clang-format works
+  #       run: |
+  #         docker run \
+  #         --rm \
+  #         tigitlabs/nrf-docker-ci \
+  #         clang-format --version
+
+  #     - name: Ensure west works
+  #       run: |
+  #         docker run \
+  #         --rm \
+  #         tigitlabs/nrf-docker-ci \
+  #         west --version
+
+  #     - name: Ensure nrfutil installation works
+  #       run: |
+  #         docker run \
+  #         --rm \
+  #         tigitlabs/nrf-docker-ci \
+  #         nrfutil toolchain-manager list
+
+  #     - name: Build asset_tracker_v2 application
+  #       run: | 
+  #         docker run \
+  #         --rm \
+  #         --workdir /workspace/nrf/applications/asset_tracker_v2 \
+  #         tigitlabs/nrf-docker-ci \
+  #         west build -b nrf9160dk_nrf9160ns --build-dir /workspace/nrf/applications/asset_tracker_v2/build -- -DEXTRA_CFLAGS="-Werror -Wno-dev"
+
+  #     - name: Login to GitHub Container Registry
+  #       if: ${{ !env.ACT }}
+  #       uses: docker/login-action@v1
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{github.actor}}
+  #         password: ${{secrets.GITHUB_TOKEN}}
+
+  #     - name: Publish image
+  #       if: ${{ !env.ACT }}
+  #       run: |
+  #         docker tag tigitlabs/nrf-docker-ci ghcr.io/tigitlabs/nrf-docker-ci:dev
+  #         docker tag tigitlabs/nrf-docker-ci ghcr.io/tigitlabs/nrf-docker-ci:latest
+  #         docker tag tigitlabs/nrf-docker-ci ghcr.io/tigitlabs/nrf-docker-ci
+  #         docker rmi tigitlabs/nrf-docker-ci
+  #         docker push ghcr.io/tigitlabs/nrf-docker-ci --all-tags
+
+
+  # build-and-push-nrf-codespace-image:
+  #   needs: [ build-and-push-nrf-docker-image ]
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Build the nrf-codespace image
+  #       run: |
+  #         docker build \
+  #         --file .devcontainer/nrf-codespace/Dockerfile \
+  #         --tag tigitlabs/nrf-codespace \
+  #         .devcontainer/nrf-codespace/
+
+  #     - name: Ensure nrfjprog works
+  #       run: |
+  #         docker run \
+  #         --rm \
+  #         tigitlabs/nrf-codespace \
+  #         nrfjprog -v
+
+  #     - name: Login to GitHub Container Registry
+  #       if: ${{ !env.ACT }}
+  #       uses: docker/login-action@v1
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{github.actor}}
+  #         password: ${{secrets.GITHUB_TOKEN}}
+
+  #     - name: Publish image
+  #       if: ${{ !env.ACT }}
+  #       run: |
+  #         docker tag tigitlabs/nrf-codespace ghcr.io/tigitlabs/nrf-codespace:dev
+  #         docker tag tigitlabs/nrf-codespace ghcr.io/tigitlabs/nrf-codespace:latest
+  #         docker tag tigitlabs/nrf-codespace ghcr.io/tigitlabs/nrf-codespace
+  #         docker rmi tigitlabs/nrf-codespace
+  #         docker push ghcr.io/tigitlabs/nrf-codespace --all-tags
+
+  # # Workaround becuase of this issue:
+  # # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#conflicts-between-head-commit-and-test-merge-commit
+  # # If we run this Workflow with the workflow_run trigger, the status check will keep waiting
+  # nrf-devcontainer-ci:
+  #   needs: [ build-and-push-nrf-codespace-image ]
+  #   runs-on: ubuntu-latest
+  #   steps:
+
+  #     - name: Checkout (GitHub)
+  #       uses: actions/checkout@v3
+
+  #     - name: Install devcontainer CLI
+  #       run: npm install -g @devcontainers/cli
+
+  #     - name: Make sure .ssh dir exists for mount
+  #       run: mkdir -p ~/.ssh
+
+  #     - name: Start dev container
+  #       run: |
+  #         devcontainer up \
+  #         --config .devcontainer/nrf-codespace/devcontainer.json \
+  #         --workspace-folder .devcontainer/nrf-codespace
+
+  #     - name: Run tests in dev container - west version
+  #       run: | 
+  #         devcontainer exec \
+  #         --config .devcontainer/nrf-codespace/devcontainer.json \
+  #         --workspace-folder .devcontainer/nrf-codespace \
+  #         west --version
+
+  #     - name: Run tests in dev container - nrfutil version
+  #       run: | 
+  #         devcontainer exec \
+  #         --config .devcontainer/nrf-codespace/devcontainer.json \
+  #         --workspace-folder .devcontainer/nrf-codespace \
+  #         nrfutil --version
+
+  #     - name: Run tests in dev container - nrfjprog version
+  #       run: |
+  #         devcontainer exec \
+  #         --config .devcontainer/nrf-codespace/devcontainer.json \
+  #         --workspace-folder .devcontainer/nrf-codespace \
+  #         nrfjprog --version
+
+  #     - name: Run nrfutil toolchain-manager
+  #       run: |
+  #         devcontainer exec \
+  #         --config .devcontainer/nrf-codespace/devcontainer.json \
+  #         --workspace-folder .devcontainer/nrf-codespace \
+  #         nrfutil toolchain-manager list
+
+      # TODO this faile here:
+      # Feat tests nrf codespace #142
+      # - name: Run fw build test
+      #   run: | 
+      #     devcontainer exec \
+      #     --config .devcontainer/nrf-codespace/devcontainer.json \
+      #     --workspace-folder .devcontainer/nrf-codespace \
+      #     bash -c "cd /workspace/nrf/applications/asset_tracker_v2 && nrfutil toolchain-manager launch /bin/bash -- -c 'west build -b nrf9160dk_nrf9160ns'"

@@ -1,4 +1,4 @@
-name: Smoke test "base-ubuntu" build
+name: Smoke test "base-nrf" build
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - .github/workflows/smoke-base-ubuntu.yaml
       - .github/actions/**
 jobs:
-  smoke-test:
+  smoke-test-nrf-base:
     name: Smoke test
     runs-on: ubuntu-latest
     steps:
@@ -25,5 +25,5 @@ jobs:
       id: smoke_test
       uses: ./.github/actions/smoke-test
       with:
-        image: base-ubuntu
-        variant: jammy
+        image: base-nrf
+        variant: dev

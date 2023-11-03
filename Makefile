@@ -43,8 +43,9 @@ github-action-docker-publish:	## ✅Build and publish all images
 
 .PHONY: build-base-ubuntu
 build-base-ubuntu:	## 🏗️Build ubuntu-base image
-	@echo "🏗️ Building base-ubuntu image"
-	@./.github/actions/smoke-test/build.sh base-ubuntu
+	@echo "🏗️ Building base-ubuntu image"	
+	VARIANT="jammy" && \
+	./.github/actions/smoke-test/build.sh base-ubuntu
 	@echo "🧪 Test ubuntu-base image"
 	@./.github/actions/smoke-test/test.sh base-ubuntu
 
@@ -57,5 +58,6 @@ build-all:	## 🏗️Build all images
 makefile-ci:	## 🧪 Run all makefile targets
 	@make help
 	@make github-action-list
-	@make github-action-smoke-test
 	@make build-all
+	@make github-action-smoke-test
+

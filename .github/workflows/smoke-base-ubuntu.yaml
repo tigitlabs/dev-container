@@ -26,3 +26,4 @@ jobs:
       uses: ./.github/actions/smoke-test
       with:
         image: base-ubuntu
+        variant: jammy

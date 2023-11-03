@@ -19,14 +19,6 @@ jobs:
       id: checkout
       uses: actions/checkout@v3
 
-    - name: Smoke test Docker Build
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      id: smoke_test_docker_build
-      uses: ./.github/actions/smoke-test-docker
-      with:
-        image: base-ubuntu
-
     - name: Smoke test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

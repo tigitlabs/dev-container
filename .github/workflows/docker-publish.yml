@@ -18,6 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
       - name: Get tags
         id: get_tag_name
         run: |
@@ -30,10 +35,9 @@ jobs:
 
       - name: Build the Ubuntu base image
         run: |
-          docker build \
-          --file src/base-ubuntu/.devcontainer/Dockerfile \
-          --tag base-ubuntu \
-          src/base-ubuntu/.devcontainer/
+          devcontainer build \
+          --workspace-folder src/base-ubuntu/ \
+          --image-name base-ubuntu
           docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu
           docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu:${{ steps.get_tag_name.outputs.tag }}
           docker rmi base-ubuntu

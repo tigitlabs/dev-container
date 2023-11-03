@@ -25,8 +25,8 @@ checkPythonExtension
 
 #### nrf tools ####
 check "cmake" cmake --version
+check "west" west --version
 #### nrf tools ####
-
 
 # Report result
 reportResults

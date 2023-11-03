@@ -23,18 +23,24 @@ github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu
 	act -W .github/workflows/smoke-base-ubuntu.yaml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
+.PHONY: github-action-smoke-base-nrf
+github-action-smoke-base-nrf:	## ✅Run smoke-test for base-nrf
+	act -W .github/workflows/smoke-base-nrf.yaml \
+	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
+
 .PHONY: github-action-smoke-test
 github-action-smoke-test:	## ✅Run smoke-test for all images
 	make github-action-smoke-base-ubuntu
+	make github-action-smoke-base-nrf
 
 .PHONY: github-action-makefile-ci
 github-action-makefile-ci:	## ✅Run makefile-ci
 	act -W .github/workflows/makefile-ci.yml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
-.PHONY: github-action-docker-publish
-github-action-docker-publish:	## ✅Build and publish all images
-	act -W .github/workflows/docker-publish.yml \
+.PHONY: github-action-publish
+github-action-publish:	## ✅Build and publish all images
+	act -W .github/workflows/publish.yml \
 	-s GITHUB_TOKEN="${GITHUB_TOKEN}" \
 	--eventpath .github/workflows/act/event-publish-main.json
 
@@ -49,10 +55,19 @@ build-base-ubuntu:	## 🏗️Build ubuntu-base image
 	@echo "🧪 Test ubuntu-base image"
 	@./.github/actions/smoke-test/test.sh base-ubuntu
 
+.PHONY: build-base-nrf
+build-base-nrf:	## 🏗️Build nrf-base image
+	@echo "🏗️ Building base-nrf image"	
+	export VARIANT="dev" && \
+	./.github/actions/smoke-test/build.sh base-nrf
+	@echo "🧪 Test nrf-base image"
+	@./.github/actions/smoke-test/test.sh base-nrf
+
 .PHONY: build-all
 build-all:	## 🏗️Build all images
 	@echo "🏗️ Building all images"
 	@make build-base-ubuntu
+	@make build-base-nrf
 
 .PHONY: makefile-ci
 makefile-ci:	## 🧪 Run all makefile targets

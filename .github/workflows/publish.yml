@@ -1,6 +1,6 @@
 ---
 
-name: "Docker-Publish"
+name: "Publish-Images"
 
 on:
   pull_request:
@@ -10,7 +10,23 @@ on:
     tags: [ v* ]
 jobs:
 
+  get-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag_name.outputs.tag }}
+    steps:
+      - name: Get tags
+        id: get_tag_name
+        run: |
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            echo "tag=$(echo "${{ github.ref }}" | grep -oP 'refs/tags/\K(.+)')" >> $GITHUB_OUTPUT
+          fi
+          if [[ "${{ github.ref }}" == "refs/heads/"* ]]; then
+            echo "tag=$(echo "${{ github.ref }}" | grep -oP 'refs/heads/\K(.+)')" >> $GITHUB_OUTPUT
+          fi
+
   build-and-push-base-ubuntu:
+    needs: [ get-tags ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,24 +39,17 @@ jobs:
           npm install -g @devcontainers/cli
           devcontainer --version
 
-      - name: Get tags
-        id: get_tag_name
-        run: |
-          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
-            echo "::set-output name=tag::$(echo "${{ github.ref }}" | grep -oP 'refs/tags/\K(.+)')"
-          fi
-          if [[ "${{ github.ref }}" == "refs/heads/"* ]]; then
-            echo "::set-output name=tag::$(echo "${{ github.ref }}" | grep -oP 'refs/heads/\K(.+)')"
-          fi
-
       - name: Build the Ubuntu base image
+        env:
+          TAG: ${{needs.get-tags.outputs.tag}}
         run: |
           export VARIANT=jammy
           devcontainer build \
           --workspace-folder src/base-ubuntu/ \
           --image-name base-ubuntu
+          echo "Applying tag: ${TAG}"
           docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu
-          docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu:${{ steps.get_tag_name.outputs.tag }}
+          docker tag base-ubuntu ghcr.io/tigitlabs/base-ubuntu:${TAG}
           docker rmi base-ubuntu
           docker images
 
@@ -56,58 +65,45 @@ jobs:
         run: |
           docker push ghcr.io/tigitlabs/base-ubuntu --all-tags
 
-  # build-and-push-nrf-docker-image:
-  #   needs: [ build-and-push-ubuntu-base ]
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Build the nrf-docker image
-  #       run: |
-  #         docker build \
-  #         --file .devcontainer/nrf-docker/Dockerfile \
-  #         --tag tigitlabs/nrf-docker \
-  #         .devcontainer/nrf-docker/
+  build-and-push-base-nrf-image:
+    needs: [ build-and-push-base-ubuntu, get-tags ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Ensure clang-format works
-  #       run: |
-  #         docker run \
-  #         --rm \
-  #         tigitlabs/nrf-docker \
-  #         clang-format --version
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
 
-  #     - name: Ensure west works
-  #       run: |
-  #         docker run \
-  #         --rm \
-  #         tigitlabs/nrf-docker \
-  #         west --version
+      - name: Build the base-nrf image
+        env:
+          TAG: ${{needs.get-tags.outputs.tag}}
+        run: |
+          export VARIANT=dev
+          devcontainer build \
+          --workspace-folder src/base-nrf/ \
+          --image-name base-nrf
+          docker tag base-nrf ghcr.io/tigitlabs/base-nrf
+          echo "Applying tag: ${TAG}"
+          docker tag base-nrf ghcr.io/tigitlabs/base-nrf:${TAG}
+          docker rmi base-nrf
+          docker images
 
-  #     - name: Ensure nrfutil installation works
-  #       run: |
-  #         docker run \
-  #         --rm \
-  #         tigitlabs/nrf-docker \
-  #         nrfutil toolchain-manager list
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
-  #     - name: Login to GitHub Container Registry
-  #       if: ${{ !env.ACT }}
-  #       uses: docker/login-action@v1
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{github.actor}}
-  #         password: ${{secrets.GITHUB_TOKEN}}
-
-  #     - name: Publish image
-  #       if: ${{ !env.ACT }}
-  #       run: |
-  #         docker tag tigitlabs/nrf-docker ghcr.io/tigitlabs/nrf-docker:dev
-  #         docker tag tigitlabs/nrf-docker ghcr.io/tigitlabs/nrf-docker:latest
-  #         docker tag tigitlabs/nrf-docker ghcr.io/tigitlabs/nrf-docker
-  #         docker rmi tigitlabs/nrf-docker
-  #         docker push ghcr.io/tigitlabs/nrf-docker --all-tags
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/base-nrf --all-tags
 
   # build-and-push-nrf-docker-ci-image:
   #   needs: [ build-and-push-nrf-docker-image ]

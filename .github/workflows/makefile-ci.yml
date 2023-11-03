@@ -31,15 +31,7 @@ jobs:
       - name: Make sure the Makefile can be used
         run: make
 
-      - name: make github-action-list
-        run: make github-action-list
-
-      - name: github-action-smoke-base-ubuntu
-        run: make github-action-smoke-base-ubuntu
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: github-action-smoke-test
-        run: make github-action-smoke-test
+      - name: Run all makefile targets
+        run: make makefile-ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

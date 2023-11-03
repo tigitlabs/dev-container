@@ -1,4 +1,4 @@
-ARG VARIANT="dev"
+ARG VARIANT="main"
 FROM ghcr.io/tigitlabs/base-ubuntu:${VARIANT}
 
 LABEL dev.containers.features="common"

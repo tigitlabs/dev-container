@@ -4,16 +4,22 @@ FROM ghcr.io/tigitlabs/base-ubuntu:${VARIANT}
 LABEL dev.containers.features="common"
 LABEL dev.containers.features="nrf-tools"
 
-ARG nrf_toolchain_version=v2.4.2
+ARG nrf_toolchain_version=v2.5.0
+ARG sdk_nrf_branch=v2.5-branch
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
     cmake \
+    clang-format \
     && apt-get autoremove -y && apt-get clean -y
+
+RUN pip3 install west
 
 USER vscode
 WORKDIR /home/vscode
-RUN pip3 install west
+
+# ClangFormat
+RUN wget -qO- "https://raw.githubusercontent.com/nrfconnect/sdk-nrf/v2.5-branch/.clang-format" > /home/vscode/.clang-format
 
 # Install toolchain
 RUN  wget -q https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfutil && \

@@ -25,6 +25,7 @@ checkPythonExtension
 
 #### nrf tools ####
 check "cmake" cmake --version
+check "clang-format" clang-format --version
 check "west" west --version
 check "nrfutil" nrfutil --version
 check "nrfutil toolchain" nrfutil toolchain-manager list

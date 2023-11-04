@@ -26,6 +26,10 @@ checkPythonExtension
 #### nrf tools ####
 check "cmake" cmake --version
 check "west" west --version
+check "nrfutil" nrfutil --version
+check "nrfutil toolchain" nrfutil toolchain-manager list
+nrf_toolchain_version=$(nrfutil toolchain-manager list | grep -oP 'v\d+\.\d+\.\d+' | awk '{print $1}')
+check-version-ge "nrf toolchain version" "${nrf_toolchain_version}" "v2.5.0"
 #### nrf tools ####
 
 # Report result

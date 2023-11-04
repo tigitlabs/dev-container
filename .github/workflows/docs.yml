@@ -6,7 +6,7 @@ on:
     branches:
       - feat-*
   pull_request:
-    branches: [dev]
+    branches: [dev, main]
 
 jobs:
 

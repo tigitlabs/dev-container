@@ -3,7 +3,9 @@
         "dockerfile": "./Dockerfile",
         "context": ".",
         "args": {
-            "VARIANT": "${localEnv:VARIANT}"
+            "VARIANT": "${localEnv:VARIANT}",
+            "nrf_toolchain_version": "v2.5.0",
+            "sdk_nrf_branch": "v2.5-branch"
         }
     },
     // Use 'forwardPorts' to make a list of ports inside the container available locally.

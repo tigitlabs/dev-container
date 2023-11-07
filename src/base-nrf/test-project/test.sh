@@ -24,13 +24,7 @@ checkPythonExtension
 #### Base Image Tests ####
 
 #### nrf tools ####
-check "cmake" cmake --version
-check "clang-format" clang-format --version
-check "west" west --version
-check "nrfutil" nrfutil --version
-check "nrfutil toolchain" nrfutil toolchain-manager list
-nrf_toolchain_version=$(nrfutil toolchain-manager list | grep -oP 'v\d+\.\d+\.\d+' | awk '{print $1}')
-check-version-ge "nrf toolchain version" "${nrf_toolchain_version}" "v2.5.0"
+checkNordicTools
 #### nrf tools ####
 
 # Report result

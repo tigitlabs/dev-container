@@ -39,6 +39,15 @@ jobs:
           npm install -g @devcontainers/cli
           devcontainer --version
 
+      - name: Smoke test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: smoke_test
+        uses: ./.github/actions/smoke-test
+        with:
+          image: base-ubuntu
+          variant: jammy
+
       - name: Build the Ubuntu base image
         env:
           TAG: ${{needs.get-tags.outputs.tag}}
@@ -78,6 +87,16 @@ jobs:
         run: |
           npm install -g @devcontainers/cli
           devcontainer --version
+
+      - name: Smoke test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{needs.get-tags.outputs.tag}}
+        id: smoke_test
+        uses: ./.github/actions/smoke-test
+        with:
+          image: base-nrf
+          variant: $TAG
 
       - name: Build the base-nrf image
         env:

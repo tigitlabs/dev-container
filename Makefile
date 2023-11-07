@@ -69,6 +69,19 @@ build-all:	## 🏗️Build all images
 	@make build-base-ubuntu
 	@make build-base-nrf
 
+##@ 🐋 devcontainer attach
+
+.PHONY: attach-base-nrf
+attach-base-nrf:	## bring up base-nrf container and attach shell
+	@echo "🐋 Bring-up base-nrf container"
+	@export VARIANT=dev && \
+	devcontainer up \
+	--workspace-folder src/base-nrf \
+	--remove-existing-container \
+	--id-label debug-container=base-nrf
+	devcontainer exec --id-label debug-container=base-nrf /bin/bash
+
+
 .PHONY: makefile-ci
 makefile-ci:	## 🧪 Run all makefile targets
 	@make help

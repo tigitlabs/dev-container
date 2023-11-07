@@ -23,3 +23,7 @@ Legacy, this contains the Dockerfile for the base image:
 ## nrf-codespace
 
 Based on this [repo from Nordic](https://github.com/NordicPlayground/nrf-docker)
+
+## docker Login
+
+`$echo $CR_PAT | sudo docker login ghcr.io -u tigitlabs --password-stdin`

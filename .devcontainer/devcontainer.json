@@ -61,7 +61,7 @@
         "gitHub.copilot-chat",
         "ms-azuretools.vscode-docker",
         "mutantdino.resourcemonitor",
-        "mhutchie.git-graph",
+        "eamodio.gitlens",
         "DavidAnson.vscode-markdownlint",
         "ms-vscode-remote.remote-containers"
         ]

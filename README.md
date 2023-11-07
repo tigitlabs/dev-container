@@ -23,3 +23,10 @@ Legacy, this contains the Dockerfile for the base image:
 ## nrf-codespace
 
 Based on this [repo from Nordic](https://github.com/NordicPlayground/nrf-docker)
+
+## Creating a devcontainer locally
+
+`docker info | grep Username`
+`export GITHUB_TOKEN=$(gh config get oauth_token --host github.com)`
+`export GITHUB_USER=$(gh api user | jq -r '.login')`
+`$echo $CR_PAT | sudo docker login ghcr.io -u $GITHUB_USER --password-stdin`

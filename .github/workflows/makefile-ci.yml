@@ -13,6 +13,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -31,7 +33,26 @@ jobs:
       - name: Make sure the Makefile can be used
         run: make
 
-      - name: Run all makefile targets
-        run: make makefile-ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run make help
+        run: make help
+
+      - name: Run make github-action-list
+        run: make github-action-list
+
+      - name: Run make github-action-smoke-base-ubuntu
+        run: make github-action-smoke-base-ubuntu
+
+      - name: Run make github-action-smoke-base-nrf
+        run: make github-action-smoke-base-nrf
+
+      - name: Run make github-action-publish
+        run: make github-action-publish
+
+      - name: Run make github-action-markdown-lint
+        run: make github-action-markdown-lint
+
+      - name: Run make build-base-ubuntu
+        run: make build-base-ubuntu
+
+      - name: Run make build-base-nrf
+        run: make build-base-nrf

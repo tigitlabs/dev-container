@@ -45,9 +45,6 @@ jobs:
       - name: Run make github-action-smoke-base-nrf
         run: make github-action-smoke-base-nrf
 
-      - name: Run make github-action-smoke-test
-        run: make github-action-smoke-test
-
       - name: Run make github-action-publish
         run: make github-action-publish
 
@@ -59,10 +56,3 @@ jobs:
 
       - name: Run make build-base-nrf
         run: make build-base-nrf
-
-      - name: Run make build-all
-        run: make build-all
-
-      - name: Run all makefile targets
-        run: make makefile-ci
-

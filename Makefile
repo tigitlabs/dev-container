@@ -28,6 +28,11 @@ github-action-smoke-base-nrf:	## ✅Run smoke-test for base-nrf
 	act -W .github/workflows/smoke-base-nrf.yaml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
+.PHONY: github-action-smoke-nrf-ci
+github-action-smoke-nrf-ci:	## ✅Run smoke-test for nrf-ci
+	act -W .github/workflows/smoke-nrf-ci.yaml \
+	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
+
 .PHONY: github-action-smoke-test
 github-action-smoke-test:	## ✅Run smoke-test for all images
 	make github-action-smoke-base-ubuntu
@@ -67,6 +72,14 @@ build-base-nrf:	## 🏗️Build nrf-base image
 	./.github/actions/smoke-test/build.sh base-nrf
 	@echo "🧪 Test nrf-base image"
 	@./.github/actions/smoke-test/test.sh base-nrf
+
+.PHONY: build-nrf-ci
+build-nrf-ci:	## 🏗️Build nrf-ci image
+	@echo "🏗️ Building nrf-ci image"
+	export VARIANT="dev" && \
+	devcontainer build --workspace-folder src/nrf-ci/
+	@echo "🧪 Test nrf-ci image"
+	@./.github/actions/smoke-test/test.sh nrf-ci
 
 .PHONY: build-all
 build-all:	## 🏗️Build all images

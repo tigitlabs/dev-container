@@ -6,8 +6,8 @@ on:
     - main
   pull_request:
     paths:
-      - src/base-nrf/**
-      - .github/workflows/smoke-base-nrf.yaml
+      - src/nrf-ci/**
+      - .github/workflows/nrf-ci.yaml
       - .github/actions/**
 jobs:
   smoke-test-nrf-base:
@@ -49,5 +49,3 @@ jobs:
         devcontainer build \
         --workspace-folder src/nrf-ci \
         --image-name nrf-ci
-
-        --image nrf-ci --build-arg ZEPHYR_BASE=../zephyr --build-arg ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb --build-arg GNUARMEMB_TOOLCHAIN_PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update --build-arg ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk --build-arg ZEPHYR_SDK_VERSION=0.12.4 --build-arg ZEPHYR_SDK_DOWNLOAD_URL=

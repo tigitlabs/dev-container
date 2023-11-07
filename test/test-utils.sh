@@ -27,6 +27,20 @@ check() {
     fi
 }
 
+check_file_exists() {
+    LABEL=$1
+    FILE_PATH=$2
+    echo -e "\n🧪 Checking if file $LABEL exists at $FILE_PATH"
+    if [ -f "$FILE_PATH" ]; then 
+        echo "✅  File exists!"
+        return 0
+    else
+        echoStderr "❌ File $LABEL does not exist at $FILE_PATH."
+        FAILED+=("$LABEL")
+        return 1
+    fi
+}
+
 check-version-ge() {
     LABEL=$1
     CURRENT_VERSION=$2
@@ -159,6 +173,21 @@ checkPythonExtension() {
     check "pydocstyle" pydocstyle --version
     check "pylint" pylint --version
     check "pytest" pytest --version
+}
+
+checkNordicTools() {
+    check "cmake" cmake --version
+    check "clang-format" clang-format --version
+    check "west" west --version
+    check "nrfutil" nrfutil --version
+    check "nrfutil toolchain" nrfutil toolchain-manager list
+    nrf_toolchain_version=$(nrfutil toolchain-manager list | grep -oP 'v\d+\.\d+\.\d+' | awk '{print $1}')
+    check-version-ge "nrf toolchain version" "${nrf_toolchain_version}" "v2.5.0"
+    echo -e "\n🧪 Testing west build"
+    cd $HOME/sdk-nrf/nrf/applications/asset_tracker_v2
+    nrfutil toolchain-manager launch /bin/bash -- -c 'west build -b nrf9160dk_nrf9160ns --build-dir ./build'
+    # Check if the build was successful
+    check_file_exists "merged.hex" build/zephyr/merged.hex
 }
 
 reportResults() {

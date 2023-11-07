@@ -38,6 +38,11 @@ github-action-makefile-ci:	## ✅Run makefile-ci
 	act -W .github/workflows/makefile-ci.yml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
+.PHONY: github-action-markdown-lint
+github-action-markdown-lint:	## ✅Run markdown-lint
+	act -W .github/workflows/docs.yml \
+	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
+
 .PHONY: github-action-publish
 github-action-publish:	## ✅Build and publish all images
 	act -W .github/workflows/publish.yml \
@@ -69,10 +74,24 @@ build-all:	## 🏗️Build all images
 	@make build-base-ubuntu
 	@make build-base-nrf
 
+##@ 🐋 devcontainer attach
+
+.PHONY: attach-base-nrf
+attach-base-nrf:	## bring up base-nrf container and attach shell
+	@echo "🐋 Bring-up base-nrf container"
+	@export VARIANT=dev && \
+	devcontainer up \
+	--workspace-folder src/base-nrf \
+	--remove-existing-container \
+	--id-label debug-container=base-nrf
+	devcontainer exec --id-label debug-container=base-nrf /bin/bash
+
+
 .PHONY: makefile-ci
 makefile-ci:	## 🧪 Run all makefile targets
 	@make help
 	@make github-action-list
 	@make build-all
 	@make github-action-smoke-test
-
+	@make github-action-markdown-lint
+	@make github-action-makefile-ci

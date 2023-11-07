@@ -39,13 +39,3 @@ RUN <<EOT
     west update --narrow -o=--depth=1
     west zephyr-export
 EOT
-    nrfutil toolchain-manager install --ncs-version ${nrf_toolchain_version}
-
-# Prepare image with a ready to use build environment
-RUN <<EOT
-    mkdir -p ${sdk_dir}
-    west init -m https://github.com/nrfconnect/sdk-nrf --mr ${sdk_nrf_branch} ${sdk_dir}
-    cd ${sdk_dir}
-    west update --narrow -o=--depth=1
-    west zephyr-export
-EOT

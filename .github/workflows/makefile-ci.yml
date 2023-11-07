@@ -13,6 +13,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -63,5 +65,4 @@ jobs:
 
       - name: Run all makefile targets
         run: make makefile-ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

@@ -6,7 +6,7 @@ LABEL dev.containers.features="nrf-tools"
 
 ARG nrf_toolchain_version=v2.5.0
 ARG sdk_nrf_branch=v2.5-branch
-ARG sdk_dir=/home/vscode/sdk-nrf
+ARG sdk_dir=/home/vscode/sdk-nrf-${nrf_toolchain_version}
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \

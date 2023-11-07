@@ -45,6 +45,9 @@ jobs:
       - name: Run make github-action-smoke-base-nrf
         run: make github-action-smoke-base-nrf
 
+      - name: Run make github-action-smoke-nrf-ci
+        run: make github-action-smoke-nrf-ci
+
       - name: Run make github-action-publish
         run: make github-action-publish
 

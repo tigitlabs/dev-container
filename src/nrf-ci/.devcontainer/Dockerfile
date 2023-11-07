@@ -11,5 +11,4 @@ WORKDIR /home/vscode
 COPY entry.sh entry.sh
 RUN sudo chown vscode /home/vscode/entry.sh && sudo chmod +x /home/vscode/entry.sh
 # SHELL ["nrfutil","toolchain-manager","launch","/bin/bash","--","-c"]
-# ENTRYPOINT [ "nrfutil", "toolchain-manager", "launch", "/bin/bash", "--", "/home/vscode/entry.sh" ]
-ENTRYPOINT [ "nrfutil", "toolchain-manager", "launch", "/bin/bash" ]
+ENTRYPOINT [ "nrfutil", "toolchain-manager", "launch", "/bin/bash", "--", "/home/vscode/entry.sh" ]

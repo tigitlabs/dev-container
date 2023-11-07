@@ -11,7 +11,7 @@ on:
       - .github/actions/**
 jobs:
   smoke-test-nrf-base:
-    name: Smoke test
+    name: Smoke test base-nrf
     runs-on: ubuntu-latest
     steps:
 

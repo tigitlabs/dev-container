@@ -38,6 +38,11 @@ github-action-makefile-ci:	## ✅Run makefile-ci
 	act -W .github/workflows/makefile-ci.yml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
+.PHONY: github-action-markdown-lint
+github-action-markdown-lint:	## ✅Run markdown-lint
+	act -W .github/workflows/docs.yml \
+	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
+
 .PHONY: github-action-publish
 github-action-publish:	## ✅Build and publish all images
 	act -W .github/workflows/publish.yml \
@@ -88,4 +93,5 @@ makefile-ci:	## 🧪 Run all makefile targets
 	@make github-action-list
 	@make build-all
 	@make github-action-smoke-test
-
+	@make github-action-markdown-lint
+	@make github-action-makefile-ci

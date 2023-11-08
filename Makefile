@@ -16,8 +16,6 @@ github-action-list:	## ✅List Workflows
 	@echo "📋 List Pull Request Workflows"
 	@act pull_request --list
 
-##@ Github Actions - ACT - Smoke Test
-
 .PHONY: github-action-smoke-base-ubuntu
 github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu
 	act -W .github/workflows/smoke-base-ubuntu.yaml \

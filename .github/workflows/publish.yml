@@ -11,6 +11,7 @@ on:
 jobs:
 
   get-tags:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.get_tag_name.outputs.tag }}
@@ -26,6 +27,7 @@ jobs:
           fi
 
   build-and-push-base-ubuntu:
+    if: github.event.pull_request.merged == true
     needs: [ get-tags ]
     runs-on: ubuntu-latest
     permissions:
@@ -75,6 +77,7 @@ jobs:
           docker push ghcr.io/tigitlabs/base-ubuntu --all-tags
 
   build-and-push-base-nrf-image:
+    if: github.event.pull_request.merged == true
     needs: [ build-and-push-base-ubuntu, get-tags ]
     runs-on: ubuntu-latest
     permissions:

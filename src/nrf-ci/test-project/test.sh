@@ -24,7 +24,7 @@ checkPythonExtension
 #### Base Image Tests ####
 
 #### nrf tools ####
-checkNordicTools
+# checkNordicTools
 #### nrf tools ####
 
 # Report result

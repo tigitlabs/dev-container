@@ -10,7 +10,7 @@ on:
       - .github/workflows/nrf-ci.yaml
       - .github/actions/**
 jobs:
-  smoke-test-nrf-base:
+  smoke-test-nrf-ci:
     name: Smoke test nrf-ci
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +25,7 @@ jobs:
       id: smoke_test
       uses: ./.github/actions/smoke-test
       with:
-        image: base-nrf
+        image: nrf-ci
         variant: dev
 
   build-test-nrf-ci-image:

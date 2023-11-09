@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  makefile-ci:
+  makefile-github-actions-ci:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -45,11 +45,36 @@ jobs:
       - name: Run make github-action-smoke-base-nrf
         run: make github-action-smoke-base-nrf
 
+      - name: Run make github-action-smoke-nrf-ci
+        run: make github-action-smoke-nrf-ci
+
       - name: Run make github-action-publish
         run: make github-action-publish
 
       - name: Run make github-action-markdown-lint
         run: make github-action-markdown-lint
+
+  makefile-build-ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Install nectos act
+        run: |
+          cd /
+          curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+          act --version
 
       - name: Run make build-base-ubuntu
         run: make build-base-ubuntu

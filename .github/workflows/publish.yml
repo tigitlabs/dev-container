@@ -126,3 +126,54 @@ jobs:
         if: ${{ !env.ACT }}
         run: |
           docker push ghcr.io/tigitlabs/base-nrf --all-tags
+
+  build-and-push-nrf-ci-image:
+    if: github.event.pull_request.merged == true
+    needs: [ build-and-push-base-nrf-image, get-tags ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Smoke test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{needs.get-tags.outputs.tag}}
+        id: smoke_test
+        uses: ./.github/actions/smoke-test
+        with:
+          image: base-nrf
+          variant: $TAG
+
+      - name: Build the nrf-ci image
+        env:
+          TAG: ${{needs.get-tags.outputs.tag}}
+        run: |
+          export VARIANT=dev
+          devcontainer build \
+          --workspace-folder src/nrf-ci/ \
+          --image-name nrf-ci
+          docker tag nrf-ci ghcr.io/tigitlabs/nrf-ci
+          echo "Applying tag: ${TAG}"
+          docker tag nrf-ci ghcr.io/tigitlabs/nrf-ci:${TAG}
+          docker rmi base-nrf
+          docker images
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          docker push ghcr.io/tigitlabs/nrf-ci --all-tags

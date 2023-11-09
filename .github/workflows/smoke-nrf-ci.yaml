@@ -52,14 +52,7 @@ jobs:
 
     - name: Build example project
       run: |
-        # create group with gid 1000
-        sudo groupadd -g 1000 vscode
-        # add vscode user with same uid and gid 1000 as in the container
-        sudo useradd -u 1000 -g 1000 vscode
-        # Change current user to vscode
         mkdir -p ncs-example
-        # change owner to vscode
-        sudo chown -R vscode:vscode ncs-example
         echo "(*) west init"
         docker run \
         --rm \

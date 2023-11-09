@@ -81,3 +81,9 @@ jobs:
 
       - name: Run make build-base-nrf
         run: make build-base-nrf
+
+      - name: Run make build-nrf-ci
+        run: make build-nrf-ci
+
+      - name: Run make build-nrf-devcontainer
+        run: make build-nrf-devcontainer

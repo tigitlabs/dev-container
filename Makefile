@@ -79,6 +79,14 @@ build-nrf-ci:	## 🏗️Build nrf-ci image
 	@echo "🧪 Test nrf-ci image"
 	@./.github/actions/smoke-test/test.sh nrf-ci
 
+.PHONY: build-nrf-devcontainer
+build-nrf-devcontainer:	## 🏗️Build nrf-ci image
+	@echo "🏗️ Building nrf-devcontainer image"
+	export VARIANT="dev" && \
+	./.github/actions/smoke-test/build.sh nrf-devcontainer
+	@echo "🧪 Test nrf-devcontainer image"
+	@./.github/actions/smoke-test/test.sh nrf-devcontainer
+
 .PHONY: build-all
 build-all:	## 🏗️Build all images
 	@echo "🏗️ Building all images"

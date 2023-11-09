@@ -1,13 +1,14 @@
-# Based on: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/ubuntu
-# nrf-codespace
-# published at ghcr.io/tigitlabs/nrf-codespace
-ARG VARIANT=ubuntu-22.04
-ARG BASE_IMAGE=ghcr.io/tigitlabs/nrf-docker:latest
-# FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
-FROM ${BASE_IMAGE}
 
-ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-23-0/nrf-command-line-tools-10.23.0"
-# Exit immediately if any command fails
+ARG VARIANT="dev"
+FROM ghcr.io/tigitlabs/base-nrf:${VARIANT}
+
+LABEL dev.containers.features="common"
+LABEL dev.containers.features="nrf-tools"
+LABEL dev.containers.features="nrf-dev-container"
+
+ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-23-2/nrf-command-line-tools-10.23.2"
+USER vscode
+WORKDIR /home/vscode
 
 # Nordic command line tools
 # Releases: https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download

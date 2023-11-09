@@ -97,6 +97,14 @@ attach-base-nrf:	## bring up base-nrf container and attach shell
 	--id-label debug-container=base-nrf
 	devcontainer exec --id-label debug-container=base-nrf /bin/bash
 
+.PHONY: attach-nrf-ci
+attach-nrf-ci:	## bring up nrf-ci container and attach shell
+	@echo "🐋 Bring-up nrf-ci container"
+	export VARIANT="dev" && \
+	devcontainer up \
+	--workspace-folder src/nrf-ci/ \
+	--id-label debug-container=nrf-ci
+	devcontainer exec --id-label debug-container=nrf-ci /bin/bash
 
 .PHONY: makefile-ci
 makefile-ci:	## 🧪 Run all makefile targets

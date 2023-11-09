@@ -5,8 +5,7 @@ LABEL dev.containers.features="common"
 LABEL dev.containers.features="nrf-tools"
 
 ARG nrf_toolchain_version=v2.5.0
-ARG sdk_nrf_branch=v2.5-branch
-ARG sdk_dir=/home/vscode/sdk-nrf
+ARG sdk_dir=/home/vscode/sdk-nrf-${nrf_toolchain_version}
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
@@ -30,12 +29,3 @@ RUN  wget -q https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfuti
     nrfutil install completion && \
     nrfutil install nrf5sdk-tools && \
     nrfutil toolchain-manager install --ncs-version ${nrf_toolchain_version}
-
-# Prepare image with a ready to use build environment
-RUN <<EOT
-    mkdir -p ${sdk_dir}
-    west init -m https://github.com/nrfconnect/sdk-nrf --mr ${sdk_nrf_branch} ${sdk_dir}
-    cd ${sdk_dir}
-    west update --narrow -o=--depth=1
-    west zephyr-export
-EOT

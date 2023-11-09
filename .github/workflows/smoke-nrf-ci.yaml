@@ -1,0 +1,51 @@
+name: Smoke test "nrf-ci" build
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    paths:
+      - src/nrf-ci/**
+      - .github/workflows/nrf-ci.yaml
+      - .github/actions/**
+jobs:
+  smoke-test-nrf-ci:
+    name: Smoke test nrf-ci
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v3
+
+    - name: Smoke test
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: smoke_test
+      uses: ./.github/actions/smoke-test
+      with:
+        image: nrf-ci
+        variant: dev
+
+  build-test-nrf-ci-image:
+    name: west build test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v3
+
+    - name: Setup devcontainer cli
+      run: |
+        export DOCKER_BUILDKIT=1
+        echo "(*) Installing @devcontainer/cli"
+        npm install -g @devcontainers/cli
+
+    - name: Build nrf-ci image
+      run: |
+        echo "(*) Building nrf-ci image"
+        export VARIANT=dev
+        devcontainer build \
+        --workspace-folder src/nrf-ci \
+        --image-name nrf-ci

@@ -163,7 +163,7 @@ jobs:
           docker tag nrf-ci ghcr.io/tigitlabs/nrf-ci
           echo "Applying tag: ${TAG}"
           docker tag nrf-ci ghcr.io/tigitlabs/nrf-ci:${TAG}
-          docker rmi base-nrf
+          docker rmi nrf-ci
           docker images
 
       - name: Login to GitHub Container Registry

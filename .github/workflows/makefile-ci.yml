@@ -98,11 +98,13 @@ jobs:
           curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
           act --version
 
-      - name: Run make build-nrf-ci
-        run: make build-nrf-ci
-
       - name: Run make github-action-smoke-nrf-ci
         run: make github-action-smoke-nrf-ci
+
+      - name: Run make build-nrf-ci
+        run: | 
+          make build-nrf-ci
+
 
   makefile-nrf-devcontainer:
     runs-on: ubuntu-latest
@@ -127,7 +129,8 @@ jobs:
           act --version
 
       - name: Run make build-nrf-devcontainer
-        run: make build-nrf-devcontainer
+        run: | 
+          make build-nrf-devcontainer
 
       - name: Run make github-action-smoke-nrf-devcontainer
         run: make github-action-smoke-nrf-devcontainer

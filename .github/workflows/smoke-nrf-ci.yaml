@@ -61,7 +61,7 @@ jobs:
         docker run \
         --rm \
         --user vscode \
-        --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace: \
+        --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace \
         --workdir /home/vscode/nrf-workspace \
         nrf-ci:local \
         west init -m https://github.com/nrfconnect/ncs-example-application --mr main /home/vscode/nrf-workspace

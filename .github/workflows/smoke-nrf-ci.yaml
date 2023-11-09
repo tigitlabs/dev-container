@@ -50,9 +50,11 @@ jobs:
         --workspace-folder src/nrf-ci \
         --image-name nrf-ci:local
 
-    - name: Build example project
+    - name: west init
       run: |
         mkdir -p ncs-example
+        ls -la
+        whoami
         echo "(*) west init"
         docker run \
         --rm \
@@ -61,16 +63,23 @@ jobs:
         --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace \
         nrf-ci:local \
         west init -m https://github.com/nrfconnect/ncs-example-application --mr main /home/vscode/nrf-workspace
+
+    - name: west update
+      run: |
         echo "(*) west update"
         docker run \
-        -u root  \
+        -u vscode  \
+        --rm \
         --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace \
         --workdir /home/vscode/nrf-workspace \
         nrf-ci:local west update
+
+    - name: west build
+      run: |
         echo "(*) west build"
         docker run \
-        -u root  \
+        -u vscode  \
+        --rm \
         --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace \
         --workdir /home/vscode/nrf-workspace \
         nrf-ci:local west build -b custom_plank ncs-example-application/app
-

@@ -25,6 +25,7 @@ checkPythonExtension
 
 #### nrf tools ####
 checkNordicTools
+runBuildTests
 #### nrf tools ####
 
 # Report result

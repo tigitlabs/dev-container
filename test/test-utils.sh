@@ -197,8 +197,19 @@ checkNordicTools() {
     check "nrfutil toolchain" nrfutil toolchain-manager list
     nrf_toolchain_version=$(nrfutil toolchain-manager list | grep -oP 'v\d+\.\d+\.\d+' | awk '{print $1}')
     check-version-ge "nrf toolchain version" "${nrf_toolchain_version}" "v2.5.0"
+}
+
+runBuildTests() {
+    nrf_toolchain_version=$(nrfutil toolchain-manager list | grep -oP 'v\d+\.\d+\.\d+' | awk '{print $1}')
+    sdk_dir=$HOME/sdk-nrf-${nrf_toolchain_version}
+    mkdir -p ${sdk_dir}
+    echo -e "\n🧪 Testing west init"
+    west init -m https://github.com/nrfconnect/sdk-nrf --mr main ${sdk_dir}
+    cd ${sdk_dir}
+    echo -e "\n🧪 Testing west update"
+    west update --narrow -o=--depth=1
     echo -e "\n🧪 Testing west build"
-    cd $HOME/sdk-nrf-${nrf_toolchain_version}/nrf/applications/asset_tracker_v2
+    cd ${sdk_dir}/nrf/applications/asset_tracker_v2
     nrfutil toolchain-manager launch /bin/bash -- -c 'west build -b nrf9160dk_nrf9160ns --build-dir ./build'
     # Check if the build was successful
     check_file_exists "merged.hex" build/zephyr/merged.hex

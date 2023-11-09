@@ -7,7 +7,7 @@ on:
   pull_request:
     paths:
       - src/nrf-ci/**
-      - .github/workflows/nrf-ci.yaml
+      - .github/workflows/smoke-nrf-ci.yaml
       - .github/actions/**
 jobs:
   smoke-test-nrf-ci:

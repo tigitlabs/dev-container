@@ -75,7 +75,7 @@ build-base-nrf:	## 🏗️Build nrf-base image
 build-nrf-ci:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-ci image"
 	export VARIANT="dev" && \
-	devcontainer build --workspace-folder src/nrf-ci/
+	./.github/actions/smoke-test/build.sh nrf-ci
 	@echo "🧪 Test nrf-ci image"
 	@./.github/actions/smoke-test/test.sh nrf-ci
 

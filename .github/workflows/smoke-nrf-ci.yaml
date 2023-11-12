@@ -50,31 +50,44 @@ jobs:
         --workspace-folder src/nrf-ci \
         --image-name nrf-ci:local
 
+    - name: Create workdir
+      run: |
+        echo "(*) Creating workdir"
+        set -e
+        echo "Local user: $(whoami), $(id)"
+        DOCKER_USER=$(docker run --rm nrf-ci:local whoami)
+        DOCKER_USER_ID=$(docker run --rm nrf-ci:local id -u)
+        DOCKER_USER_GROUP_ID=$(docker run --rm nrf-ci:local id -g)
+        echo "Docker user: ${DOCKER_USER}, ${DOCKER_USER_ID}, ${DOCKER_USER_GROUP_ID}"
+        echo "Creating the user group in the host system"
+        sudo groupadd -g ${DOCKER_USER_GROUP_ID} ${DOCKER_USER}
+        echo "Creating the user in the host system"
+        sudo useradd -u ${DOCKER_USER_ID} -g ${DOCKER_USER_GROUP_ID} -m ${DOCKER_USER}
+        mkdir -p /tmp/ncs-example
+        sudo chown -R ${DOCKER_USER_ID}:${DOCKER_USER_GROUP_ID} /tmp/ncs-example
+        sudo chmod -R 777 /tmp/ncs-example
+        echo "ls -la: $(ls -la)"
+        su - vscode -c 'touch /tmp/ncs-example/test.txt'
+
     - name: west init
       run: |
-        mkdir -p ncs-example
-        sudo chown -R 1000:1000 ncs-example
-        ls -la
-        whoami
-        id
-        echo "(*) west init"
         docker run \
         --rm \
         --user vscode \
-        --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace \
-        --workdir /home/vscode/nrf-workspace \
+        --mount type=bind,source=/tmp/ncs-example,target=/home/vscode/ncs-example \
+        --workdir /home/vscode/ \
         nrf-ci:local \
-        west init -m https://github.com/nrfconnect/ncs-example-application --mr main /home/vscode/nrf-workspace
+        west init -m https://github.com/nrfconnect/ncs-example-application --mr main /home/vscode/ncs-example
 
     - name: west update
       run: |
-        echo "(*) west update"
-        docker run \
-        -u vscode  \
-        --rm \
-        --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace \
-        --workdir /home/vscode/nrf-workspace \
-        nrf-ci:local west update
+         echo "(*) west update"
+         docker run \
+          -u vscode  \
+          --rm \
+          --mount type=bind,source=/tmp/ncs-example,target=/home/vscode/ncs-example \
+          --workdir /home/vscode/ncs-example \
+          nrf-ci:local west update
 
     - name: west build
       run: |
@@ -82,6 +95,6 @@ jobs:
         docker run \
         -u vscode  \
         --rm \
-        --volume ${PWD}/ncs-example/:/home/vscode/nrf-workspace \
-        --workdir /home/vscode/nrf-workspace \
-        nrf-ci:local west build -b custom_plank ncs-example-application/app
+        --mount type=bind,source=/tmp/ncs-example,target=/home/vscode/ncs-example \
+        --workdir /home/vscode/ncs-example \
+        nrf-ci:local nrf-ci:local west build -b custom_plank ncs-example-application/app

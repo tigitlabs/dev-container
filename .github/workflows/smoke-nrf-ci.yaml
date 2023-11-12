@@ -60,9 +60,19 @@ jobs:
         DOCKER_USER_GROUP_ID=$(docker run --rm nrf-ci:local id -g)
         echo "Docker user: ${DOCKER_USER}, ${DOCKER_USER_ID}, ${DOCKER_USER_GROUP_ID}"
         echo "Creating the user group in the host system"
-        sudo groupadd -g ${DOCKER_USER_GROUP_ID} ${DOCKER_USER}
+        if [ $(getent group ${DOCKER_USER_GROUP_ID}) ]; then
+          echo "Group ${DOCKER_USER_GROUP_ID} already exists"
+        else
+          echo "Group ${DOCKER_USER_GROUP_ID} does not exist"
+          sudo groupadd -g ${DOCKER_USER_GROUP_ID} ${DOCKER_USER}
+        fi
         echo "Creating the user in the host system"
-        sudo useradd -u ${DOCKER_USER_ID} -g ${DOCKER_USER_GROUP_ID} -m ${DOCKER_USER}
+        if [ $(getent passwd ${DOCKER_USER_ID}) ]; then
+          echo "User ${DOCKER_USER_ID} already exists"
+        else
+          echo "User ${DOCKER_USER_ID} does not exist"
+          sudo useradd -u ${DOCKER_USER_ID} -g ${DOCKER_USER_GROUP_ID} -m ${DOCKER_USER}
+        fi
         mkdir -p /tmp/ncs-example
         sudo chown -R ${DOCKER_USER_ID}:${DOCKER_USER_GROUP_ID} /tmp/ncs-example
         sudo chmod -R 777 /tmp/ncs-example

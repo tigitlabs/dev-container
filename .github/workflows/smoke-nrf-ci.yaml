@@ -56,6 +56,7 @@ jobs:
         --image-name nrf-ci:local
 
     - name: Create workdir
+      if: ${{ !env.ACT }}
       run: |
         echo "(*) Creating workdir"
         set -e
@@ -84,6 +85,7 @@ jobs:
         echo "ls -la: $(ls -la)"
 
     - name: west init
+      if: ${{ !env.ACT }}
       run: |
         docker run \
         --rm \
@@ -94,6 +96,7 @@ jobs:
         west init -m https://github.com/nrfconnect/ncs-example-application --mr main /home/vscode/ncs-example
 
     - name: west update
+      if: ${{ !env.ACT }}
       run: |
          echo "(*) west update"
          docker run \
@@ -104,6 +107,7 @@ jobs:
           nrf-ci:local west update
 
     - name: west build
+      if: ${{ !env.ACT }}
       run: |
         echo "(*) west build"
         docker run \

@@ -74,10 +74,9 @@ jobs:
           sudo useradd -u ${DOCKER_USER_ID} -g ${DOCKER_USER_GROUP_ID} -m ${DOCKER_USER}
         fi
         mkdir -p /tmp/ncs-example
-        sudo chown -R ${DOCKER_USER_ID}:${DOCKER_USER_GROUP_ID} /tmp/ncs-example
-        sudo chmod -R 777 /tmp/ncs-example
+        # sudo chown -R ${DOCKER_USER_ID}:${DOCKER_USER_GROUP_ID} /tmp/ncs-example
+        # sudo chmod -R 777 /tmp/ncs-example
         echo "ls -la: $(ls -la)"
-        su - vscode -c 'touch /tmp/ncs-example/test.txt'
 
     - name: west init
       run: |

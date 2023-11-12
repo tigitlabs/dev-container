@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [ dev, main ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
-  makefile-github-actions-ci:
+  makefile-base-ubuntu:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,22 +43,16 @@ jobs:
       - name: Run make github-action-list
         run: make github-action-list
 
-      - name: Run make github-action-smoke-base-ubuntu
-        run: make github-action-smoke-base-ubuntu
-
-      - name: Run make github-action-smoke-base-nrf
-        run: make github-action-smoke-base-nrf
-
-      - name: Run make github-action-smoke-nrf-ci
-        run: make github-action-smoke-nrf-ci
-
-      - name: Run make github-action-publish
-        run: make github-action-publish
-
       - name: Run make github-action-markdown-lint
         run: make github-action-markdown-lint
 
-  makefile-build-ci:
+      - name: Run make build-base-ubuntu
+        run: make build-base-ubuntu
+
+      - name: Run make github-action-smoke-base-ubuntu
+        run: make github-action-smoke-base-ubuntu
+
+  makefile-base-nrf:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -76,8 +74,67 @@ jobs:
           curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
           act --version
 
-      - name: Run make build-base-ubuntu
-        run: make build-base-ubuntu
-
       - name: Run make build-base-nrf
         run: make build-base-nrf
+
+      - name: Run make github-action-smoke-base-nrf
+        run: make github-action-smoke-base-nrf
+
+  makefile-nrf-ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Install nectos act
+        run: |
+          cd /
+          curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+          act --version
+
+      - name: Run make github-action-smoke-nrf-ci
+        run: make github-action-smoke-nrf-ci
+
+      - name: Run make build-nrf-ci
+        run: | 
+          make build-nrf-ci
+
+
+  makefile-nrf-devcontainer:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Install nectos act
+        run: |
+          cd /
+          curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+          act --version
+
+      - name: Run make build-nrf-devcontainer
+        run: | 
+          make build-nrf-devcontainer
+
+      - name: Run make github-action-smoke-nrf-devcontainer
+        run: make github-action-smoke-nrf-devcontainer

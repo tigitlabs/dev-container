@@ -111,4 +111,4 @@ jobs:
         --rm \
         --mount type=bind,source=/tmp/ncs-example,target=/home/vscode/ncs-example \
         --workdir /home/vscode/ncs-example \
-        nrf-ci:local nrf-ci:local west build -b custom_plank ncs-example-application/app
+        nrf-ci:local west build -b custom_plank ncs-example-application/app

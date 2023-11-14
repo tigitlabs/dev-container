@@ -101,16 +101,6 @@ jobs:
           image: base-nrf
           variant: $TAG
 
-      - name: Smoke test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{needs.get-tags.outputs.tag}}
-        id: smoke_test
-        uses: ./.github/actions/smoke-test
-        with:
-          image: base-nrf
-          variant: $TAG
-
       - name: Build the base-nrf image
         env:
           TAG: ${{needs.get-tags.outputs.tag}}

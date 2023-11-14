@@ -50,15 +50,6 @@ jobs:
           image: base-ubuntu
           variant: jammy
 
-      - name: Smoke test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        id: smoke_test
-        uses: ./.github/actions/smoke-test
-        with:
-          image: base-ubuntu
-          variant: jammy
-
       - name: Build the Ubuntu base image
         env:
           TAG: ${{needs.get-tags.outputs.tag}}

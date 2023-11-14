@@ -31,10 +31,17 @@ github-action-smoke-nrf-ci:	## ✅Run smoke-test for nrf-ci
 	act -W .github/workflows/smoke-nrf-ci.yaml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
+.PHONY: github-action-smoke-nrf-devcontainer
+github-action-smoke-nrf-devcontainer:	## ✅Run smoke-test for nrf-devcontainer
+	act -W .github/workflows/smoke-nrf-devcontainer.yaml \
+	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
+
 .PHONY: github-action-smoke-test
 github-action-smoke-test:	## ✅Run smoke-test for all images
 	make github-action-smoke-base-ubuntu
 	make github-action-smoke-base-nrf
+	make github-action-smoke-nrf-ci
+	make github-action-smoke-nrf-devcontainer
 
 .PHONY: github-action-makefile-ci
 github-action-makefile-ci:	## ✅Run makefile-ci
@@ -75,9 +82,17 @@ build-base-nrf:	## 🏗️Build nrf-base image
 build-nrf-ci:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-ci image"
 	export VARIANT="dev" && \
-	devcontainer build --workspace-folder src/nrf-ci/
+	./.github/actions/smoke-test/build.sh nrf-ci
 	@echo "🧪 Test nrf-ci image"
 	@./.github/actions/smoke-test/test.sh nrf-ci
+
+.PHONY: build-nrf-devcontainer
+build-nrf-devcontainer:	## 🏗️Build nrf-ci image
+	@echo "🏗️ Building nrf-devcontainer image"
+	export VARIANT="dev" && \
+	./.github/actions/smoke-test/build.sh nrf-devcontainer
+	@echo "🧪 Test nrf-devcontainer image"
+	@./.github/actions/smoke-test/test.sh nrf-devcontainer
 
 .PHONY: build-all
 build-all:	## 🏗️Build all images
@@ -97,6 +112,14 @@ attach-base-nrf:	## bring up base-nrf container and attach shell
 	--id-label debug-container=base-nrf
 	devcontainer exec --id-label debug-container=base-nrf /bin/bash
 
+.PHONY: attach-nrf-ci
+attach-nrf-ci:	## bring up nrf-ci container and attach shell
+	@echo "🐋 Bring-up nrf-ci container"
+	export VARIANT="dev" && \
+	devcontainer up \
+	--workspace-folder src/nrf-ci/ \
+	--id-label debug-container=nrf-ci
+	devcontainer exec --id-label debug-container=nrf-ci /bin/bash
 
 .PHONY: makefile-ci
 makefile-ci:	## 🧪 Run all makefile targets

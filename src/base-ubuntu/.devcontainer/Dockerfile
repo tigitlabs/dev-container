@@ -7,5 +7,6 @@ LABEL dev.containers.features="common"
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
     make \
+    bash-completion \
     # Clean up
     && apt-get autoremove -y && apt-get clean -y

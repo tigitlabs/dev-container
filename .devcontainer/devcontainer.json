@@ -6,8 +6,8 @@
     "dockerfile": "./Dockerfile",
     "context": "."
   },
-  "initializeCommand": "bash .devcontainer/initializeCommand.sh",
-  "postStartCommand": "bash .devcontainer/postStartCommand.sh",
+  "initializeCommand": ".devcontainer/initializeCommand.sh",
+  "postStartCommand": ".devcontainer/postStartCommand.sh",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",

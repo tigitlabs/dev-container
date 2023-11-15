@@ -7,7 +7,9 @@
     "context": "."
   },
   "initializeCommand": ".devcontainer/initializeCommand.sh",
+  "postCreateCommand": ".devcontainer/postCreateCommand.sh",
   "postStartCommand": ".devcontainer/postStartCommand.sh",
+  
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",

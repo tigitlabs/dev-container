@@ -2,8 +2,7 @@
 # .devcontainer/initializeCommand.sh
 echo "🏗️ Initialize command"
 # Check if the script is running on GitHub Codespaces
-if [[ -n "${CODESPACES}" || -n "${GITHUB_CODESPACE_TOKEN}" ]]
-then
+if [[ -n "${CODESPACES}" || -n "${GITHUB_CODESPACE_TOKEN}" ]]; then
     printf "Running in GitHub Codespaces.\nNo need to export any keys."
     exit 0
 else
@@ -32,4 +31,9 @@ else
     echo "GITHUB_TOKEN=$(gh config get oauth_token --host github.com)" > .devcontainer/.env
     echo "GITHUB_USER=$(gh api user | jq -r '.login')" >> .devcontainer/.env
 
+    if [ -z "$SSH_AUTH_SOCK" ]; then
+        echo "SSH_AUTH_SOCK is not set"
+        echo "⚠️ SSH authentication to github.com will not work"
+        echo "https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_using-ssh-keys"
+    fi
 fi

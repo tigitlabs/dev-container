@@ -9,6 +9,11 @@ on:
       - src/nrf-devcontainer/**
       - .github/workflows/smoke-nrf-devcontainer.yaml
       - .github/actions/**
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke-test-nrf-devcontainer:
     name: Smoke test nrf-devcontainer

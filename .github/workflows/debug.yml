@@ -3,11 +3,32 @@
 name: "Debug Action"
 
 on:
-  pull_request:
-    branches: [ dev, main]
-    types: [ closed ]
   push:
-    # tags: [ v* ]
+  pull_request:
+  pull_request_review:
+  pull_request_review_comment:
+  pull_request_target:
+  fork:
+  create:
+  delete:
+  label:
+  issues:
+  branch_protection_rule:
+  deployment:
+  deployment_status:
+  discussion:
+  discussion_comment:
+  issue_comment:
+  gollum:
+  merge_group:
+  milestone:
+  page_build:
+  project:
+  project_card:
+  project_column:
+  public:
+  registry_package:
+  release:
 
 jobs:
   debug:

@@ -9,6 +9,11 @@ on:
       - src/base-nrf/**
       - .github/workflows/smoke-base-nrf.yaml
       - .github/actions/**
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke-test-nrf-base:
     name: Smoke test base-nrf

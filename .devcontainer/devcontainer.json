@@ -60,6 +60,7 @@
     "vscode": {
       "extensions": [
         "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
         "gitHub.copilot",
         "gitHub.copilot-chat",
         "ms-azuretools.vscode-docker",

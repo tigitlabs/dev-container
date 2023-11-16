@@ -9,7 +9,7 @@
   "initializeCommand": ".devcontainer/initializeCommand.sh",
   "postCreateCommand": ".devcontainer/postCreateCommand.sh",
   "postStartCommand": ".devcontainer/postStartCommand.sh",
-  
+  "onCreateCommand": "npm install -g @devcontainers/cli",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",
@@ -21,9 +21,6 @@
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest",
       "ppa": "false"
-    },
-    "ghcr.io/devcontainers/features/sshd:1": {
-      "version": "latest"
     },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": true,
@@ -71,6 +68,5 @@
         ]
     }
   },
-  "onCreateCommand": "npm install -g @devcontainers/cli",
   "remoteUser": "vscode"
 }

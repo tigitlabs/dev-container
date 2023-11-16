@@ -28,6 +28,9 @@ Based on this [repo from Nordic](https://github.com/NordicPlayground/nrf-docker)
 
 ### SSH Agent
 
+This is only required if you want to use SSH to authenticate with Github.
+If you are using HTTPS, then you can skip this section.
+
 When creating the devcontainer, and you want to use the ssh agent forwarding,
 for Github, you need to add the following to your `~/.ssh/config` file:
 

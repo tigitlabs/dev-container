@@ -7,24 +7,13 @@ on:
     branches: [ dev, main]
     types: [ closed ]
   push:
-    # tags: [ v* ]
+    tags: [ v* ]
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Print environment
-        uses: hmarr/debug-action@v2
-      - name: print github_event
-        run: cat $GITHUB_EVENT_PATH
-      - name: print github_event
-        run: echo "${{ toJson(github.event.pull_request) }}"
-
   get-tags:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest

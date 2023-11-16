@@ -5,7 +5,7 @@
 # act -W .github/workflows/act.yml --actor $GITHUB_USER --secret GITHUB_TOKEN=${GITHUB_TOKEN}
 # act push --workflows .github/workflows/release.yml --secret GITHUB_TOKEN=${GITHUB_TOKEN} --actor $GITHUB_USER --eventpath .github/workflows/act/event-release.json
 
-WORKFLOW_FILE=".github/workflows/docker-publish.yml"
+WORKFLOW_FILE=".github/workflows/publish.yml"
 # Sanity check
 echo "🧪🧪🧪 Sanity Check 🧪🧪🧪"
 set -e
@@ -25,7 +25,7 @@ echo "🧪🧪🧪 Testing act push --list 🧪🧪🧪"
 act push --list --workflows $WORKFLOW_FILE
 
 echo "🧪🧪🧪 Testing act --dryrun 🧪🧪🧪"
-act --workflows $WORKFLOW_FILE --dryrun \
+act --workflows $WORKFLOW_FILE --dryrun
 
 echo "🧪🧪🧪 Running push to main 🧪🧪🧪"
 export RESULT=$(act push --workflows $WORKFLOW_FILE \

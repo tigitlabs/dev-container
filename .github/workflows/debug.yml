@@ -39,8 +39,9 @@ jobs:
         run: |
           echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
           echo "GITHUB_EVENT_CREATE_REF_TYPE=${GITHUB_EVENT_CREATE_REF_TYPE}"
+          echo "GITHUB_EVENT_PULL_REQUEST_HEAD_REF=${{ github.event.pull_request.head.ref }}"
         env:
-          GITHUB_EVENT_CREATE_REF_TYPE: ${{ github.event.create.ref_type }}
+          GITHUB_EVENT_CREATE_REF_TYPE: ${{ github.event.pull_request.head.ref }}
 
   print_env:
     runs-on: ubuntu-latest
@@ -52,3 +53,7 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+      - name: print github event
+        run: echo ${GITHUB_EVENT_CONTEXT}
+        env:
+          GITHUB_EVENT_CONTEXT: ${{ toJson(github.event) }}

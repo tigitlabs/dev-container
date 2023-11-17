@@ -18,7 +18,7 @@ github-action-list:	## ✅List Workflows
 
 .PHONY: github-action-act-test
 github-action-act-test:	## ✅Run act-test
-	./.github/workflows/act/act-tests.sh
+	GITHUB_TOKEN=${GITHUB_TOKEN} && ./.github/workflows/act/act-tests.sh
 
 .PHONY: github-action-smoke-base-ubuntu
 github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu

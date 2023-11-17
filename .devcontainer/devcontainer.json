@@ -1,12 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // Base Image README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
 {
+  "name": "dev-container",
   "build": {
     "dockerfile": "./Dockerfile",
     "context": "."
   },
-  "name": "Dev Container",
-
+  "initializeCommand": ".devcontainer/initializeCommand.sh",
+  "postCreateCommand": ".devcontainer/postCreateCommand.sh",
+  "postStartCommand": ".devcontainer/postStartCommand.sh",
+  "onCreateCommand": "npm install -g @devcontainers/cli",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",
@@ -15,12 +18,12 @@
       "userGid": "1000",
       "upgradePackages": "true"
     },
+    "ghcr.io/devcontainers/features/sshd:1": {
+        "version": "latest"
+    },
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest",
       "ppa": "false"
-    },
-    "ghcr.io/devcontainers/features/sshd:1": {
-      "version": "latest"
     },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": true,
@@ -57,6 +60,7 @@
     "vscode": {
       "extensions": [
         "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
         "gitHub.copilot",
         "gitHub.copilot-chat",
         "ms-azuretools.vscode-docker",
@@ -67,6 +71,5 @@
         ]
     }
   },
-  "onCreateCommand": "npm install -g @devcontainers/cli",
   "remoteUser": "vscode"
 }

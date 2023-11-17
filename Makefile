@@ -16,6 +16,10 @@ github-action-list:	## ✅List Workflows
 	@echo "📋 List Pull Request Workflows"
 	@act pull_request --list
 
+.PHONY: github-action-act-test
+github-action-act-test:	## ✅Run act-test
+	GITHUB_TOKEN=${GITHUB_TOKEN} && ./.github/workflows/act/act-tests.sh
+
 .PHONY: github-action-smoke-base-ubuntu
 github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu
 	act -W .github/workflows/smoke-base-ubuntu.yaml \
@@ -125,6 +129,7 @@ attach-nrf-ci:	## bring up nrf-ci container and attach shell
 makefile-ci:	## 🧪 Run all makefile targets
 	@make help
 	@make github-action-list
+	@make github-action-act-test
 	@make build-all
 	@make github-action-smoke-test
 	@make github-action-markdown-lint

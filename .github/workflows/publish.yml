@@ -6,8 +6,7 @@ on:
   pull_request:
     branches: [ dev, main]
     types: [ closed ]
-  push:
-    tags: [ v* ]
+  create:
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,7 +14,7 @@ concurrency:
 
 jobs:
   get-tags:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.get_tag_name.outputs.tag }}
@@ -31,7 +30,7 @@ jobs:
           fi
 
   build-and-push-base-ubuntu:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     needs: [ get-tags ]
     runs-on: ubuntu-latest
     permissions:
@@ -81,7 +80,7 @@ jobs:
           docker push ghcr.io/tigitlabs/base-ubuntu --all-tags
 
   build-and-push-base-nrf-image:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     needs: [ build-and-push-base-ubuntu, get-tags ]
     runs-on: ubuntu-latest
     permissions:
@@ -132,7 +131,7 @@ jobs:
           docker push ghcr.io/tigitlabs/base-nrf --all-tags
 
   build-and-push-nrf-ci-image:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     needs: [ build-and-push-base-nrf-image, get-tags ]
     runs-on: ubuntu-latest
     permissions:

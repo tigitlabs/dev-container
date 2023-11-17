@@ -8,6 +8,10 @@ Repo to maintain base Github dev containers and codespaces
 
 You have to run the act commands in the vscode terminal. When you run the act command in the bash shell it will not work.
 
+### tmate
+
+<https://dev.to/github/debug-your-github-actions-via-ssh-by-using-tmate-1hd6>
+
 ## ubuntu-base
 
 <https://github.com/devcontainers/images/tree/main/src/base-ubuntu>

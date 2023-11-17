@@ -26,6 +26,7 @@ jobs:
 
       - name: Run make github-action-act-test
         run: |
+          export GITHUB_TOKEN=${GITHUB_TOKEN}
           make github-action-act-test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

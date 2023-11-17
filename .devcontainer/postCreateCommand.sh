@@ -12,6 +12,7 @@ else
     if [ -f "$ENV_FILE" ]; then
         # Get absolute path of .env file
         ENV_FILE=$(realpath ${ENV_FILE})
+        # Add loading of variables to ~/.bashrc
         echo "Add env file ${ENV_FILE} to ~/.bashrc"
         echo "### Load env variables" >> ~/.bashrc
         echo "# Added from postStartCommand.sh" >> ~/.bashrc

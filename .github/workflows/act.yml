@@ -1,0 +1,33 @@
+---
+# Run tests to make sure test scripts are working
+name: "ACT - Github Actions"
+
+on:
+  pull_request:
+    branches: [ dev, main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  act-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install nectos act
+        run: |
+          cd /
+          curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+          act --version
+
+      - name: Run make github-action-act-test
+        run: make github-action-act-test

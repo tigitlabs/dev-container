@@ -1,10 +1,29 @@
 {
     "after": "7e79084564dfcc907dfc358a36860053fce32890",
-    "base_ref": "refs/heads/fix-publish-on-tag",
-    "before": "0000000000000000000000000000000000000000",
-    "commits": [],
-    "compare": "https://github.com/tigitlabs/dev-container/compare/v0.0.05",
-    "created": true,
+    "base_ref": null,
+    "before": "f12c20955374e2dfe0ca9404eebf85162b82b704",
+    "commits": [
+      {
+        "author": {
+          "email": "timur@tigitlabs.com",
+          "name": "Timur",
+          "username": "tigitlabs"
+        },
+        "committer": {
+          "email": "timur@tigitlabs.com",
+          "name": "Timur",
+          "username": "tigitlabs"
+        },
+        "distinct": true,
+        "id": "7e79084564dfcc907dfc358a36860053fce32890",
+        "message": "debug",
+        "timestamp": "2023-11-17T13:07:35Z",
+        "tree_id": "777c3bc20de43932d708b4c5190640a3a2a30ac1",
+        "url": "https://github.com/tigitlabs/dev-container/commit/7e79084564dfcc907dfc358a36860053fce32890"
+      }
+    ],
+    "compare": "https://github.com/tigitlabs/dev-container/compare/f12c20955374...7e79084564df",
+    "created": false,
     "deleted": false,
     "forced": false,
     "head_commit": {
@@ -29,7 +48,7 @@
       "email": "61022457+tigitlabs@users.noreply.github.com",
       "name": "tigitlabs"
     },
-    "ref": "refs/tags/v0.0.05",
+    "ref": "refs/heads/fix-publish-on-tag",
     "repository": {
       "allow_forking": true,
       "archive_url": "https://api.github.com/repos/tigitlabs/dev-container/{archive_format}{/ref}",
@@ -112,7 +131,7 @@
       },
       "private": false,
       "pulls_url": "https://api.github.com/repos/tigitlabs/dev-container/pulls{/number}",
-      "pushed_at": 1700226668,
+      "pushed_at": 1700226457,
       "releases_url": "https://api.github.com/repos/tigitlabs/dev-container/releases{/id}",
       "size": 123,
       "ssh_url": "git@github.com:tigitlabs/dev-container.git",
@@ -154,4 +173,4 @@
       "type": "User",
       "url": "https://api.github.com/users/tigitlabs"
     }
-}
+  }

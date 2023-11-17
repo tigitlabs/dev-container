@@ -31,9 +31,24 @@ on:
   release:
 
 jobs:
-  debug:
+  print_event_details:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Print Event details
+        run: |
+          echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
+          echo "GITHUB_EVENT_CREATE_REF_TYPE=${GITHUB_EVENT_CREATE_REF_TYPE}"
+        env:
+          GITHUB_EVENT_CREATE_REF_TYPE: ${{ github.event.create.ref_type }}
+
+  print_env:
+    runs-on: ubuntu-latest
+    steps:
       - name: Print environment
-        uses: hmarr/debug-action@v2
+        uses: hmarr/debug-action@v2.1.0
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"

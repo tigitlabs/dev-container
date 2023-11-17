@@ -14,11 +14,6 @@ jobs:
 
   act-tests:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -30,4 +25,7 @@ jobs:
           act --version
 
       - name: Run make github-action-act-test
-        run: make github-action-act-test
+        run: |
+          make github-action-act-test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

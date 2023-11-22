@@ -12,7 +12,8 @@ Best starting point to adapt the repository to your needs is by understanding th
 #### Workflows
 
 - act.yml
-  - act/event-**
+  - act/event-**  
+    Event json files for local testing with act
   - act/act-test.sh  
       Test script to help during the development of Workflows/Jobs
 - debug.yml  
@@ -21,16 +22,21 @@ Best starting point to adapt the repository to your needs is by understanding th
 - docs.yml  
    Markdown linting
 - makefile-ci.yml
-- publish.yml
+- publish.yml  
+   Publishes the devcontainer images to the Github Container Registry
 - smoke-***
+   Smoke tests for the devcontainer images
 
 ### ACT
 
 Used to run Github Actions locally.
 github.com/nectos/act
 
-⚠️WARNING
-You have to run the act commands in the vscode terminal. When you run the act command in the bash shell it will not work.
+> ⚠️ **TODO**
+>
+> You have to run the act commands in the vscode terminal. When a shell is opened via SSH the act commands will fail.  
+> This is due to the fact that the environment variables are not set.
+> [Shell integration](https://code.visualstudio.com/docs/terminal/shell-integration)
 
 ### tmate
 

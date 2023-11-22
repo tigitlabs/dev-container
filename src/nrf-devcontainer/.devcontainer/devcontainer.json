@@ -7,17 +7,21 @@
             "VARIANT": "${localEnv:VARIANT}"
         }
     },
-    // Use 'forwardPorts' to make a list of ports inside the container available locally.
-    // "forwardPorts": [],
-
-    // Use 'postCreateCommand' to run commands after the container is created.
-    // "postCreateCommand": "uname -a",
-
     "remoteUser": "vscode",
     "customizations": {
         "vscode": {
             "extensions": [
-                "nordic-semiconductor.nrf-connect-extension-pack"
+                "nordic-semiconductor.nrf-connect-extension-pack",
+                "github.vscode-github-actions",
+                "github.vscode-pull-request-github",
+                "gitHub.copilot",
+                "gitHub.copilot-chat",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode-remote.remote-containers",
+                "mutantdino.resourcemonitor",
+                "eamodio.gitlens",
+                "DavidAnson.vscode-markdownlint",
+                "streetsidesoftware.code-spell-checker"
             ]
         }
     }

@@ -23,9 +23,9 @@ check "usr-local-etc-config-does-not-exist" test ! -f "/usr/local/etc/gitconfig"
 checkPythonExtension
 #### Base Image Tests ####
 
-#### nrf tools ####
-# checkNordicTools
-#### nrf tools ####
+#### nrf dev tools ####
+check "nrfjprog" nrfjprog --version
+#### nrf dev tools ####
 
 # Report result
 reportResults

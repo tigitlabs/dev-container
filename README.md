@@ -7,7 +7,7 @@ The images can be used locally or on Github via Codespaces.
 
 ### Github Actions
 
-Best starting point to adappt the repositiry to your needs is by understanding the Workflow files.
+Best starting point to adapt the repository to your needs is by understanding the Workflow files.
 
 #### Workflows
 
@@ -18,7 +18,8 @@ Best starting point to adappt the repositiry to your needs is by understanding t
 - debug.yml  
    Prints debug information of the event that triggered the Workflow run. Also dumbs the the github.event object as a json.
    This outputs can be used to debug Workflows locally by adding this outputs as event files.
-- docs.yml
+- docs.yml  
+   Markdown linting
 - makefile-ci.yml
 - publish.yml
 - smoke-***
@@ -56,7 +57,7 @@ Based on this [repo from Nordic](https://github.com/NordicPlayground/nrf-docker)
 
 ## Setup for Host Machine
 
-Requierments are that you have the Github CLI installed and the client is authenticated.
+Requirements are that you have the Github CLI installed and the client is authenticated.
 If you are using SSH Keys to perform git actions, check the SSH Agent sections.
 
 ### SSH Agent

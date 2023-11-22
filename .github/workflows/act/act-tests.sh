@@ -14,6 +14,7 @@ SMOKETEST_NRF_CI_WORKFLOW_FILE=".github/workflows/smoke-nrf-ci.yaml"
 CREATE_TAG_EVENT_FILE=".github/workflows/act/event-create-tag.json"
 PUSH_TAG_EVENT_FILE=".github/workflows/act/event-push-tag.json"
 PUSH_COMMIT_EVENT_FILE=".github/workflows/act/event-push-commit.json"
+PR_OPEN_EVENT_FILE=".github/workflows/act/event-pr-opened.json"
 
 # Function to run act --dryrun and check for errors
 # $1: The workflow file to run
@@ -65,6 +66,8 @@ function act_github_event() {
   act push --workflows $DEBUG_WORKFLOW_FILE --job print_event_details --eventpath $PUSH_TAG_EVENT_FILE
   echo "🧪🧪🧪 create tag event 🧪🧪🧪"
   act create --workflows $DEBUG_WORKFLOW_FILE --job print_event_details --eventpath $CREATE_TAG_EVENT_FILE
+  echo "🧪🧪🧪 PR open event 🧪🧪🧪"
+  act pull_request --workflows $DEBUG_WORKFLOW_FILE --job print_event_details --eventpath $PR_OPEN_EVENT_FILE
 }
 
 # Run tests

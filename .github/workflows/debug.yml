@@ -59,6 +59,9 @@ jobs:
           echo "master_branch: ${{ github.event.master_branch }}"
           echo "pusher_type: ${{ github.event.pusher_type }}"
           echo "ref_type: ${{ github.event.ref_type }}"
+          # https://docs.github.com/en/webhooks/webhook-events-and-payloads#pull_request
+          echo "action: ${{ github.event.action }}"
+          echo "merged: ${{ github.event.pull_request.merged }}"
 
   print_env:
     runs-on: ubuntu-latest

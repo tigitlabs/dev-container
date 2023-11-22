@@ -168,7 +168,7 @@ jobs:
         id: smoke_test
         uses: ./.github/actions/smoke-test
         with:
-          image: base-nrf
+          image: nrf-ci
           variant: $TAG
 
       - name: Build the nrf-ci image

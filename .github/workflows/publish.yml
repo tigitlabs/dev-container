@@ -35,11 +35,9 @@ jobs:
               echo "tag is not a semver tag"
               exit 1
             fi
-
-          fi
           if [[ "${{ github.ref }}" == "refs/heads/"* ]]; then
             echo "Branch event detected"
-            echo "tag=$(echo "${{ github.ref }}" | grep -oP 'refs/heads/\K(.+)')"
+            tag=$(echo "${{ github.ref }}" | grep -oP 'refs/heads/\K(.+)')
             echo "tag=$tag" >> $GITHUB_OUTPUT
             echo "Set the tag to: $tag"
           fi

@@ -59,16 +59,17 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "github.vscode-github-actions",
-        "github.vscode-pull-request-github",
-        "gitHub.copilot",
-        "gitHub.copilot-chat",
-        "ms-azuretools.vscode-docker",
-        "mutantdino.resourcemonitor",
-        "eamodio.gitlens",
-        "DavidAnson.vscode-markdownlint",
-        "ms-vscode-remote.remote-containers"
-        ]
+		"github.vscode-github-actions",
+		"github.vscode-pull-request-github",
+		"gitHub.copilot",
+		"gitHub.copilot-chat",
+		"ms-azuretools.vscode-docker",
+		"mutantdino.resourcemonitor",
+		"eamodio.gitlens",
+		"DavidAnson.vscode-markdownlint",
+		"ms-vscode-remote.remote-containers",
+		"streetsidesoftware.code-spell-checker"
+	]
     }
   },
   "remoteUser": "vscode"

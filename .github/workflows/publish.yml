@@ -221,7 +221,7 @@ jobs:
           image: nrf-devcontainer
           variant: $TAG
 
-      - name: Build the nrf-ci image
+      - name: Build the nrf-devcontainer image
         env:
           TAG: ${{needs.get-tags.outputs.tag}}
         run: |

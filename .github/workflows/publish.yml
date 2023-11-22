@@ -219,7 +219,7 @@ jobs:
         id: smoke_test
         uses: ./.github/actions/smoke-test
         with:
-          image: base-nrf
+          image: nrf-devcontainer
           variant: $TAG
 
       - name: Build the nrf-ci image
@@ -228,12 +228,12 @@ jobs:
         run: |
           export VARIANT=dev
           devcontainer build \
-          --workspace-folder src/nrf-ci/ \
-          --image-name nrf-ci
-          docker tag nrf-ci ghcr.io/tigitlabs/nrf-ci
+          --workspace-folder src/nrf-devcontainer/ \
+          --image-name nrf-devcontainer
+          docker tag nrf-devcontainer ghcr.io/tigitlabs/nrf-devcontainer
           echo "Applying tag: ${TAG}"
-          docker tag nrf-ci ghcr.io/tigitlabs/nrf-ci:${TAG}
-          docker rmi nrf-ci
+          docker tag nrf-devcontainer ghcr.io/tigitlabs/nrf-devcontainer:${TAG}
+          docker rmi nrf-devcontainer
           docker images
 
       - name: Login to GitHub Container Registry
@@ -246,4 +246,4 @@ jobs:
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/nrf-ci --all-tags
+          docker push ghcr.io/tigitlabs/nrf-devcontainer --all-tags

@@ -12,8 +12,8 @@ Best starting point to adappt the repositiry to your needs is by understanding t
 #### Workflows
 
 - act.yml
-   - act/event-**
-   - act/act-test.sh  
+  - act/event-**
+  - act/act-test.sh  
       Test script to help during the development of Workflows/Jobs
 - debug.yml  
    Prints debug information of the event that triggered the Workflow run. Also dumbs the the github.event object as a json.
@@ -36,13 +36,11 @@ You have to run the act commands in the vscode terminal. When you run the act co
 This enables SSH access to a Github Actions runner.
 <https://dev.to/github/debug-your-github-actions-via-ssh-by-using-tmate-1hd6>
 
-
 ## Images
 
 ### base-ubuntu
 
 Used as the base image for all other devcontainers.
-
 
 ## base-nrf
 
@@ -60,6 +58,7 @@ Based on this [repo from Nordic](https://github.com/NordicPlayground/nrf-docker)
 
 Requierments are that you have the Github CLI installed and the client is authenticated.
 If you are using SSH Keys to perform git actions, check the SSH Agent sections.
+
 ### SSH Agent
 
 (Documentation)<https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials>

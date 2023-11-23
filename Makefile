@@ -103,6 +103,8 @@ build-all:	## 🏗️Build all images
 	@echo "🏗️ Building all images"
 	@make build-base-ubuntu
 	@make build-base-nrf
+	@make build-nrf-ci
+	@make build-nrf-devcontainer
 
 ##@ 🐋 devcontainer attach
 

@@ -1,27 +1,21 @@
 ARG VARIANT="main"
 FROM ghcr.io/tigitlabs/base-ubuntu:${VARIANT}
 
-LABEL dev.containers.features="common"
-LABEL dev.containers.features="nrf-tools"
-
 ARG nrf_toolchain_version=v2.5.0
 ARG sdk_dir=/home/vscode/sdk-nrf-${nrf_toolchain_version}
+ARG sdk_nrf_branch=v2.5-branch
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends \
-    cmake \
-    clang-format \
-    && apt-get autoremove -y && apt-get clean -y
-
-RUN pip3 install west
+LABEL dev.containers.features="common"
+LABEL dev.containers.features="nrf-tools"
+LABEL nrf.toolchain.version="${nrf_toolchain_version}"
 
 USER vscode
 WORKDIR /home/vscode
 
 # ClangFormat
-RUN wget -qO- "https://raw.githubusercontent.com/nrfconnect/sdk-nrf/v2.5-branch/.clang-format" > /home/vscode/.clang-format
+RUN wget -qO- "https://raw.githubusercontent.com/nrfconnect/sdk-nrf/${sdk_nrf_branch}/.clang-format" > /home/vscode/.clang-format
 
-# Install toolchain
+# Install nrfutil and toolchain
 RUN  wget -q https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfutil && \
     sudo mv nrfutil /usr/local/bin && \
     sudo chmod +x /usr/local/bin/nrfutil && \
@@ -29,3 +23,17 @@ RUN  wget -q https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfuti
     nrfutil install completion && \
     nrfutil install nrf5sdk-tools && \
     nrfutil toolchain-manager install --ncs-version ${nrf_toolchain_version}
+
+# Install nRF Connect SDK
+WORKDIR /home/vscode/ncs
+SHELL ["nrfutil","toolchain-manager","launch","/bin/bash","--","-c"]
+RUN <<EOT
+    west init -m https://github.com/nrfconnect/sdk-nrf --mr ${sdk_nrf_branch} ./${nrf_toolchain_version}
+    cd ./${nrf_toolchain_version}
+    west update --narrow -o=--depth=1
+EOT
+
+COPY entry.sh /usr/local/bin/entry.sh
+RUN sudo chown vscode /usr/local/bin/entry.sh && sudo chmod +x /usr/local/bin/entry.sh
+
+WORKDIR /home/vscode

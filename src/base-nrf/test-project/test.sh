@@ -24,6 +24,8 @@ checkPythonExtension
 #### Base Image Tests ####
 
 #### nrf tools ####
+check_file_exists "entry.sh" /usr/local/bin/entry.sh
+check_file_exists ".clang-format" /home/vscode/.clang-format
 checkNordicTools
 runBuildTests
 #### nrf tools ####

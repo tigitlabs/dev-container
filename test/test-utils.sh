@@ -41,20 +41,6 @@ check_file_exists() {
     fi
 }
 
-check_file_exists() {
-    LABEL=$1
-    FILE_PATH=$2
-    echo -e "\n🧪 Checking if file $LABEL exists at $FILE_PATH"
-    if [ -f "$FILE_PATH" ]; then 
-        echo "✅  File exists!"
-        return 0
-    else
-        echoStderr "❌ File $LABEL does not exist at $FILE_PATH."
-        FAILED+=("$LABEL")
-        return 1
-    fi
-}
-
 check-version-ge() {
     LABEL=$1
     CURRENT_VERSION=$2
@@ -133,6 +119,25 @@ checkExtension() {
     fi
 }
 
+runNrfCommand() {
+    echo -e "\n🏃 Running in nrf toolchain: $@"
+    nrfutil toolchain-manager launch -- /usr/local/bin/entry.sh "$@"
+}
+
+checkNrfCommand() {
+    LABEL=$1
+    shift
+    echo -e "\n🧪 Testing nrf command $LABEL"
+    if runNrfCommand "$@"; then 
+        echo "✅  Passed!"
+        return 0
+    else
+        echoStderr "❌ $LABEL check failed."
+        FAILED+=("$LABEL")
+        return 1
+    fi
+}
+
 checkCommon()
 {
     PACKAGE_LIST="apt-utils \
@@ -190,26 +195,26 @@ checkPythonExtension() {
 }
 
 checkNordicTools() {
-    check "cmake" cmake --version
-    check "clang-format" clang-format --version
-    check "west" west --version
+    # check "nrfutil" nrfutil toolchain-manager launch /bin/bash
+    checkNrfCommand "cmake" cmake --version
+    checkNrfCommand "clang-format" clang-format --version
+    checkNrfCommand "west" west --version
     check "nrfutil" nrfutil --version
     check "nrfutil toolchain" nrfutil toolchain-manager list
     nrf_toolchain_version=$(nrfutil toolchain-manager list | grep -oP 'v\d+\.\d+\.\d+' | awk '{print $1}')
     check-version-ge "nrf toolchain version" "${nrf_toolchain_version}" "v2.5.0"
 }
 
+
+
 runBuildTests() {
     nrf_toolchain_version=$(nrfutil toolchain-manager list | grep -oP 'v\d+\.\d+\.\d+' | awk '{print $1}')
-    sdk_dir=$HOME/sdk-nrf-${nrf_toolchain_version}
-    mkdir -p ${sdk_dir}
-    echo -e "\n🧪 Testing west init"
-    west init -m https://github.com/nrfconnect/sdk-nrf --mr main ${sdk_dir}
+    sdk_dir=$HOME/ncs/${nrf_toolchain_version}
     cd ${sdk_dir}
     echo -e "\n🧪 Testing west update"
-    west update --narrow -o=--depth=1
+    west update
     echo -e "\n🧪 Testing west build"
-    cd ${sdk_dir}/nrf/applications/asset_tracker_v2
+    cd ./nrf/applications/asset_tracker_v2
     nrfutil toolchain-manager launch /bin/bash -- -c 'west build -b nrf9160dk_nrf9160ns --build-dir ./build'
     # Check if the build was successful
     check_file_exists "merged.hex" build/zephyr/merged.hex

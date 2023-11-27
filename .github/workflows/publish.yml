@@ -66,13 +66,11 @@ jobs:
         uses: ./.github/actions/smoke-test
         with:
           image: base-ubuntu
-          variant: jammy
 
       - name: Build the Ubuntu base image
         env:
           TAG: ${{needs.get-tags.outputs.tag}}
         run: |
-          export VARIANT=jammy
           devcontainer build \
           --workspace-folder src/base-ubuntu/ \
           --image-name base-ubuntu
@@ -98,6 +96,8 @@ jobs:
     if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     needs: [ build-and-push-base-ubuntu, get-tags ]
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{needs.get-tags.outputs.tag}}
     permissions:
       contents: read
       packages: write
@@ -120,10 +120,8 @@ jobs:
           variant: $TAG
 
       - name: Build the base-nrf image
-        env:
-          TAG: ${{needs.get-tags.outputs.tag}}
         run: |
-          export VARIANT=dev
+          export VARIANT=${TAG}
           devcontainer build \
           --workspace-folder src/base-nrf/ \
           --image-name base-nrf
@@ -149,6 +147,8 @@ jobs:
     if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     needs: [ build-and-push-base-nrf-image, get-tags ]
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{needs.get-tags.outputs.tag}}
     permissions:
       contents: read
       packages: write
@@ -171,10 +171,8 @@ jobs:
           variant: $TAG
 
       - name: Build the nrf-ci image
-        env:
-          TAG: ${{needs.get-tags.outputs.tag}}
         run: |
-          export VARIANT=dev
+          export VARIANT=${TAG}
           devcontainer build \
           --workspace-folder src/nrf-ci/ \
           --image-name nrf-ci
@@ -225,7 +223,7 @@ jobs:
         env:
           TAG: ${{needs.get-tags.outputs.tag}}
         run: |
-          export VARIANT=dev
+          export VARIANT=${TAG}
           devcontainer build \
           --workspace-folder src/nrf-devcontainer/ \
           --image-name nrf-devcontainer

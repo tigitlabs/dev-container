@@ -48,14 +48,28 @@ jobs:
 
   makefile-local-build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_USER: ${{ github.actor }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Run make build-base-ubuntu
+        run: make build-base-ubuntu
+
+      - name: Run make build-base-nrf
+        run: make build-base-nrf
+
+      - name: Run make build-nrf-ci
+        run: make build-nrf-ci
+
+      - name: Run make build-nrf-devcontainer
+        run: make build-nrf-devcontainer
 
       - name: Run make build-all
         run: make build-all

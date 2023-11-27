@@ -69,34 +69,36 @@ github-action-publish:	## ✅Build and publish all images
 .PHONY: build-base-ubuntu
 build-base-ubuntu:	## 🏗️Build ubuntu-base image
 	@echo "🏗️ Building base-ubuntu image"	
-	export VARIANT="jammy" && \
-	./.github/actions/smoke-test/build.sh base-ubuntu
-	@echo "🧪 Test ubuntu-base image"
-	@./.github/actions/smoke-test/test.sh base-ubuntu
+	@devcontainer build \
+	--workspace-folder src/base-ubuntu \
+	--image-name local/${GITHUB_USER}/base-ubuntu:local
 
 .PHONY: build-base-nrf
 build-base-nrf:	## 🏗️Build nrf-base image
-	@echo "🏗️ Building base-nrf image"	
-	export VARIANT="dev" && \
-	./.github/actions/smoke-test/build.sh base-nrf
-	@echo "🧪 Test nrf-base image"
-	@./.github/actions/smoke-test/test.sh base-nrf
+	@echo "🏗️ Building base-nrf image"
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
+	devcontainer build \
+	--workspace-folder src/base-nrf \
+	--image-name local/${GITHUB_USER}/base-nrf:local
 
 .PHONY: build-nrf-ci
 build-nrf-ci:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-ci image"
-	export VARIANT="dev" && \
-	./.github/actions/smoke-test/build.sh nrf-ci
-	@echo "🧪 Test nrf-ci image"
-	@./.github/actions/smoke-test/test.sh nrf-ci
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
+	devcontainer build \
+	--workspace-folder src/nrf-ci \
+	--image-name local/${GITHUB_USER}/nrf-ci:local
 
 .PHONY: build-nrf-devcontainer
 build-nrf-devcontainer:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-devcontainer image"
-	export VARIANT="dev" && \
-	./.github/actions/smoke-test/build.sh nrf-devcontainer
-	@echo "🧪 Test nrf-devcontainer image"
-	@./.github/actions/smoke-test/test.sh nrf-devcontainer
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
+	devcontainer build \
+	--workspace-folder src/nrf-devcontainer \
+	--image-name local/${GITHUB_USER}/nrf-devcontainer:local
 
 .PHONY: build-all
 build-all:	## 🏗️Build all images

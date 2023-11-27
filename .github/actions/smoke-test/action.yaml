@@ -7,7 +7,6 @@ inputs:
   variant:
     description: 'Variant to build and test'
     required: false
-    default: 'jammy'
 
 runs:
   using: composite

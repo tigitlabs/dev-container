@@ -31,7 +31,6 @@ jobs:
       uses: ./.github/actions/smoke-test
       with:
         image: nrf-ci
-        variant: dev
 
   build-test-nrf-ci-image:
     name: west build test

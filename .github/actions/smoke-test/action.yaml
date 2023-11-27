@@ -4,9 +4,6 @@ inputs:
     description: 'Image to test'
     required: true
     default: 'base-ubuntu'
-  variant:
-    description: 'Variant to build and test'
-    required: false
 
 runs:
   using: composite
@@ -23,7 +20,6 @@ runs:
       id: build_image
       shell: bash
       run: |
-        export VARIANT=${{ inputs.variant }}
         ${{ github.action_path }}/build.sh ${{ inputs.image }}
 
     - name: Test image

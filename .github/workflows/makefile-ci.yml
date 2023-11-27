@@ -92,8 +92,12 @@ jobs:
   makefile-ci-run:
     # This is a redundant job, but it is here to make sure that the target is running
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     env:
       GITHUB_USER: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

@@ -4,7 +4,8 @@
         "dockerfile": "./Dockerfile",
         "context": ".",
         "args": {
-            "VARIANT": "${localEnv:VARIANT}"
+            "VARIANT": "${localEnv:VARIANT:main}",
+            "REGISTRY" : "${localEnv:REGISTRY:ghcr.io}"
         }
     },
     "remoteUser": "vscode",

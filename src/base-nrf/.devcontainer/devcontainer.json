@@ -3,8 +3,10 @@
         "dockerfile": "./Dockerfile",
         "context": ".",
         "args": {
-            "VARIANT": "${localEnv:VARIANT}",
-            "nrf_toolchain_version": "v2.5.0"
+            "VARIANT": "${localEnv:VARIANT:main}",
+            "REGISTRY" : "${localEnv:REGISTRY:ghcr.io}",
+            "nrf_toolchain_version": "v2.5.0",
+            "sdk_nrf_branch": "v2.5-branch"
         }
     },
     "remoteUser": "vscode"

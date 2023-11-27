@@ -31,4 +31,3 @@ jobs:
       uses: ./.github/actions/smoke-test
       with:
         image: nrf-devcontainer
-        variant: dev

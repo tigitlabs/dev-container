@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
 
-  makefile-base-ubuntu:
+  makefile-sanity-check:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,46 +46,57 @@ jobs:
       - name: Run make github-action-markdown-lint
         run: make github-action-markdown-lint
 
-      - name: Run make build-base-ubuntu
+  makefile-local-build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_USER: ${{ github.actor }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Build base-ubuntu
         run: make build-base-ubuntu
 
-      - name: Run make github-action-smoke-base-ubuntu
-        run: make github-action-smoke-base-ubuntu
+      - name: Test base-ubuntu
+        run: make test-base-ubuntu
 
-  makefile-base-nrf:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install devcontainer cli
-        run: |
-          npm install -g @devcontainers/cli
-          devcontainer --version
-
-      - name: Install nectos act
-        run: |
-          cd /
-          curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
-          act --version
-
-      - name: Run make build-base-nrf
+      - name: Build base-nrf
         run: make build-base-nrf
 
-      - name: Run make github-action-smoke-base-nrf
-        run: make github-action-smoke-base-nrf
+      - name: Test base-nrf
+        run: make test-base-nrf
 
-  makefile-nrf-ci:
+      - name: Build nrf-ci
+        run: make build-nrf-ci
+
+      - name: Test nrf-ci
+        run: make test-nrf-ci
+
+      - name: Build nrf-devcontainer
+        run: make build-nrf-devcontainer
+
+      - name: Test nrf-devcontainer
+        run: make test-nrf-devcontainer
+
+      - name: Run make build-all
+        run: make build-all
+
+      - name: Show the build result
+        run: docker images
+
+  makefile-ci-run:
+    # This is a redundant job, but it is here to make sure that the target is running
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     env:
+      GITHUB_USER: ${{ github.actor }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
@@ -102,39 +113,5 @@ jobs:
           curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
           act --version
 
-      - name: Run make github-action-smoke-nrf-ci
-        run: make github-action-smoke-nrf-ci
-
-      - name: Run make build-nrf-ci
-        run: | 
-          make build-nrf-ci
-
-
-  makefile-nrf-devcontainer:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install devcontainer cli
-        run: |
-          npm install -g @devcontainers/cli
-          devcontainer --version
-
-      - name: Install nectos act
-        run: |
-          cd /
-          curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
-          act --version
-
-      - name: Run make build-nrf-devcontainer
-        run: | 
-          make build-nrf-devcontainer
-
-      - name: Run make github-action-smoke-nrf-devcontainer
-        run: make github-action-smoke-nrf-devcontainer
+      - name: Run make makefile-ci
+        run: make makefile-ci

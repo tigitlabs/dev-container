@@ -1,6 +1,7 @@
 
-ARG VARIANT="dev"
-FROM ghcr.io/tigitlabs/base-nrf:${VARIANT}
+ARG VARIANT="${VARIANT}"
+ARG REGISTRY="${REGISTRY}"
+FROM ${REGISTRY}/tigitlabs/base-nrf:${VARIANT}
 
 LABEL dev.containers.features="common"
 LABEL dev.containers.features="nrf-tools"

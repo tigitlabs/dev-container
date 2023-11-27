@@ -1,9 +1,10 @@
-ARG VARIANT="main"
-FROM ghcr.io/tigitlabs/base-ubuntu:${VARIANT}
+ARG VARIANT="${VARIANT}"
+ARG REGISTRY="${REGISTRY}"
+FROM ${REGISTRY}/tigitlabs/base-ubuntu:${VARIANT}
 
-ARG nrf_toolchain_version=v2.5.0
+ARG sdk_nrf_branch="${sdk_nrf_branch}"
+ARG nrf_toolchain_version="${nrf_toolchain_version}"
 ARG sdk_dir=/home/vscode/sdk-nrf-${nrf_toolchain_version}
-ARG sdk_nrf_branch=v2.5-branch
 
 LABEL dev.containers.features="common"
 LABEL dev.containers.features="nrf-tools"
@@ -22,7 +23,7 @@ RUN  wget -q https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfuti
     nrfutil install toolchain-manager && \
     nrfutil install completion && \
     nrfutil install nrf5sdk-tools && \
-    nrfutil toolchain-manager install --ncs-version ${nrf_toolchain_version}
+    nrfutil toolchain-manager install --ncs-version "${nrf_toolchain_version}"
 
 # Install nRF Connect SDK
 WORKDIR /home/vscode/ncs

@@ -31,4 +31,3 @@ jobs:
       uses: ./.github/actions/smoke-test
       with:
         image: base-nrf
-        variant: dev

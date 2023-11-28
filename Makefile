@@ -64,39 +64,75 @@ github-action-publish:	## ✅Build and publish all images
 	--eventpath .github/workflows/act/event-publish-main.json
 
 
-##@ 🐋 devcontainer Build
+##@ 🐋 devcontainer Build & Test
 
 .PHONY: build-base-ubuntu
 build-base-ubuntu:	## 🏗️Build ubuntu-base image
 	@echo "🏗️ Building base-ubuntu image"	
-	export VARIANT="jammy" && \
+	@devcontainer build \
+	--workspace-folder src/base-ubuntu \
+	--image-name local/${GITHUB_USER}/base-ubuntu:local
+
+.PHONY: test-base-ubuntu
+test-base-ubuntu:	## 🧪Test base-ubuntu image
+	@echo "🧪 Testing base-ubuntu image"
+	unset VARIANT && \
 	./.github/actions/smoke-test/build.sh base-ubuntu
-	@echo "🧪 Test ubuntu-base image"
-	@./.github/actions/smoke-test/test.sh base-ubuntu
+	./.github/actions/smoke-test/test.sh base-ubuntu
 
 .PHONY: build-base-nrf
 build-base-nrf:	## 🏗️Build nrf-base image
-	@echo "🏗️ Building base-nrf image"	
-	export VARIANT="dev" && \
+	@echo "🏗️ Building base-nrf image"
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
+	devcontainer build \
+	--workspace-folder src/base-nrf \
+	--image-name local/${GITHUB_USER}/base-nrf:local
+
+.PHONY: test-base-nrf
+test-base-nrf:	## 🧪Test base-nrf image
+	@echo "🧪 Testing base-nrf image"
+	unset VARIANT && \
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
 	./.github/actions/smoke-test/build.sh base-nrf
-	@echo "🧪 Test nrf-base image"
-	@./.github/actions/smoke-test/test.sh base-nrf
+	./.github/actions/smoke-test/test.sh base-nrf
 
 .PHONY: build-nrf-ci
 build-nrf-ci:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-ci image"
-	export VARIANT="dev" && \
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
+	devcontainer build \
+	--workspace-folder src/nrf-ci \
+	--image-name local/${GITHUB_USER}/nrf-ci:local
+
+.PHONY: test-nrf-ci
+test-nrf-ci:	## 🧪Test nrf-ci image
+	@echo "🧪 Testing nrf-ci image"
+	unset VARIANT && \
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
 	./.github/actions/smoke-test/build.sh nrf-ci
-	@echo "🧪 Test nrf-ci image"
-	@./.github/actions/smoke-test/test.sh nrf-ci
+	./.github/actions/smoke-test/test.sh nrf-ci
 
 .PHONY: build-nrf-devcontainer
 build-nrf-devcontainer:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-devcontainer image"
-	export VARIANT="dev" && \
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
+	devcontainer build \
+	--workspace-folder src/nrf-devcontainer \
+	--image-name local/${GITHUB_USER}/nrf-devcontainer:local
+
+.PHONY: test-nrf-devcontainer
+test-nrf-devcontainer:	## 🧪Test nrf-devcontainer image
+	@echo "🧪 Testing nrf-devcontainer image"
+	unset VARIANT && \
+	export VARIANT="local" && \
+	export REGISTRY="local" && \
 	./.github/actions/smoke-test/build.sh nrf-devcontainer
-	@echo "🧪 Test nrf-devcontainer image"
-	@./.github/actions/smoke-test/test.sh nrf-devcontainer
+	./.github/actions/smoke-test/test.sh nrf-devcontainer
 
 .PHONY: build-all
 build-all:	## 🏗️Build all images
@@ -105,6 +141,14 @@ build-all:	## 🏗️Build all images
 	@make build-base-nrf
 	@make build-nrf-ci
 	@make build-nrf-devcontainer
+
+.PHONY: test-all
+test-all:	## 🧪Test all images
+	@echo "🧪 Testing all images"
+	@make test-base-ubuntu
+	@make test-base-nrf
+	@make test-nrf-ci
+	@make test-nrf-devcontainer
 
 ##@ 🐋 devcontainer attach
 
@@ -141,7 +185,8 @@ makefile-ci:	## 🧪 Run all makefile targets
 	@make help
 	@make github-action-list
 	@make github-action-act-test
-	@make build-all
 	@make github-action-smoke-test
 	@make github-action-markdown-lint
 	@make github-action-makefile-ci
+	@make build-all
+	@make test-all

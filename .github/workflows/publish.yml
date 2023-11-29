@@ -109,13 +109,6 @@ jobs:
           npm install -g @devcontainers/cli
           devcontainer --version
 
-      - name: Smoke test
-        id: smoke_test
-        uses: ./.github/actions/smoke-test
-        with:
-          image: base-nrf
-          variant: $TAG
-
       - name: Build the base-nrf image
         run: |
           export VARIANT=${TAG}
@@ -127,6 +120,13 @@ jobs:
           docker tag base-nrf ghcr.io/tigitlabs/base-nrf:${TAG}
           docker rmi base-nrf
           docker images
+
+      - name: Smoke test
+        id: smoke_test
+        uses: ./.github/actions/smoke-test
+        with:
+          image: base-nrf
+          variant: $TAG
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1

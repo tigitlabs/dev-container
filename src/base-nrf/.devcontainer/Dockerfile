@@ -34,6 +34,7 @@ RUN <<EOT
     west update --narrow -o=--depth=1
 EOT
 
+SHELL ["/bin/bash", "-c"]
 COPY entry.sh /usr/local/bin/entry.sh
 RUN sudo chown vscode /usr/local/bin/entry.sh && sudo chmod +x /usr/local/bin/entry.sh
 

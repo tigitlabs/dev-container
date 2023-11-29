@@ -48,6 +48,9 @@ jobs:
     if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     needs: [ get-tags ]
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{needs.get-tags.outputs.tag}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
       packages: write
@@ -60,16 +63,12 @@ jobs:
           devcontainer --version
 
       - name: Smoke test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: smoke_test
         uses: ./.github/actions/smoke-test
         with:
           image: base-ubuntu
 
       - name: Build the Ubuntu base image
-        env:
-          TAG: ${{needs.get-tags.outputs.tag}}
         run: |
           devcontainer build \
           --workspace-folder src/base-ubuntu/ \
@@ -97,6 +96,7 @@ jobs:
     needs: [ build-and-push-base-ubuntu, get-tags ]
     runs-on: ubuntu-latest
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TAG: ${{needs.get-tags.outputs.tag}}
     permissions:
       contents: read
@@ -110,9 +110,6 @@ jobs:
           devcontainer --version
 
       - name: Smoke test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{needs.get-tags.outputs.tag}}
         id: smoke_test
         uses: ./.github/actions/smoke-test
         with:
@@ -149,6 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: ${{needs.get-tags.outputs.tag}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
       packages: write
@@ -161,9 +159,6 @@ jobs:
           devcontainer --version
 
       - name: Smoke test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{needs.get-tags.outputs.tag}}
         id: smoke_test
         uses: ./.github/actions/smoke-test
         with:
@@ -198,6 +193,9 @@ jobs:
     if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'
     needs: [ build-and-push-base-nrf-image, get-tags ]
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{needs.get-tags.outputs.tag}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
       packages: write
@@ -210,9 +208,6 @@ jobs:
           devcontainer --version
 
       - name: Smoke test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{needs.get-tags.outputs.tag}}
         id: smoke_test
         uses: ./.github/actions/smoke-test
         with:
@@ -220,8 +215,6 @@ jobs:
           variant: $TAG
 
       - name: Build the nrf-devcontainer image
-        env:
-          TAG: ${{needs.get-tags.outputs.tag}}
         run: |
           export VARIANT=${TAG}
           devcontainer build \

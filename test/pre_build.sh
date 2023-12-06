@@ -29,8 +29,9 @@ fi
 
 image_name="${IMAGE}:${IMAGE_TAG}"
 id_label=" dev.containers.name=${IMAGE}"
-BASE_IMAGE="${BASE_IMAGE_NAME}:${IMAGE_TAG}"
+export BASE_IMAGE="${BASE_IMAGE_NAME}:${IMAGE_TAG}"
 echo "(*) Building image - ${image_name}"
+echo "(*) Using base image - ${BASE_IMAGE}"
 
 devcontainer build --workspace-folder "src/${IMAGE}/" --image-name "${image_name}"
 image_id=$(docker images --format "{{.Repository}}:{{.Tag}} {{.ID}}" | grep ${image_name} | awk '{print $2}')

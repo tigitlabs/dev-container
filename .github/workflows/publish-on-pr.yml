@@ -68,7 +68,7 @@ jobs:
 
       - name: Build Test and Push
         id: build-test-push
-        uses: ./.github/actions/build-test-push.yml
+        uses: ./.github/actions/build-test-push
         with:
           image: ${{ env.IMAGE_NAME }}
           tag: ${TAG}

@@ -49,6 +49,9 @@ jobs:
 
   build-test-push-base-ubuntu:
     needs: get-tags
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/build-test-push.yml
     with:
       image: base-ubuntu

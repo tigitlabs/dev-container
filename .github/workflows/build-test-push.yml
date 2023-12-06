@@ -22,7 +22,9 @@ on:
 jobs:
   build-devcontainer-image:
     runs-on: ubuntu-latest
-
+    permissions:
+          contents: read
+          packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,14 +34,13 @@ jobs:
           npm install -g @devcontainers/cli
           devcontainer --version
 
-      - name: Build the Ubuntu base image
+      - name: Build the devcontainer image
         id: build_devcontainer_image
         run: |
           echo "Building the image: ${{ inputs.image }}:${{ inputs.tag }}"
           ./test/pre_build.sh ${{ inputs.image }} ${{ inputs.tag }}
 
       - name: Test the image
-        id: test_base_ubuntu
         run: |
           echo "Testing the image"
           ./test/test_build.sh ${{ inputs.image }} ${{ inputs.tag }}

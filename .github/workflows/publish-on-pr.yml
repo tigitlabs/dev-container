@@ -47,38 +47,34 @@ jobs:
           fi
           echo "Tag: ${tag}"
 
-  build-test-push-base-ubuntu:
+  push-base-ubuntu:
     needs: get-tags
-    permissions:
-      contents: read
-      packages: write
     uses: ./.github/workflows/build-test-push.yml
     with:
       image: base-ubuntu
       tag: ${{ needs.get-tags.outputs.tag }}
-
-  build-test-push-base-nrf:
+  push-base-nrf:
     needs: 
       - get-tags
-      - build-test-push-base-ubuntu
+      - push-base-ubuntu
     uses: ./.github/workflows/build-test-push.yml
     with:
       image: base-nrf
       tag: ${{ needs.get-tags.outputs.tag }}
 
-  build-test-push-nrf-ci:
+  push-nrf-ci:
     needs: 
       - get-tags
-      - build-test-push-base-nrf
+      - push-base-nrf
     uses: ./.github/workflows/build-test-push.yml
     with:
       image: nrf-ci
       tag: ${{ needs.get-tags.outputs.tag }}
 
-  build-test-push-nrf-devcontainer:
+  push-nrf-devcontainer:
     needs: 
       - get-tags
-      - build-test-push-base-nrf
+      - push-base-nrf
     uses: ./.github/workflows/build-test-push.yml
     with:
       image: nrf-devcontainer

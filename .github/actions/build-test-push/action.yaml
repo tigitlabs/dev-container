@@ -23,9 +23,9 @@ jobs:
   build-devcontainer-image:
     runs-on: ubuntu-latest
     env:
-      TAG: ${{needs.get-tags.outputs.tag}}
+      TAG: ${{ inputs.tag }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      IMAGE_NAME: base-ubuntu
+      IMAGE_NAME: ${{ inputs.image }}
       REGISTRY: ghcr.io
     permissions:
       contents: read

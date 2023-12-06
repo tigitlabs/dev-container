@@ -53,6 +53,8 @@ jobs:
     env:
       TAG: ${{needs.get-tags.outputs.tag}}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      IMAGE_NAME: base-ubuntu
+      REGISTRY: ghcr.io
     permissions:
       contents: read
       packages: write
@@ -68,7 +70,8 @@ jobs:
         id: build_base_ubuntu
         run: |
           echo "Applying tag: ${TAG}"
-          ./test/pre_build.sh base-ubuntu ${TAG}
+          ./test/pre_build.sh ${{ env.IMAGE_NAME }} ${TAG}
+          ./test/test_build.sh ${{ env.IMAGE_NAME }} ${TAG}
 
       - name: Test the image
         id: test_base_ubuntu
@@ -81,14 +84,18 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish image
         if: ${{ !env.ACT }}
         run: |
-          docker push ghcr.io/tigitlabs/base-ubuntu --all-tags
+          echo "Publishing image"
+          PUBLIC_IMAGE_NAME="${{ env.REGISTRY }}/${{ github.event.repository.full_name }}/${{ env.IMAGE_NAME }}:${TAG}"
+          docker tag ${{ env.IMAGE_NAME }}:${TAG} $PUBLIC_IMAGE_NAME
+          docker rmi ${{ env.IMAGE_NAME }}:${TAG}
+          docker push $PUBLIC_IMAGE_NAME
 
   # build-and-push-base-nrf-image:
   #   if: github.event.pull_request.merged == true || github.event.ref_type == 'tag'

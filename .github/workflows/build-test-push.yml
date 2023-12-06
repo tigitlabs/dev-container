@@ -44,15 +44,16 @@ jobs:
         id: build_devcontainer_image
         run: |
           echo "Building the image: ${{ inputs.image }}:${{ inputs.tag }}"
-          ./test/pre_build.sh ${{ inputs.image }} ${{ inputs.tag }}
+          ./test/pre_build.sh ${{ inputs.image }} ${{ inputs.tag }} ${{ inputs.base_image }}
 
       - name: Test the image
+        if: env.ACT != 'true'
         run: |
           echo "Testing the image"
           ./test/test_build.sh ${{ inputs.image }} ${{ inputs.tag }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ${{ inputs.registry }}
           username: ${{github.actor}}
@@ -60,6 +61,7 @@ jobs:
 
       - name: Publish image
         id: publish_image
+        if: env.ACT != 'true'
         run: |
           echo "Publishing image"
           PUBLIC_IMAGE_NAME="${{ inputs.registry }}/${{ github.event.repository.full_name }}/${{ inputs.image }}:${{ inputs.tag }}"

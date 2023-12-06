@@ -47,29 +47,18 @@ jobs:
           fi
           echo "Tag: ${tag}"
 
-  build-test-push:
-    needs: [ get-tags ]
-    runs-on: ubuntu-latest
-    env:
-      TAG: ${{needs.get-tags.outputs.tag}}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      IMAGE_NAME: base-ubuntu
-      REGISTRY: ghcr.io
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
+  build-test-push-base-ubuntu:
+    needs: get-tags
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: base-ubuntu
+      tag: ${{ needs.get-tags.outputs.tag }}
 
-      - name: Install devcontainer cli
-        run: |
-          npm install -g @devcontainers/cli
-          devcontainer --version
-
-      - name: Build Test and Push
-        id: build-test-push
-        uses: ./.github/actions/build-test-push
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          tag: ${TAG}
-          registry: ${{ env.REGISTRY }}
+  build-test-push-base-nrf:
+    needs: 
+      - get-tags
+      - build-test-push-base-ubuntu
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: base-nrf
+      tag: ${{ needs.get-tags.outputs.tag }}

@@ -8,59 +8,52 @@ on:
       image:
         description: 'Image to build'
         required: true
+        type: string
       tag:
         description: 'Tag to apply to the image'
         required: true
+        type: string
       registry:
         description: 'Registry to push to'
-        required: true
+        required: false
+        type: string
         default: 'ghcr.io'
 
 jobs:
-
   build-devcontainer-image:
     runs-on: ubuntu-latest
-    env:
-      TAG: ${{ inputs.tag }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      IMAGE_NAME: ${{ inputs.image }}
-      REGISTRY: ghcr.io
-    permissions:
-      contents: read
-      packages: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Install devcontainer cli
         run: |
           npm install -g @devcontainers/cli
           devcontainer --version
 
       - name: Build the Ubuntu base image
-        id: build_base_ubuntu
+        id: build_devcontainer_image
         run: |
-          echo "Applying tag: ${TAG}"
-          ./test/pre_build.sh ${{ env.IMAGE_NAME }} ${TAG}
-          ./test/test_build.sh ${{ env.IMAGE_NAME }} ${TAG}
+          echo "Building the image: ${{ inputs.image }}:${{ inputs.tag }}"
+          ./test/pre_build.sh ${{ inputs.image }} ${{ inputs.tag }}
 
       - name: Test the image
         id: test_base_ubuntu
         run: |
           echo "Testing the image"
-          echo "Current directory: $(pwd)"
-          echo "Contents of current directory: $(ls -la)"
-          ./test/test_build.sh base-ubuntu ${TAG}
+          ./test/test_build.sh ${{ inputs.image }} ${{ inputs.tag }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ inputs.registry }}
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish image
-        if: ${{ !env.ACT }}
         run: |
           echo "Publishing image"
-          PUBLIC_IMAGE_NAME="${{ env.REGISTRY }}/${{ github.event.repository.full_name }}/${{ env.IMAGE_NAME }}:${TAG}"
-          docker tag ${{ env.IMAGE_NAME }}:${TAG} $PUBLIC_IMAGE_NAME
-          docker rmi ${{ env.IMAGE_NAME }}:${TAG}
+          PUBLIC_IMAGE_NAME="${{ inputs.registry }}/${{ github.event.repository.full_name }}/${{ inputs.image }}:${{ inputs.tag }}"
+          docker tag ${{ inputs.image }}:${{ inputs.tag }} $PUBLIC_IMAGE_NAME
+          docker rmi ${{ inputs.image }}:${{ inputs.tag }}
           docker push $PUBLIC_IMAGE_NAME

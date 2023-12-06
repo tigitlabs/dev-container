@@ -1,43 +1,19 @@
 #!/bin/bash
+## Run tests on pre-built devcontainer images
 IMAGE="$1"
 IMAGE_TAG="$2"
-# PULL defines if the base image is expected to be available locally
-PULL="$3"
 
 set -e
-export DOCKER_BUILDKIT=1
 
-# Install devcontainer cli if not already installed
-# Thats the case when running on GitHub Actions Runner
+# Check if devcontainer cli is available
+# This should not happen as the container is built with devcontainer cli
 if ! command -v devcontainer &> /dev/null; then
-    echo "(*) Installing @devcontainer/cli"
-    npm install -g @devcontainers/cli
-else
-    echo "(*) @devcontainer/cli already installed"
-fi
-
-if [ -z "${VARIANT}" ]; then
-    echo "⚠️ No VARIANT specified, using default"
-else
-    echo "VARIANT set to:${VARIANT}"
-fi
-
-if [ -z "${REGISTRY}" ]; then
-    echo "⚠️ No REGISTRY specified, using default"
-else
-    echo "REGISTRY set to:${REGISTRY}"
+    echo "🚫 devcontainer cli not found"
+    exit 1
 fi
 
 image_name="${IMAGE}:${IMAGE_TAG}"
 id_label=" dev.containers.name=${IMAGE}"
-
-echo "(*) Building image - ${image_name}"
-devcontainer build --workspace-folder "src/${IMAGE}/" --image-name "${image_name}"
-image_id=$(docker images --format "{{.Repository}}:{{.Tag}} {{.ID}}" | grep ${image_name} | awk '{print $2}')
-image_size=$(docker images --format "{{.Repository}}:{{.Tag}} {{.Size}}" | grep ${image_name} | awk '{print $2}')
-echo "(*) Image size - ${image_size}"
-echo "(*) Image id - ${image_id}"
-
 
 # Run and test container
 echo "(*) Run and Test container - ${image_name}"
@@ -52,7 +28,7 @@ docker run \
 --entrypoint /bin/sh ${image_name} -c 'trap "exit 0" 15; exec "$@"; while sleep 1 & wait $!; do :; done'
 
 container_id=$(docker ps -aqf "name=${IMAGE}")
-echo "container_id=${container_id}"
+echo "container_id: ${container_id}"
 
 echo "(*) Set-up devcontainer - ${IMAGE}"
 devcontainer set-up --container-id "${container_id}" --config "src/${IMAGE}/.devcontainer/devcontainer.json"

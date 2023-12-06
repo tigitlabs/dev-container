@@ -26,7 +26,8 @@ echo "verbose: $verbose"
 echo "push: $push"
 
 script_dir="$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1
-build_script="${script_dir}/../.github/actions/smoke-test/pre_build.sh"
+build_script="${script_dir}/pre_build.sh"
+test_script="${script_dir}/test_build.sh"
 # Get current branch name
 branch=$(git rev-parse --abbrev-ref HEAD)
 
@@ -39,10 +40,16 @@ function build {
     echo "🐋 Building ${1}"
     TAG="${branch}"
     PULL="${pull}"
-    ./${build_script} ${1} ${TAG} ${PULL}
+    ./${build_script} ${1} ${TAG}
 }
 
-build "base-ubuntu"
-build "base-nrf"
-build "nrf-ci"
-build "nrf-devcontainer"
+function test {
+    echo "🧪 Testing ${1}"
+    TAG="${branch}"
+    ./${test_script} ${1} ${TAG}
+}
+
+build "base-ubuntu" && test "base-ubuntu"
+build "base-nrf" && test "base-nrf"
+build "nrf-ci" && test "nrf-ci"
+build "nrf-devcontainer" && test "nrf-devcontainer"

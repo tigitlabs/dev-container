@@ -12,18 +12,22 @@ if ! command -v devcontainer &> /dev/null; then
     exit 1
 fi
 
+script_dir="$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1
+absolute_root_dir="$(cd "${script_dir}/.." && pwd)"
+echo "absolute_root_dir: ${absolute_root_dir}"
+echo "script_dir: ${script_dir}"
 image_name="${IMAGE}:${IMAGE_TAG}"
 id_label=" dev.containers.name=${IMAGE}"
 
 # Run and test container
-echo "(*) Run and Test container - ${image_name}"
+echo "(*) Run and Test container - ${image_name}:${IMAGE_TAG}"
 
 docker rm --force "${IMAGE}" || true
 docker run \
 --sig-proxy=false \
 --name "${IMAGE}" \
 --detach \
---mount type=bind,source=/workspaces/dev-container,target=/workspaces/dev-container \
+--mount type=bind,source="${absolute_root_dir}",target=/workspaces/dev-container \
 --label ${id_label} \
 --entrypoint /bin/sh ${image_name} -c 'trap "exit 0" 15; exec "$@"; while sleep 1 & wait $!; do :; done'
 

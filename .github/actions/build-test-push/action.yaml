@@ -8,11 +8,9 @@ on:
       image:
         description: 'Image to build'
         required: true
-        default: 'base-ubuntu'
       tag:
         description: 'Tag to apply to the image'
         required: true
-        default: 'latest'
       registry:
         description: 'Registry to push to'
         required: true

@@ -69,4 +69,4 @@ jobs:
           docker rmi ${{ inputs.image }}:${{ inputs.tag }}
           docker push $PUBLIC_IMAGE_NAME
           echo "Image available at: $PUBLIC_IMAGE_NAME"
-          echo image_url=$PUBLIC_IMAGE_NAME >> $GITHUB_OUTPUT
+          echo "image_url=$PUBLIC_IMAGE_NAME" >> $GITHUB_OUTPUT

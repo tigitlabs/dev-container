@@ -13,6 +13,10 @@ on:
         description: 'Tag to apply to the image'
         required: true
         type: string
+      base_image:
+        description: 'Base image to use'
+        type: string
+        required: false
       registry:
         description: 'Registry to push to'
         required: false
@@ -25,6 +29,8 @@ jobs:
     permissions:
           contents: read
           packages: write
+    outputs:
+      image_url: ${{ steps.publish_image.outputs.image_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,9 +59,12 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish image
+        id: publish_image
         run: |
           echo "Publishing image"
           PUBLIC_IMAGE_NAME="${{ inputs.registry }}/${{ github.event.repository.full_name }}/${{ inputs.image }}:${{ inputs.tag }}"
           docker tag ${{ inputs.image }}:${{ inputs.tag }} $PUBLIC_IMAGE_NAME
           docker rmi ${{ inputs.image }}:${{ inputs.tag }}
           docker push $PUBLIC_IMAGE_NAME
+          echo "Image available at: $PUBLIC_IMAGE_NAME"
+          echo image_url=$PUBLIC_IMAGE_NAME >> $GITHUB_OUTPUT

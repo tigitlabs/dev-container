@@ -1,7 +1,6 @@
 
-ARG VARIANT="${VARIANT}"
-ARG REGISTRY="${REGISTRY}"
-FROM ${REGISTRY}/tigitlabs/base-nrf:${VARIANT}
+ARG BASE_IMAGE="${BASE_IMAGE}"
+FROM ${BASE_IMAGE}
 
 LABEL dev.containers.features="common"
 LABEL dev.containers.features="nrf-tools"

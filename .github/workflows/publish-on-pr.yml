@@ -67,6 +67,7 @@ jobs:
     with:
       image: base-nrf
       tag: ${{ needs.get-tags.outputs.tag }}
+      base_image: ${{ needs.push-base-ubuntu.outputs.image_url }}
 
   push-nrf-ci:
     permissions:
@@ -79,6 +80,7 @@ jobs:
     with:
       image: nrf-ci
       tag: ${{ needs.get-tags.outputs.tag }}
+      base_image: ${{ needs.push-base-nrf.outputs.image_url }}
 
   push-nrf-devcontainer:
     permissions:
@@ -91,3 +93,4 @@ jobs:
     with:
       image: nrf-devcontainer
       tag: ${{ needs.get-tags.outputs.tag }}
+      base_image: ${{ needs.push-base-nrf.outputs.image_url }}

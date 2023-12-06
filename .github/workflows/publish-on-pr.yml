@@ -62,3 +62,21 @@ jobs:
     with:
       image: base-nrf
       tag: ${{ needs.get-tags.outputs.tag }}
+
+  build-test-push-nrf-ci:
+    needs: 
+      - get-tags
+      - build-test-push-base-nrf
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: nrf-ci
+      tag: ${{ needs.get-tags.outputs.tag }}
+
+  build-test-push-nrf-devcontainer:
+    needs: 
+      - get-tags
+      - build-test-push-base-nrf
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: nrf-devcontainer
+      tag: ${{ needs.get-tags.outputs.tag }}

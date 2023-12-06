@@ -1,0 +1,102 @@
+name: 'Smoke test'
+inputs:
+  image:
+    description: 'Image to test'
+    required: true
+    default: 'base-ubuntu'
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout main
+      id: checkout_release
+      uses: actions/checkout@v3
+      with:
+        repository: 'tigitlabs/dev-container'
+        path: '__build'
+        ref: 'main'
+
+    - name: Build image
+      id: build_image
+      shell: bash
+      run: |
+        ${{ github.action_path }}/build.sh ${{ inputs.image }}
+
+    - name: Test image
+      id: test_image
+      shell: bash
+      run: ${{ github.action_path }}/test.sh  ${{ inputs.image }}
+
+
+
+
+
+##################################
+---
+
+name: "Build-Test-Push"
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'Image to build'
+        required: true
+        default: 'base-ubuntu'
+      tag:
+        description: 'Tag to apply to the image'
+        required: true
+        default: 'latest'
+      registry:
+        description: 'Registry to push to'
+        required: true
+        default: 'ghcr.io'
+
+jobs:
+
+  build-devcontainer-image:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{needs.get-tags.outputs.tag}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      IMAGE_NAME: base-ubuntu
+      REGISTRY: ghcr.io
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Install devcontainer cli
+        run: |
+          npm install -g @devcontainers/cli
+          devcontainer --version
+
+      - name: Build the Ubuntu base image
+        id: build_base_ubuntu
+        run: |
+          echo "Applying tag: ${TAG}"
+          ./test/pre_build.sh ${{ env.IMAGE_NAME }} ${TAG}
+          ./test/test_build.sh ${{ env.IMAGE_NAME }} ${TAG}
+
+      - name: Test the image
+        id: test_base_ubuntu
+        run: |
+          echo "Testing the image"
+          echo "Current directory: $(pwd)"
+          echo "Contents of current directory: $(ls -la)"
+          ./test/test_build.sh base-ubuntu ${TAG}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        if: ${{ !env.ACT }}
+        run: |
+          echo "Publishing image"
+          PUBLIC_IMAGE_NAME="${{ env.REGISTRY }}/${{ github.event.repository.full_name }}/${{ env.IMAGE_NAME }}:${TAG}"
+          docker tag ${{ env.IMAGE_NAME }}:${TAG} $PUBLIC_IMAGE_NAME
+          docker rmi ${{ env.IMAGE_NAME }}:${TAG}
+          docker push $PUBLIC_IMAGE_NAME

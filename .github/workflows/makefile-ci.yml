@@ -62,5 +62,5 @@ jobs:
       - name: Run make build-all
         run: make build-all
 
-      - name: Show the build result
-        run: docker images
+      - name: Run make test-all
+        run: make test-all

@@ -31,14 +31,30 @@ on:
   release:
 
 jobs:
-  print_event_details:
+  event_details:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Print Event details
+      - name: Print environment
+        uses: hmarr/debug-action@v2.1.0
+
+      - name: pull_request
+        if: github.event_name == 'pull_request'
         run: |
-          echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
-          echo "📌 Event github.event context"
+          echo "GITHUB_EVENT_NAME=${{ github.event_name }}"
+          # https://docs.github.com/en/webhooks/webhook-events-and-payloads#pull_request
+          echo "action: ${{ github.event.action }}"
+          echo "merged: ${{ github.event.pull_request.merged }}"
+          echo "number: ${{ github.event.pull_request.number }}"
+          echo "title: ${{ github.event.pull_request.title }}"
+          echo "state: ${{ github.event.pull_request.state }}"
+          echo "base.ref": ${{ github.event.pull_request.base.ref }}
+          echo "head.ref: ${{ github.event.pull_request.head.ref }}"
+
+      - name: push
+        if: github.event_name == 'push'
+        run: |
+          echo "GITHUB_EVENT_NAME=${{ github.event_name }}"
           # https://docs.github.com/en/webhooks/webhook-events-and-payloads#push
           echo "after: ${{ github.event.after }}"
           echo "before: ${{ github.event.before }}"
@@ -54,31 +70,20 @@ jobs:
           echo "ref: ${{ github.event.ref }}"
           echo "repository.full_name: ${{ github.event.repository.full_name }}"
           echo "sender.login: ${{ github.event.sender.login }}"
+      - name: create
+        if: github.event_name == 'create'
+        run: |
+          echo "GITHUB_EVENT_NAME=${{ github.event_name }}"
           # https://docs.github.com/en/webhooks/webhook-events-and-payloads#create
           echo "description: ${{ github.event.description }}"
           echo "master_branch: ${{ github.event.master_branch }}"
           echo "pusher_type: ${{ github.event.pusher_type }}"
           echo "ref_type: ${{ github.event.ref_type }}"
-          # https://docs.github.com/en/webhooks/webhook-events-and-payloads#pull_request
-          echo "action: ${{ github.event.action }}"
-          echo "merged: ${{ github.event.pull_request.merged }}"
-          echo "number: ${{ github.event.pull_request.number }}"
-          echo "title: ${{ github.event.pull_request.title }}"
-          echo "state: ${{ github.event.pull_request.state }}"
-          echo "base.ref": ${{ github.event.pull_request.base.ref }}
-          echo "head.ref: ${{ github.event.pull_request.head.ref }}"
 
-  print_env:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print environment
-        uses: hmarr/debug-action@v2.1.0
-
-      - name: Dump GitHub context
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: print github event
-        run: echo ${GITHUB_EVENT_CONTEXT}
-        env:
-          GITHUB_EVENT_CONTEXT: ${{ toJson(github.event) }}
+      - name: delete
+        if: github.event_name == 'delete'
+        run: |
+          echo "GITHUB_EVENT_NAME=${{ github.event_name }}"
+          # https://docs.github.com/en/webhooks/webhook-events-and-payloads#delete
+          echo "ref: ${{ github.event.ref }}"
+          echo "ref_type: ${{ github.event.ref_type }}"

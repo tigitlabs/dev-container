@@ -22,22 +22,22 @@ github-action-act-test:	## ✅Run act-test
 
 .PHONY: github-action-smoke-base-ubuntu
 github-action-smoke-base-ubuntu:	## ✅Run smoke-test for base-ubuntu
-	act -W .github/workflows/smoke-base-ubuntu.yaml \
+	@act -W .github/workflows/smoke-base-ubuntu.yaml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
 .PHONY: github-action-smoke-base-nrf
 github-action-smoke-base-nrf:	## ✅Run smoke-test for base-nrf
-	act -W .github/workflows/smoke-base-nrf.yaml \
+	@act -W .github/workflows/smoke-base-nrf.yaml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
 .PHONY: github-action-smoke-nrf-ci
 github-action-smoke-nrf-ci:	## ✅Run smoke-test for nrf-ci
-	act -W .github/workflows/smoke-nrf-ci.yaml \
+	@act -W .github/workflows/smoke-nrf-ci.yaml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
 .PHONY: github-action-smoke-nrf-devcontainer
 github-action-smoke-nrf-devcontainer:	## ✅Run smoke-test for nrf-devcontainer
-	act -W .github/workflows/smoke-nrf-devcontainer.yaml \
+	@act -W .github/workflows/smoke-nrf-devcontainer.yaml \
 	--secret GITHUB_TOKEN=${GITHUB_TOKEN}
 
 .PHONY: github-action-smoke-test
@@ -79,7 +79,7 @@ test-base-ubuntu:	## 🧪Test base-ubuntu image
 .PHONY: build-base-nrf
 build-base-nrf:	## 🏗️Build nrf-base image
 	@echo "🏗️ Building base-nrf image"
-	./test/pre_build.sh base-nrf local base-ubuntu
+	./test/pre_build.sh base-nrf local base-ubuntu:local
 
 .PHONY: test-base-nrf
 test-base-nrf:	## 🧪Test base-nrf image
@@ -89,7 +89,7 @@ test-base-nrf:	## 🧪Test base-nrf image
 .PHONY: build-nrf-ci
 build-nrf-ci:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-ci image"
-	./test/pre_build.sh nrf-ci local base-nrf
+	./test/pre_build.sh nrf-ci local base-nrf:local
 
 .PHONY: test-nrf-ci
 test-nrf-ci:	## 🧪Test nrf-ci image
@@ -99,7 +99,7 @@ test-nrf-ci:	## 🧪Test nrf-ci image
 .PHONY: build-nrf-devcontainer
 build-nrf-devcontainer:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-devcontainer image"
-	./test/pre_build.sh nrf-devcontainer local base-nrf
+	./test/pre_build.sh nrf-devcontainer local base-nrf:local
 
 .PHONY: test-nrf-devcontainer
 test-nrf-devcontainer:	## 🧪Test nrf-devcontainer image

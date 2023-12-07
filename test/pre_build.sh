@@ -1,8 +1,11 @@
 #!/bin/bash
+# IMAGE: The name of the Docker image to be built.
+# IMAGE_TAG: The tag to be applied to the Docker image.
+# BASE_IMAGE_NAME: The base Docker image to be used for building the new image.
+# # If not provided, the default image will be used.
 IMAGE="$1"
 IMAGE_TAG="$2"
 BASE_IMAGE_NAME="$3"
-
 set -e
 export DOCKER_BUILDKIT=1
 
@@ -15,23 +18,16 @@ else
     echo "(*) @devcontainer/cli already installed"
 fi
 
-if [ -z "${VARIANT}" ]; then
-    echo "⚠️ No VARIANT specified, using default"
-else
-    echo "VARIANT set to:${VARIANT}"
-fi
-
-if [ -z "${REGISTRY}" ]; then
-    echo "⚠️ No REGISTRY specified, using default"
-else
-    echo "REGISTRY set to:${REGISTRY}"
-fi
-
 image_name="${IMAGE}:${IMAGE_TAG}"
 id_label=" dev.containers.name=${IMAGE}"
-export BASE_IMAGE="${BASE_IMAGE_NAME}"
+if [[ -z "${BASE_IMAGE_NAME}" ]]; then
+    echo "⚠️  No base image provided, using default"
+else
+    export BASE_IMAGE="${BASE_IMAGE_NAME}"
+    echo "(*) Using base image - ${BASE_IMAGE}"
+fi
+
 echo "(*) Building image - ${image_name}"
-echo "(*) Using base image - ${BASE_IMAGE}"
 
 devcontainer build --workspace-folder "src/${IMAGE}/" --image-name "${image_name}"
 image_id=$(docker images --format "{{.Repository}}:{{.Tag}} {{.ID}}" | grep ${image_name} | awk '{print $2}')

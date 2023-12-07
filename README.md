@@ -32,6 +32,19 @@ Best starting point to adapt the repository to your needs is by understanding th
 Used to run Github Actions locally.
 github.com/nectos/act
 
+#### Event files
+
+The event files are used to simulate a Github event.
+The event files are located in the `.github/workflows/act` folder.
+Example usage:
+
+```bash
+   act create \
+   --workflows .github/workflows/publish.yml \
+   --eventpath .github/workflows/act/event-create-tag.json \
+   --dryrun
+```
+
 > ⚠️ **TODO**
 >
 > You have to run the act commands in the vscode terminal. When a shell is opened via SSH the act commands will fail.  

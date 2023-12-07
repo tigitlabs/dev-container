@@ -1,6 +1,6 @@
-ARG VARIANT="${VARIANT}"
-ARG REGISTRY="${REGISTRY}"
-FROM ${REGISTRY}/tigitlabs/base-ubuntu:${VARIANT}
+
+ARG BASE_IMAGE="${BASE_IMAGE}"
+FROM ${BASE_IMAGE}
 
 ARG sdk_nrf_branch="${sdk_nrf_branch}"
 ARG nrf_toolchain_version="${nrf_toolchain_version}"

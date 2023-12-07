@@ -33,6 +33,31 @@ function act_dryrun {
   fi
 }
 
+#   $1: The event name. This is the name of the GitHub event that triggers the workflow.
+#   $2: The workflow file. This is the path to the file that defines the workflow.
+#   $3: The event file. This is the path to the file that contains the payload for the event.
+function act_dryrun_event {
+  EVENT=$1
+  WORKFLOW=$2
+  EVENT_FILE=$3
+  echo "🧪🧪🧪 Testing act Event: ${EVENT} Workflow: ${WORKFLOW} with Event file: ${EVENT_FILE} 🧪🧪🧪"
+  echo "🏃: act ${EVENT} --workflows $WORKFLOW --secret GITHUB_TOKEN=\${GITHUB_TOKEN} --actor \${GITHUB_USER} --dryrun --eventpath ${EVENT_FILE}"
+  export RESULT=$(act ${EVENT} \
+  --workflows $WORKFLOW \
+  --secret GITHUB_TOKEN=${GITHUB_TOKEN} \
+  --actor $GITHUB_USER \
+  --dryrun \
+  --eventpath ${EVENT_FILE} 2>&1)
+
+  if [[ $RESULT == *"Job succeeded"* ]]; then
+    echo "✅ Test passed"
+  else
+    echo "❌ Test failed"
+    echo $RESULT
+    exit 1
+  fi
+}
+
 # Function to run act_dryrun for all workflows
 function act_dryrun_all {
   echo "🧪🧪🧪 Testing all workflows with dryrun 🧪🧪🧪"
@@ -74,3 +99,4 @@ function act_github_event() {
 check_env
 act_github_event
 act_dryrun_all
+act_dryrun_event create $PUBLISH_WORKFLOW_FILE $CREATE_TAG_EVENT_FILE

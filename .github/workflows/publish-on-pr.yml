@@ -1,0 +1,96 @@
+---
+
+name: "Publish-Images"
+
+on:
+  pull_request:
+    branches: [ dev, main]
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  get-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag_name.outputs.tag }}
+    steps:
+      - name: Get tags
+        id: get_tag_name
+        run: |
+          if [[ "${{ github.event.ref_type }}" == 'tag' ]]; then
+            echo "Tag event detected"
+            # echo "tag=$(echo "${{ github.event.ref }}" | grep -oP 'refs/tags/\K(.+)')"
+            tag=${{ github.event.ref }}
+            # Check if the tag is a semver tag
+            if [[ $tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              echo "tag detected: $tag"
+              echo "tag=$tag" >> $GITHUB_OUTPUT
+              echo "Set the tag to: $tag"
+            else
+              echo "tag is not a semver tag"
+              exit 1
+            fi
+          fi
+          if [[ "${{ github.ref }}" == "refs/heads/"* ]]; then
+            echo "Branch event detected"
+            tag=$(echo "${{ github.ref }}" | grep -oP 'refs/heads/\K(.+)')
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+            echo "Set the tag to: $tag"
+          fi
+          if [[ "${{ github.event.pull_request.state }}" == "open" ]]; then
+            echo "Pull request open event detected"
+            tag=${{ github.event.pull_request.head.ref }}
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+            echo "Set the tag to: $tag"
+          fi
+          echo "Tag: ${tag}"
+
+  push-base-ubuntu:
+    needs: get-tags
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: base-ubuntu
+      tag: ${{ needs.get-tags.outputs.tag }}
+  push-base-nrf:
+    permissions:
+      contents: read
+      packages: write
+    needs: 
+      - get-tags
+      - push-base-ubuntu
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: base-nrf
+      tag: ${{ needs.get-tags.outputs.tag }}
+      base_image: ${{ needs.push-base-ubuntu.outputs.image_url }}
+
+  push-nrf-ci:
+    permissions:
+      contents: read
+      packages: write
+    needs: 
+      - get-tags
+      - push-base-nrf
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: nrf-ci
+      tag: ${{ needs.get-tags.outputs.tag }}
+      base_image: ${{ needs.push-base-nrf.outputs.image_url }}
+
+  push-nrf-devcontainer:
+    permissions:
+      contents: read
+      packages: write
+    needs: 
+      - get-tags
+      - push-base-nrf
+    uses: ./.github/workflows/build-test-push.yml
+    with:
+      image: nrf-devcontainer
+      tag: ${{ needs.get-tags.outputs.tag }}
+      base_image: ${{ needs.push-base-nrf.outputs.image_url }}

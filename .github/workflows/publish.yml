@@ -42,6 +42,7 @@ jobs:
           fi
           if [[ "${{ github.event.pull_request.state }}" == "open" ]]; then
             echo "Pull request open event detected"
+            echo "ℹ Pull request from ${{ github.event.pull_request.head.ref }} to ${{ github.event.pull_request.base.ref }}"
             tag=${{ github.event.pull_request.head.ref }}
             echo "tag=$tag" >> $GITHUB_OUTPUT
             echo "Set the tag to: $tag"

@@ -29,7 +29,7 @@ fi
 
 image_name="${IMAGE}:${IMAGE_TAG}"
 id_label=" dev.containers.name=${IMAGE}"
-export BASE_IMAGE="${BASE_IMAGE_NAME}:${IMAGE_TAG}"
+export BASE_IMAGE="${BASE_IMAGE_NAME}"
 echo "(*) Building image - ${image_name}"
 echo "(*) Using base image - ${BASE_IMAGE}"
 

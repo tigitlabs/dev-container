@@ -1,6 +1,8 @@
 #!/bin/bash
 # Test script to verify workflows locally with ACT
 
+echo "🧪 Running act tests $1 🧪"
+
 DEBUG_WORKFLOW_FILE=".github/workflows/debug.yml"
 MARKDOWN_WORKFLOW_FILE=".github/workflows/docs.yml"
 PUBLISH_WORKFLOW_FILE=".github/workflows/publish.yml"
@@ -109,10 +111,27 @@ function act_test_get_tags() {
   act pull_request --workflows $PUBLISH_WORKFLOW_FILE --job get-tags --eventpath $PR_OPEN_EVENT_FILE
 }
 
-
-# Run tests
-check_env
-act_github_event
-act_dryrun_all
-act_dryrun_event create $PUBLISH_WORKFLOW_FILE $CREATE_TAG_EVENT_FILE
-act_test_get_tags
+if [ -z $1 ]; then
+  echo "Running all tests"
+  check_env
+  act_github_event
+  act_dryrun_all
+  act_dryrun_event create $PUBLISH_WORKFLOW_FILE $CREATE_TAG_EVENT_FILE
+  act_test_get_tags
+elif [ $1 == "dryrun" ]; then
+  echo "Running dryrun tests"
+  check_env
+  act_dryrun_all
+  act_dryrun_event create $PUBLISH_WORKFLOW_FILE $CREATE_TAG_EVENT_FILE
+elif [ $1 == "event" ]; then
+  echo "Running event tests"
+  check_env
+  act_github_event
+elif [ $1 == "get-tags" ]; then
+  echo "Running get-tags tests"
+  check_env
+  act_test_get_tags
+else
+  echo "🚫 Unknown argument $1"
+  exit 1
+fi

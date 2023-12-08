@@ -18,14 +18,24 @@ else
     echo "(*) @devcontainer/cli already installed"
 fi
 
-image_name="${IMAGE}:${IMAGE_TAG}"
-id_label=" dev.containers.name=${IMAGE}"
 if [[ -z "${BASE_IMAGE_NAME}" ]]; then
     echo "⚠️  No base image provided, using default"
 else
     export BASE_IMAGE="${BASE_IMAGE_NAME}"
     echo "(*) Using base image - ${BASE_IMAGE}"
 fi
+
+if [[ -z "${IMAGE_TAG}" ]]; then
+    echo "⚠️  No image tag provided"
+    echo "⚠️  Using default image tag - local"
+    TAG="local"
+else
+    export TAG="${IMAGE_TAG}"
+    echo "(*) Using image tag - ${TAG}"
+fi
+
+image_name="${IMAGE}:${TAG}"
+id_label=" dev.containers.name=${IMAGE}"
 
 echo "(*) Building image - ${image_name}"
 

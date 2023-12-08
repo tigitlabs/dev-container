@@ -1,10 +1,17 @@
 
 ARG BASE_IMAGE="${BASE_IMAGE}"
-FROM ${BASE_IMAGE}
+ARG TAG="${TAG}"
+FROM ${BASE_IMAGE}:${TAG}
+
+ARG BASE_IMAGE="${BASE_IMAGE}"
+ARG TAG="${TAG}"
+ENV BASE_IMAGE="${BASE_IMAGE}"
+ENV TAG="${TAG}"
 
 LABEL dev.containers.features="common"
 LABEL dev.containers.features="nrf-tools"
-LABEL dev.containers.features="nrf-dev-container"
+LABEL dev.containers.features="nrf-devcontainer"
+LABEL dev.containers.base_image="${BASE_IMAGE}":"${TAG}"
 
 ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-23-2/nrf-command-line-tools-10.23.2"
 USER vscode

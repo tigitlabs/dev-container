@@ -1,6 +1,12 @@
 
 ARG BASE_IMAGE="${BASE_IMAGE}"
-FROM ${BASE_IMAGE}
+ARG TAG="${TAG}"
+FROM ${BASE_IMAGE}:${TAG}
+
+ARG BASE_IMAGE="${BASE_IMAGE}"
+ARG TAG="${TAG}"
+ENV BASE_IMAGE="${BASE_IMAGE}"
+ENV TAG="${TAG}"
 
 ARG sdk_nrf_branch="${sdk_nrf_branch}"
 ARG nrf_toolchain_version="${nrf_toolchain_version}"
@@ -8,6 +14,7 @@ ARG sdk_dir=/home/vscode/sdk-nrf-${nrf_toolchain_version}
 
 LABEL dev.containers.features="common"
 LABEL dev.containers.features="nrf-tools"
+LABEL dev.containers.base_image="${BASE_IMAGE}:${TAG}"
 LABEL nrf.toolchain.version="${nrf_toolchain_version}"
 
 USER vscode

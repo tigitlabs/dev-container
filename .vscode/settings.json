@@ -4,6 +4,5 @@
     "titleBar.activeBackground": "#5634eb",
     "titleBar.activeForeground": "#FBF9FD"
   },
-  "nrf-connect.topdir": "${nrf-connect.sdk:2.4.1}",
-  "nrf-connect.toolchain.path": "${nrf-connect.toolchain:2.4.0}"
+  "workbench.editor.revealIfOpen": true
 }

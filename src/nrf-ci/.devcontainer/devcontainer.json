@@ -3,7 +3,8 @@
         "dockerfile": "./Dockerfile",
         "context": ".",
         "args": {
-            "BASE_IMAGE": "${localEnv:BASE_IMAGE:ghcr.io/tigitlabs/dev-container/base-nrf:main}"
+            "BASE_IMAGE": "${localEnv:BASE_IMAGE:ghcr.io/tigitlabs/dev-container/base-nrf}",
+            "TAG": "${localEnv:TAG:main}"
         }
     },
     "remoteUser": "vscode"

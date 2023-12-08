@@ -3,7 +3,6 @@ inputs:
   image:
     description: 'Image to test'
     required: true
-    default: 'base-ubuntu'
 
 runs:
   using: composite

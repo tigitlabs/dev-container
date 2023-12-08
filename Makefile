@@ -79,7 +79,7 @@ test-base-ubuntu:	## 🧪Test base-ubuntu image
 .PHONY: build-base-nrf
 build-base-nrf:	## 🏗️Build nrf-base image
 	@echo "🏗️ Building base-nrf image"
-	./test/pre_build.sh base-nrf local base-ubuntu:local
+	./test/pre_build.sh base-nrf local base-ubuntu
 
 .PHONY: test-base-nrf
 test-base-nrf:	## 🧪Test base-nrf image
@@ -89,7 +89,7 @@ test-base-nrf:	## 🧪Test base-nrf image
 .PHONY: build-nrf-ci
 build-nrf-ci:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-ci image"
-	./test/pre_build.sh nrf-ci local base-nrf:local
+	./test/pre_build.sh nrf-ci local base-nrf
 
 .PHONY: test-nrf-ci
 test-nrf-ci:	## 🧪Test nrf-ci image
@@ -99,7 +99,7 @@ test-nrf-ci:	## 🧪Test nrf-ci image
 .PHONY: build-nrf-devcontainer
 build-nrf-devcontainer:	## 🏗️Build nrf-ci image
 	@echo "🏗️ Building nrf-devcontainer image"
-	./test/pre_build.sh nrf-devcontainer local base-nrf:local
+	./test/pre_build.sh nrf-devcontainer local base-nrf
 
 .PHONY: test-nrf-devcontainer
 test-nrf-devcontainer:	## 🧪Test nrf-devcontainer image
@@ -162,3 +162,4 @@ makefile-ci:	## 🧪 Run all makefile targets
 	@make github-action-makefile-ci
 	@make build-all
 	@make test-all
+	./test/test_pre_build.sh

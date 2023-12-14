@@ -14,7 +14,7 @@ Best starting point to adapt the repository to your needs is by understanding th
 - act.yml
   - act/event-**  
     Event json files for local testing with act
-  - act/act-test.sh  
+  - act/act-tests.sh  
       Test script to help during the development of Workflows/Jobs
 - debug.yml  
    Prints debug information of the event that triggered the Workflow run. Also dumbs the the github.event object as a json.

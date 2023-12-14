@@ -4,6 +4,7 @@ name: "Publish-Images"
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
     branches: [ dev, main]
   push:
     branches: [ dev, main]

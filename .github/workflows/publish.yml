@@ -20,9 +20,24 @@ jobs:
     outputs:
       tag: ${{ steps.get_tag_name.outputs.tag }}
     steps:
+      - name: Print environment
+        uses: hmarr/debug-action@v2.1.0
+
       - name: Get tags
         id: get_tag_name
         run: |
+          echo "action: ${{ github.event.action }}"
+          echo "title: ${{ github.event.pull_request.title }}"
+          echo "ℹ Pull request from ${{ github.event.pull_request.head.ref }} to ${{ github.event.pull_request.base.ref }}"
+          echo "assignee.login: ${{ github.event.assignee.login }}"
+          echo "merged: ${{ github.event.pull_request.merged }}"
+          echo "number: ${{ github.event.pull_request.number }}"
+          echo "state: ${{ github.event.pull_request.state }}"
+          echo "base.ref": ${{ github.event.pull_request.base.ref }}
+          echo "head.ref: ${{ github.event.pull_request.head.ref }}"
+          echo "locked: ${{ github.event.pull_request.locked }}"
+          echo "active_lock_reason: ${{ github.event.pull_request.active_lock_reason }}"
+          echo "auto_merge.method: ${{ github.event.pull_request.auto_merge.method }}"
           if [[ "${{ github.event.pull_request.state }}" == "open" ]]; then
             echo "Pull request open event detected"
             echo "ℹ Pull request from ${{ github.event.pull_request.head.ref }} to ${{ github.event.pull_request.base.ref }}"

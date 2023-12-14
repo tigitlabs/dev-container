@@ -5,7 +5,10 @@ name: "Publish-Images"
 on:
   pull_request:
     branches: [ dev, main]
-  create:
+  push:
+    branches: [ dev, main]
+    tags:
+      - v*
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,7 +23,21 @@ jobs:
       - name: Get tags
         id: get_tag_name
         run: |
-          if [[ "${{ github.event.ref_type }}" == 'tag' ]]; then
+          if [[ "${{ github.event.pull_request.state }}" == "open" ]]; then
+            echo "Pull request open event detected"
+            echo "ℹ Pull request from ${{ github.event.pull_request.head.ref }} to ${{ github.event.pull_request.base.ref }}"
+            # Using the head branch name as the tag
+            tag=${{ github.event.pull_request.head.ref }}
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+            echo "Set the tag to: $tag"
+
+          elif [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
+            echo "Pull request merged event detected"
+            tag=${{ github.event.pull_request.head.ref }}
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+            echo "Set the tag to: $tag"
+
+          elif [[ "${{ github.event.ref_type }}" == 'tag' ]]; then
             echo "Tag event detected"
             # echo "tag=$(echo "${{ github.event.ref }}" | grep -oP 'refs/tags/\K(.+)')"
             tag=${{ github.event.ref }}
@@ -33,25 +50,6 @@ jobs:
               echo "tag is not a semver tag"
               exit 1
             fi
-          fi
-          if [[ "${{ github.ref }}" == "refs/heads/"* ]]; then
-            echo "Branch event detected"
-            tag=$(echo "${{ github.ref }}" | grep -oP 'refs/heads/\K(.+)')
-            echo "tag=$tag" >> $GITHUB_OUTPUT
-            echo "Set the tag to: $tag"
-          fi
-          if [[ "${{ github.event.pull_request.state }}" == "open" ]]; then
-            echo "Pull request open event detected"
-            echo "ℹ Pull request from ${{ github.event.pull_request.head.ref }} to ${{ github.event.pull_request.base.ref }}"
-            tag=${{ github.event.pull_request.head.ref }}
-            echo "tag=$tag" >> $GITHUB_OUTPUT
-            echo "Set the tag to: $tag"
-          fi
-          if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
-            echo "Pull request merged event detected"
-            tag=${{ github.event.pull_request.head.ref }}
-            echo "tag=$tag" >> $GITHUB_OUTPUT
-            echo "Set the tag to: $tag"
           fi
           echo "Tag: ${tag}"
 

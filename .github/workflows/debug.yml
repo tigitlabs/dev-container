@@ -45,6 +45,7 @@ jobs:
           # https://docs.github.com/en/webhooks/webhook-events-and-payloads#pull_request
           echo "action: ${{ github.event.action }}"
           echo "title: ${{ github.event.pull_request.title }}"
+          echo "ℹ Pull request from ${{ github.event.pull_request.head.ref }} to ${{ github.event.pull_request.base.ref }}"
           echo "assignee.login: ${{ github.event.assignee.login }}"
           echo "merged: ${{ github.event.pull_request.merged }}"
           echo "number: ${{ github.event.pull_request.number }}"
